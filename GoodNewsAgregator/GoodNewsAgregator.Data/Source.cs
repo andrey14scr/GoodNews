@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GoodNewsAgregator.Data
 {
-    class Source
+    public class Source
     {
         public short Id { get; set; }
         public string Url { get; set; }

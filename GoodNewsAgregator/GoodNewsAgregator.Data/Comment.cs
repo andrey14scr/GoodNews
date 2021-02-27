@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GoodNewsAgregator.Data
 {
-    class Comment
+    public class Comment
     {
         public Guid Id { get; set; }
         public string Text { get; set; }
