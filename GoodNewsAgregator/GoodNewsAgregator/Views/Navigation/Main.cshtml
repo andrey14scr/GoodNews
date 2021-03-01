@@ -1,7 +1,19 @@
-﻿@{
+﻿@using GoodNewsAgregator.Data;
+@model IEnumerable<Article>
+@{
     ViewData["Title"] = "Main page";
 }
 
 <div class="text-center">
     <h1 class="display-4">This is main page</h1>
+
+    @foreach (var a in Model)
+    {
+        <dir>
+            <p>@a.Title</p>
+            <p>@a.Date</p>
+            <p>@a.GoodFactor</p>
+        </dir>
+    }
+
 </div>

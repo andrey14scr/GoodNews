@@ -9,4 +9,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.11" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GoodNewsAgregator.Data\GoodNewsAgregator.Data.csproj" />
+  </ItemGroup>
+
 </Project>
