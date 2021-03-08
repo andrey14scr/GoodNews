@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GoodNewsAgregator.Models
+namespace GoodNewsAgregator.Services
 {
-    public class NewsListModel
+    public interface IDataConstructorService
     {
-        public IEnumerable<Article> list { get; set; }
+        IEnumerable<Article> GetArticles(int amount);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GoodNewsAgregator.Data;
+using GoodNewsAgregator.Services;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,18 +12,28 @@ namespace GoodNewsAgregator.Controllers
 {
     public class NavigationController : Controller
     {
+        private IDataConstructorService _dataConstructorService;
+
+        public NavigationController(IDataConstructorService dataConstructorService)
+        {
+            _dataConstructorService = dataConstructorService;
+        }
+
         public IActionResult Main()
         {
-            List<Article> list = new List<Article>();
-            list.Add(new Article() { Id = Guid.NewGuid(), Content = "blabla1", Date = DateTime.Now, GoodFactor = 0.4f, SourceId = 1, Title = "Title1" });
-            list.Add(new Article() { Id = Guid.NewGuid(), Content = "blabla2", Date = DateTime.Now, GoodFactor = 0.6f, SourceId = 2, Title = "Title2" });
-            list.Add(new Article() { Id = Guid.NewGuid(), Content = "blabla3", Date = DateTime.Now, GoodFactor = 0.8f, SourceId = 3, Title = "Title3" });
+            List<Article> list = _dataConstructorService.GetArticles(10).ToList();
+            
             return View(list);
         }
 
-        public IActionResult Article()
+        public IActionResult Article(Guid? id)
         {
-            return View();
+            if (id is null)
+            {
+                return NotFound();
+            }
+
+            return View(_dataConstructorService.GetArticles(10).ToList().Where(a => a.Id == id).FirstOrDefault());
         }
     }
 }
