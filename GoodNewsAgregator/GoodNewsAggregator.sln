@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAgregator", "GoodNewsAgregator\GoodNewsAgregator.csproj", "{1BDB11CD-1FF5-479C-BF2F-9C25E48D21FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator", "GoodNewsAgregator\GoodNewsAggregator.csproj", "{1BDB11CD-1FF5-479C-BF2F-9C25E48D21FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodNewsAgregator.Data", "GoodNewsAgregator.Data\GoodNewsAgregator.Data.csproj", "{2F83C0B0-F05F-4F3D-8A74-BB7B5533085C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.DAL.Core", "GoodNewsAgregator.Data\GoodNewsAggregator.DAL.Core.csproj", "{2F83C0B0-F05F-4F3D-8A74-BB7B5533085C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,4 +1,4 @@
-﻿namespace GoodNewsAgregator.Controllers
+﻿namespace GoodNewsAggregator.Controllers
 {
     public interface IDataConstructor<T>
     {

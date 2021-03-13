@@ -1,4 +1,4 @@
-﻿using GoodNewsAgregator.Models;
+﻿using GoodNewsAggregator.Models;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GoodNewsAgregator.Controllers
+namespace GoodNewsAggregator.Controllers
 {
     public class HomeController : Controller
     {

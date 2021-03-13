@@ -1,6 +1,6 @@
 using System;
 
-namespace GoodNewsAgregator.Models
+namespace GoodNewsAggregator.Models
 {
     public class ErrorViewModel
     {

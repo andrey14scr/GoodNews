@@ -1,5 +1,5 @@
-﻿using GoodNewsAgregator.Data;
-using GoodNewsAgregator.Services;
+﻿using GoodNewsAggregator.DAL.Core;
+using GoodNewsAggregator.Services;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GoodNewsAgregator.Controllers
+namespace GoodNewsAggregator.Controllers
 {
     public class NavigationController : Controller
     {

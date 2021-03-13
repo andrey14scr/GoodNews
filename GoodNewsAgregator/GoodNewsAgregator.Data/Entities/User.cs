@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace GoodNewsAgregator.Data
+namespace GoodNewsAggregator.DAL.Core
 {
     public class User
     {
@@ -10,6 +9,10 @@ namespace GoodNewsAgregator.Data
         public string Login { get; set; }
         public string Password { get; set; }
         public string UserName { get; set; }
+
         public byte RoleId { get; set; }
+        public virtual Role Role { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

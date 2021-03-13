@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GoodNewsAgregator.Data\GoodNewsAgregator.Data.csproj" />
+    <ProjectReference Include="..\GoodNewsAgregator.Data\GoodNewsAggregator.DAL.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
