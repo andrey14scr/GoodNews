@@ -24,11 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GoodNewsAgregator.Data\GoodNewsAggregator.DAL.Core.csproj" />
+    <Folder Include="Images\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Images\" />
+    <ProjectReference Include="..\GoodNewsAggregator.DAL.Core\GoodNewsAggregator.DAL.Core.csproj" />
   </ItemGroup>
 
 </Project>
