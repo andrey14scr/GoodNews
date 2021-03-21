@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GoodNewsAggregator.Core.Services.Interfaces\GoodNewsAggregator.Core.Services.Interfaces.csproj" />
+  </ItemGroup>
+
 </Project>

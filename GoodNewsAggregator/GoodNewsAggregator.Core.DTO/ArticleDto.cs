@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace GoodNewsAggregator.DAL.Core
+namespace GoodNewsAggregator.Core.DTO
 {
-    public class Article : IBaseEntity
+    public class ArticleDto //Data transfer objects
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
@@ -11,9 +12,6 @@ namespace GoodNewsAggregator.DAL.Core
         public DateTime Date { get; set; }
         public float GoodFactor { get; set; }
 
-        public Guid SourceId { get; set; }
-        public virtual Source Source { get; set; }
-
-        public virtual ICollection<Comment> Comments { get; set; }
+        public short SourceId { get; set; }
     }
 }
