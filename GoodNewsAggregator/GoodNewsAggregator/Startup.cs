@@ -1,5 +1,6 @@
 using GoodNewsAggregator.Core.Services.Implementation;
 using GoodNewsAggregator.DAL.Core;
+using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 
 using Microsoft.AspNetCore.Builder;
@@ -30,8 +31,10 @@ namespace GoodNewsAggregator
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            
-            services.AddTransient<IArticleService, ArticleService>();
+
+            services.AddTransient<IRepository<Article>, ArticlesRepository>();
+
+            services.AddScoped<IArticleService, ArticleService>();
 
             services.AddDbContext<GoodNewsAggregatorContext>(opt => 
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
