@@ -1,5 +1,5 @@
 ﻿using GoodNewsAggregator.DAL.Core;
-using GoodNewsAggregator.Services;
+using GoodNewsAggregator.DAL.Repositories.Interfaces;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,18 +12,16 @@ namespace GoodNewsAggregator.Controllers
 {
     public class NavigationController : Controller
     {
-        private IDataConstructorService _dataConstructorService;
+        private IArticleService _articleService;
 
-        public NavigationController(IDataConstructorService dataConstructorService)
+        public NavigationController(IArticleService dataConstructorService)
         {
-            _dataConstructorService = dataConstructorService;
+            _articleService = dataConstructorService;
         }
 
         public IActionResult Main()
-        {
-            List<Article> list = _dataConstructorService.GetArticles(10).ToList();
-            
-            return View(list);
+        {            
+            return View(_articleService.GetRandomArticles(10).ToList());
         }
 
         public IActionResult Article(Guid? id)
@@ -33,7 +31,7 @@ namespace GoodNewsAggregator.Controllers
                 return NotFound();
             }
 
-            return View(_dataConstructorService.GetArticles(10).ToList().Where(a => a.Id == id).FirstOrDefault());
+            return View(_articleService.GetRandomArticles(10).ToList().Where(a => a.Id == id).FirstOrDefault());
         }
     }
 }

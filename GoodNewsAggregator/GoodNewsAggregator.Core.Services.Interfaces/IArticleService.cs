@@ -19,5 +19,7 @@ namespace GoodNewsAggregator.DAL.Repositories.Interfaces
 
         Task<int> EditArticle(ArticleDto news);
         Task<int> Delete(ArticleDto news);
+
+        IEnumerable<ArticleDto> GetRandomArticles(int amount);
     }
 }
