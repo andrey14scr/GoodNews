@@ -23,12 +23,12 @@ namespace GoodNewsAggregator.DAL.Repositories.Interfaces
             Table = Db.Set<T>();
         }
 
-        public Task Add(T news)
+        public Task Add(T obj)
         {
             throw new NotImplementedException();
         }
 
-        public Task AddRange(IEnumerable<T> news)
+        public Task AddRange(IEnumerable<T> objs)
         {
             throw new NotImplementedException();
         }
@@ -53,12 +53,12 @@ namespace GoodNewsAggregator.DAL.Repositories.Interfaces
             throw new NotImplementedException();
         }
 
-        public Task RemoveRange(IEnumerable<T> news)
+        public Task RemoveRange(IEnumerable<T> objs)
         {
             throw new NotImplementedException();
         }
 
-        public Task Update(T news)
+        public Task Update(T obj)
         {
             throw new NotImplementedException();
         }

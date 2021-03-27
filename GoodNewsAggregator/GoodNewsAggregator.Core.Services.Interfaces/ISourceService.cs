@@ -9,13 +9,13 @@ namespace GoodNewsAggregator.DAL.Repositories.Interfaces
 {
     public interface ISourceService
     {
-        Task<IEnumerable<SourseDto>> FindSourse();
-        Task<SourseDto> GetSourseById(Guid id);
+        Task<IEnumerable<SourceDto>> FindSourse();
+        Task<SourceDto> GetSourseById(Guid id);
 
-        Task<int> AddSourse(SourseDto news);
-        Task<IEnumerable<SourseDto>> AddRange(IEnumerable<SourseDto> news);
+        Task<int> AddSourse(SourceDto sourceDto);
+        Task<IEnumerable<SourceDto>> AddRange(IEnumerable<SourceDto> sourceDtos);
 
-        Task<int> EditSourse(SourseDto news);
-        Task<int> Delete(SourseDto news);
+        Task<int> EditSourse(SourceDto article);
+        Task<int> Delete(SourceDto article);
     }
 }

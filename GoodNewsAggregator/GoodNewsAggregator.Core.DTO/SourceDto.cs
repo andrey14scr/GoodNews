@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GoodNewsAggregator.Core.DTO
 {
-    public class SourseDto //Data transfer objects
+    public class SourceDto
     {
         public Guid Id { get; set; }
 

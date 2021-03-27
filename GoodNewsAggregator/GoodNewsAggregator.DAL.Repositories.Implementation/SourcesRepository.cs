@@ -24,7 +24,7 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
             throw new NotImplementedException();
         }
 
-        public Task AddRange(IEnumerable<Source> news)
+        public Task AddRange(IEnumerable<Source> sources)
         {
             throw new NotImplementedException();
         }
@@ -49,7 +49,7 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
             throw new NotImplementedException();
         }
 
-        public Task RemoveRange(IEnumerable<Source> news)
+        public Task RemoveRange(IEnumerable<Source> sources)
         {
             throw new NotImplementedException();
         }

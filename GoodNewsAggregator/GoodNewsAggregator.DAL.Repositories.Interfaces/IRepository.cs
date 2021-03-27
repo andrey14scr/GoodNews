@@ -14,11 +14,11 @@ namespace GoodNewsAggregator.Core.Services.Interfaces
         Task<T> GetById(Guid id);
         IQueryable<T> FindBy(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
 
-        Task Add(T news);
-        Task AddRange(IEnumerable<T> news);
+        Task Add(T article);
+        Task AddRange(IEnumerable<T> articles);
 
-        Task Update(T news);
+        Task Update(T article);
         Task Remove(Guid id);
-        Task RemoveRange(IEnumerable<T> news);
+        Task RemoveRange(IEnumerable<T> articles);
     }
 }

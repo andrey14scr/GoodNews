@@ -1,4 +1,5 @@
 ﻿using GoodNewsAggregator.Core.DTO;
+using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 
 using System;
@@ -10,22 +11,28 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 {
     public class ArticleService : IArticleService
     {
-        public Task AddArticle(ArticleDto news)
+        private readonly IUnitOfWork _unitOfWork;
+        public ArticleService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
+        public Task AddArticle(ArticleDto articleDto)
         {
             throw new NotImplementedException();
         }
 
-        public Task AddRange(IEnumerable<ArticleDto> news)
+        public Task AddRange(IEnumerable<ArticleDto> articleDtos)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> Delete(ArticleDto news)
+        public Task<int> Delete(ArticleDto articleDto)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> EditArticle(ArticleDto news)
+        public Task<int> EditArticle(ArticleDto articelDto)
         {
             throw new NotImplementedException();
         }
