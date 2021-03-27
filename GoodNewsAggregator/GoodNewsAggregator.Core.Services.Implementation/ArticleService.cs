@@ -47,7 +47,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ArticleDto>> GetArticlesBySourseId(Guid? id)
+        public Task<IEnumerable<ArticleDto>> GetArticlesByRssId(Guid? id)
         {
             throw new NotImplementedException();
         }

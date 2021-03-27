@@ -1,5 +1,4 @@
-﻿using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Core;
+﻿using GoodNewsAggregator.DAL.Core;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -34,11 +33,6 @@ namespace GoodNewsAggregator.DAL.Repositories.Interfaces
         }
 
         public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IQueryable<T> FindBy(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
         {
             throw new NotImplementedException();
         }

@@ -9,9 +9,9 @@ using System.Text;
 
 namespace GoodNewsAggregator.DAL.Repositories.Implementation
 {
-    public class ArticlesRepository : Repository<Article>
+    public class RolesRepository : Repository<Role>
     {
-        public ArticlesRepository(GoodNewsAggregatorContext context, DbSet<Article> table) : base(context, table)
+        public RolesRepository(GoodNewsAggregatorContext context, DbSet<Role> table) : base(context, table)
         { }
     }
 }

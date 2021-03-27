@@ -10,8 +10,9 @@ namespace GoodNewsAggregator.DAL.Repositories.Interfaces
     public interface IArticleService
     {
         Task<IEnumerable<ArticleDto>> FindArticles();
-        Task<IEnumerable<ArticleDto>> GetArticlesBySourseId(Guid? id);
+        Task<IEnumerable<ArticleDto>> GetArticlesByRssId(Guid? id);
         Task<ArticleDto> GetArticleById(Guid id);
+        //get article with rss
 
         Task AddArticle(ArticleDto news);
         Task AddRange(IEnumerable<ArticleDto> news);

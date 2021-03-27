@@ -11,8 +11,8 @@ namespace GoodNewsAggregator.DAL.Core
         public DateTime Date { get; set; }
         public float GoodFactor { get; set; }
 
-        public Guid SourceId { get; set; }
-        public virtual Source Source { get; set; }
+        public Guid RssId { get; set; }
+        public virtual Rss Rss { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
     }

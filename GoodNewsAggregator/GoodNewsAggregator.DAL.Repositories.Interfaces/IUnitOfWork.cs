@@ -1,5 +1,4 @@
-﻿using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Core;
+﻿using GoodNewsAggregator.DAL.Core;
 
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace GoodNewsAggregator.DAL.Repositories.Interfaces
     public interface IUnitOfWork
     {
         IRepository<Article> Article { get; }
-        IRepository<Source> Source { get; }
+        IRepository<Rss> Rss { get; }
 
         Task<int> SaveChangesAsync();
     }

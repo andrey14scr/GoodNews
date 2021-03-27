@@ -21,7 +21,7 @@ namespace GoodNewsAggregator.Services
 
                 for (int i = 0; i < amount; i++)
                 {
-                    list.Add(new Article { Content = MiniContent + i, Date = DateTime.Now, GoodFactor = i * 0.12f, Id = Guid.NewGuid(), SourceId = (short)i, Title = $"Title {i}" });
+                    list.Add(new Article { Content = MiniContent + i, Date = DateTime.Now, GoodFactor = i * 0.12f, Id = Guid.NewGuid(), RssId = Guid.NewGuid(), Title = $"Title {i}" });
                 }
 
                 _articles = list;

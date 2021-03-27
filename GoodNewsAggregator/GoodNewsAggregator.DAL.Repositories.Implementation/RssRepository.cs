@@ -5,13 +5,16 @@ using Microsoft.EntityFrameworkCore;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GoodNewsAggregator.DAL.Repositories.Implementation
 {
-    public class ArticlesRepository : Repository<Article>
+    public class RssRepository : Repository<Rss>
     {
-        public ArticlesRepository(GoodNewsAggregatorContext context, DbSet<Article> table) : base(context, table)
+        public RssRepository(GoodNewsAggregatorContext context, DbSet<Rss> table) : base(context, table)
         { }
     }
 }

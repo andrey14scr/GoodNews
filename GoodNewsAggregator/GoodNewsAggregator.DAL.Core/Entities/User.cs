@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GoodNewsAggregator.DAL.Core
 {
-    public class User
+    public class User : IBaseEntity
     {
         public Guid Id { get; set; }
         public string Login { get; set; }
