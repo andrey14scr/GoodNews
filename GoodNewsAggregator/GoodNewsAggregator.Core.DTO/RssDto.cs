@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GoodNewsAggregator.Core.DTO
 {
-    public class SourceDto
+    public class RssDto
     {
         public Guid Id { get; set; }
 

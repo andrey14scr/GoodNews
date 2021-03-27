@@ -1,4 +1,5 @@
 using GoodNewsAggregator.Core.Services.Implementation;
+using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
@@ -32,8 +33,10 @@ namespace GoodNewsAggregator
         {
             services.AddControllersWithViews();
 
-            services.AddTransient<IRepository<Article>, ArticlesRepository>();
+            services.AddTransient<IRepository<Article>, ArticlesRepository>(); // for all repositories
+            services.AddTransient<IRepository<Rss>, RssRepository>(); // for all repositories
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IArticleService, ArticleService>();
 
             services.AddDbContext<GoodNewsAggregatorContext>(opt => 

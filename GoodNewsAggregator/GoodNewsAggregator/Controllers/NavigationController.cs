@@ -1,4 +1,5 @@
-﻿using GoodNewsAggregator.DAL.Core;
+﻿using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,9 @@ namespace GoodNewsAggregator.Controllers
     {
         private IArticleService _articleService;
 
-        public NavigationController(IArticleService dataConstructorService)
+        public NavigationController(IArticleService articleService)
         {
-            _articleService = dataConstructorService;
+            _articleService = articleService;
         }
 
         public IActionResult Main()

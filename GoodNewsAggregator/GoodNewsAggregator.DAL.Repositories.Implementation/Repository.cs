@@ -1,4 +1,5 @@
 ﻿using GoodNewsAggregator.DAL.Core;
+using GoodNewsAggregator.DAL.Repositories.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -9,14 +10,14 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoodNewsAggregator.DAL.Repositories.Interfaces
+namespace GoodNewsAggregator.DAL.Repositories.Implementation
 {
     public class Repository<T> : IRepository<T> where T : class, IBaseEntity
     {
         protected readonly GoodNewsAggregatorContext Db;
         protected readonly DbSet<T> Table;
 
-        protected Repository(GoodNewsAggregatorContext context, DbSet<T> table)
+        protected Repository(GoodNewsAggregatorContext context)
         {
             Db = context;
             Table = Db.Set<T>();
@@ -34,7 +35,7 @@ namespace GoodNewsAggregator.DAL.Repositories.Interfaces
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public Task<T> GetById(Guid id)

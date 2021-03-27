@@ -1,4 +1,5 @@
 ﻿using GoodNewsAggregator.Core.DTO;
+using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 

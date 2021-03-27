@@ -11,7 +11,7 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
 {
     public class UsersRepository : Repository<User>
     {
-        public UsersRepository(GoodNewsAggregatorContext context, DbSet<User> table) : base(context, table)
+        public UsersRepository(GoodNewsAggregatorContext context) : base(context)
         { }
     }
 }

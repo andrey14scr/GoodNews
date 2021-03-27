@@ -11,7 +11,7 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
 {
     public class ArticlesRepository : Repository<Article>
     {
-        public ArticlesRepository(GoodNewsAggregatorContext context, DbSet<Article> table) : base(context, table)
+        public ArticlesRepository(GoodNewsAggregatorContext context) : base(context)
         { }
     }
 }
