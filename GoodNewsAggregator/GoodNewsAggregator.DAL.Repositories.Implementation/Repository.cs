@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace GoodNewsAggregator.DAL.Repositories.Implementation
 {
-    public class Repository<T> : IRepository<T> where T : class, IBaseEntity
+    public abstract class Repository<T> : IRepository<T> where T : class, IBaseEntity
     {
         protected readonly GoodNewsAggregatorContext Db;
         protected readonly DbSet<T> Table;
