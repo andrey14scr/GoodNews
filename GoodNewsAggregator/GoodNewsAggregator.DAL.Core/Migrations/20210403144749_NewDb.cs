@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GoodNewsAggregator.DAL.Core.Migrations
 {
-    public partial class Init : Migration
+    public partial class NewDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,8 +11,8 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    Id = table.Column<byte>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -20,57 +20,58 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Sources",
+                name: "Rss",
                 columns: table => new
                 {
-                    Id = table.Column<short>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Url = table.Column<string>(nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sources", x => x.Id);
+                    table.PrimaryKey("PK_Rss", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Login = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true),
-                    UserName = table.Column<string>(nullable: true),
-                    RoleId = table.Column<byte>(nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Login = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RoleId = table.Column<byte>(type: "tinyint", nullable: false),
+                    RoleId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Roles_RoleId",
-                        column: x => x.RoleId,
+                        name: "FK_Users_Roles_RoleId1",
+                        column: x => x.RoleId1,
                         principalTable: "Roles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Articles",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Title = table.Column<string>(nullable: true),
-                    Content = table.Column<string>(nullable: true),
-                    Date = table.Column<DateTime>(nullable: false),
-                    GoodFactor = table.Column<float>(nullable: false),
-                    SourceId = table.Column<short>(nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    GoodFactor = table.Column<float>(type: "real", nullable: false),
+                    RssId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Articles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Articles_Sources_SourceId",
-                        column: x => x.SourceId,
-                        principalTable: "Sources",
+                        name: "FK_Articles_Rss_RssId",
+                        column: x => x.RssId,
+                        principalTable: "Rss",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -79,11 +80,11 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                 name: "Comments",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Text = table.Column<string>(nullable: true),
-                    Date = table.Column<DateTime>(nullable: false),
-                    ArticleId = table.Column<Guid>(nullable: false),
-                    UserId = table.Column<Guid>(nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ArticleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -103,9 +104,9 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Articles_SourceId",
+                name: "IX_Articles_RssId",
                 table: "Articles",
-                column: "SourceId");
+                column: "RssId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_ArticleId",
@@ -118,9 +119,9 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_RoleId",
+                name: "IX_Users_RoleId1",
                 table: "Users",
-                column: "RoleId");
+                column: "RoleId1");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -135,7 +136,7 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Sources");
+                name: "Rss");
 
             migrationBuilder.DropTable(
                 name: "Roles");

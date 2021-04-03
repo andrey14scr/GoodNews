@@ -6,6 +6,7 @@ namespace GoodNewsAggregator.DAL.Core
     public class Article : IBaseEntity
     {
         public Guid Id { get; set; }
+        public string Source { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
         public DateTime Date { get; set; }
