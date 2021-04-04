@@ -18,7 +18,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             _unitOfWork = unitOfWork;
         }
 
-        public Task AddArticle(ArticleDto articleDto)
+        public Task Add(ArticleDto articleDto)
         {
             throw new NotImplementedException();
         }
@@ -33,22 +33,22 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             throw new NotImplementedException();
         }
 
-        public Task<int> EditArticle(ArticleDto articelDto)
+        public Task<int> Update(ArticleDto articelDto)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ArticleDto>> FindArticles()
+        public Task<IEnumerable<ArticleDto>> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public Task<ArticleDto> GetArticleById(Guid id)
+        public Task<ArticleDto> GetById(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ArticleDto>> GetArticlesByRssId(Guid? id)
+        public Task<IEnumerable<ArticleDto>> GetByRssId(Guid? id)
         {
             throw new NotImplementedException();
         }

@@ -9,13 +9,14 @@ namespace GoodNewsAggregator.Core.Services.Interfaces
 {
     public interface IRssService
     {
-        Task<IEnumerable<RssDto>> FindSourse();
-        Task<RssDto> GetSourseById(Guid id);
+        Task<IEnumerable<RssDto>> GetAll();
+        Task<RssDto> GetById(Guid id);
 
-        Task<int> AddSourse(RssDto sourceDto);
-        Task<IEnumerable<RssDto>> AddRange(IEnumerable<RssDto> sourceDtos);
+        Task<int> Add(RssDto rssDto);
+        Task<IEnumerable<RssDto>> AddRange(IEnumerable<RssDto> rssDtos);
 
-        Task<int> EditSourse(RssDto article);
-        Task<int> Delete(RssDto article);
+        Task<int> Update(RssDto rss);
+
+        Task<int> Delete(RssDto rss);
     }
 }
