@@ -14,11 +14,14 @@ namespace GoodNewsAggregator.DAL.Repositories.Interfaces
         Task<T> GetById(Guid id);
         //IQueryable<T> FindBy(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
 
-        Task Add(T article);
-        Task AddRange(IEnumerable<T> articles);
+        Task Add(T obj);
+        Task AddRange(IEnumerable<T> objs);
 
-        Task Update(T article);
+        Task Update(T obj);
+        Task UpdateRange(IEnumerable<T> objs);
+
         Task Remove(Guid id);
-        Task RemoveRange(IEnumerable<T> articles);
+        Task Remove(T obj);
+        Task RemoveRange(IEnumerable<T> objs);
     }
 }

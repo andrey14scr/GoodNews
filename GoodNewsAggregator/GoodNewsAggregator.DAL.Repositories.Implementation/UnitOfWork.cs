@@ -11,24 +11,33 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
     public class UnitOfWork : IUnitOfWork
     {
         private readonly GoodNewsAggregatorContext _db;
-        private readonly IRepository<Article> _newsRepository;
+        private readonly IRepository<Article> _articlesRepository;
         private readonly IRepository<Rss> _rssRepository;
+        private readonly IRepository<Comment> _commentsRepository;
+        private readonly IRepository<Role> _rolesRepository;
+        private readonly IRepository<User> _usersRepository;
 
 
         public UnitOfWork(GoodNewsAggregatorContext db,
-            IRepository<Article> newsRepository,
-            IRepository<Rss> rssRepository)
+            IRepository<Article> articlesRepository,
+            IRepository<Rss> rssRepository,
+            IRepository<Comment> commentsRepository,
+            IRepository<Role> rolesRepository,
+            IRepository<User> usersRepository)
         {
             _db = db;
-            _newsRepository = newsRepository;
+            _articlesRepository = articlesRepository;
             _rssRepository = rssRepository;
+            _commentsRepository = commentsRepository;
+            _rolesRepository = rolesRepository;
+            _usersRepository = usersRepository;
         }
 
-        public IRepository<Article> News => _newsRepository;
-        public IRepository<Rss> RssSources => _rssRepository;
-
-        public IRepository<Article> Article { get; }
-        public IRepository<Rss> Rss { get; }
+        public IRepository<Article> Articles => _articlesRepository;
+        public IRepository<Rss> Rss => _rssRepository;
+        public IRepository<Comment> Comments => _commentsRepository;
+        public IRepository<Role> Roles => _rolesRepository;
+        public IRepository<User> Users => _usersRepository;
 
         public async Task<int> SaveChangesAsync()
         {
@@ -39,11 +48,6 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
         {
             _db?.Dispose();
             GC.SuppressFinalize(this);
-        }
-
-        Task<int> IUnitOfWork.SaveChangesAsync()
-        {
-            throw new NotImplementedException();
         }
     }
 }

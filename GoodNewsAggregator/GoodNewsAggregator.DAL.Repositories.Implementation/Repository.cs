@@ -23,39 +23,50 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
             Table = Db.Set<T>();
         }
 
-        public Task Add(T obj)
+        public async Task Add(T obj)
         {
-            throw new NotImplementedException();
+            await Table.AddAsync(obj);
         }
 
-        public Task AddRange(IEnumerable<T> objs)
+        public async Task AddRange(IEnumerable<T> objs)
         {
-            throw new NotImplementedException();
+            await Table.AddRangeAsync(objs);
+        }
+
+        public async Task<T> GetById(Guid id)
+        {
+            return await Table.FirstOrDefaultAsync(t => t.Id.Equals(id));
+        }
+
+        public async Task Update(T obj)
+        {
+            Table.Update(obj);
+        }
+
+        public async Task UpdateRange(IEnumerable<T> objs)
+        {
+            Table.UpdateRange(objs);
+        }
+
+        public async Task Remove(Guid id)
+        {
+            Table.Remove(await GetById(id));
+        }
+
+        public async Task Remove(T obj)
+        {
+            Table.Remove(obj);
+        }
+
+        public async Task RemoveRange(IEnumerable<T> objs)
+        {
+            Table.RemoveRange(objs);
         }
 
         public void Dispose()
         {
-            //throw new NotImplementedException();
-        }
-
-        public Task<T> GetById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task Remove(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task RemoveRange(IEnumerable<T> objs)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task Update(T obj)
-        {
-            throw new NotImplementedException();
+            Db?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

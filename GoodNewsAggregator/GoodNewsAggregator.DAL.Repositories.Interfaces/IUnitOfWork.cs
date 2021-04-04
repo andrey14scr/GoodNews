@@ -9,8 +9,11 @@ namespace GoodNewsAggregator.DAL.Repositories.Interfaces
 {
     public interface IUnitOfWork
     {
-        IRepository<Article> Article { get; }
+        IRepository<Article> Articles { get; }
+        IRepository<Comment> Comments { get; }
+        IRepository<Role> Roles { get; }
         IRepository<Rss> Rss { get; }
+        IRepository<User> Users { get; }
 
         Task<int> SaveChangesAsync();
     }
