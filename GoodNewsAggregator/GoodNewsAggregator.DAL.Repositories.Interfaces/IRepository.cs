@@ -12,7 +12,6 @@ namespace GoodNewsAggregator.DAL.Repositories.Interfaces
     public interface IRepository<T> : IDisposable where T : class, IBaseEntity
     {
         Task<T> GetById(Guid id);
-        //IQueryable<T> FindBy(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
 
         Task Add(T obj);
         Task AddRange(IEnumerable<T> objs);

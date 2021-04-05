@@ -20,19 +20,21 @@ namespace GoodNewsAggregator.Controllers
             _articleService = articleService;
         }
 
-        public IActionResult Main()
+        public async Task<IActionResult> MainAsync()
         {            
-            return View(_articleService.GetRandomArticles(10).ToList());
+            return View((await _articleService.GetAll()).ToList());
         }
 
-        public IActionResult Article(Guid? id)
+        public async Task<IActionResult> ArticleAsync(Guid? id)
         {
             if (id is null)
             {
                 return NotFound();
             }
 
-            return View(_articleService.GetRandomArticles(10).ToList().Where(a => a.Id == id).FirstOrDefault());
+            return View((await _articleService.GetAll()).Where(a => a.Id == id).FirstOrDefault());
+
+            //return View(_articleService.GetRandomArticles(10).ToList().Where(a => a.Id == id).FirstOrDefault());
         }
     }
 }
