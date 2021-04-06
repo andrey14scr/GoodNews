@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoodNewsAggregator.DAL.Core.Migrations
 {
     [DbContext(typeof(GoodNewsAggregatorContext))]
-    [Migration("20210403144749_NewDb")]
-    partial class NewDb
+    [Migration("20210405153818_NewDbLaptop")]
+    partial class NewDbLaptop
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,6 +38,9 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
 
                     b.Property<Guid>("RssId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");

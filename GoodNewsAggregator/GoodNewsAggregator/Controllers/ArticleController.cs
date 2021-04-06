@@ -6,16 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GoodNewsAggregator.DAL.Core;
+using GoodNewsAggregator.Models;
+using GoodNewsAggregator.Core.Services.Interfaces;
 
 namespace GoodNewsAggregator.Controllers
 {
     public class ArticleController : Controller
     {
         private readonly GoodNewsAggregatorContext _context;
+        private readonly IRssService _rssService;
 
-        public ArticleController(GoodNewsAggregatorContext context)
+        public ArticleController(GoodNewsAggregatorContext context, IRssService rssService)
         {
             _context = context;
+            _rssService = rssService;
         }
 
         public async Task<IActionResult> Index()
@@ -28,9 +32,19 @@ namespace GoodNewsAggregator.Controllers
             return await FindArticle(id);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> CreateAsync()
         {
-            return View();
+            var a = new Article();
+            var c = await _rssService.GetAll();
+            var b = new SelectList(await _rssService.GetAll(), "Id", "Name");
+
+            var model = new ArticleWithRssModel()
+            {
+                //Article = new Article(),
+                RssList = new SelectList(await _rssService.GetAll(), "Id", "Name")
+            };
+
+            return View(model);
         }
 
         public async Task<IActionResult> Edit(Guid? id)

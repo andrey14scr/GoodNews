@@ -10,15 +10,15 @@ namespace GoodNewsAggregator.Core.Services.Interfaces
     public interface IArticleService
     {
         Task<IEnumerable<ArticleDto>> GetAll();
-        Task<IEnumerable<ArticleDto>> GetByRssId(Guid? id);
+        Task<IEnumerable<ArticleDto>> GetByRssId(Guid id);
         Task<ArticleDto> GetById(Guid id);
 
         Task Add(ArticleDto article);
         Task AddRange(IEnumerable<ArticleDto> articles);
 
-        Task<int> Update(ArticleDto article);
+        Task Update(ArticleDto article);
 
-        Task<int> Delete(ArticleDto article);
+        Task Remove(ArticleDto article);
 
         IEnumerable<ArticleDto> GetRandomArticles(int amount);
     }

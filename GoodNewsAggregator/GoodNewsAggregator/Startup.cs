@@ -33,11 +33,16 @@ namespace GoodNewsAggregator
         {
             services.AddControllersWithViews();
 
-            services.AddTransient<IRepository<Article>, ArticlesRepository>(); // for all repositories
-            services.AddTransient<IRepository<Rss>, RssRepository>(); // for all repositories
+            services.AddTransient<IRepository<Article>, ArticlesRepository>();
+            services.AddTransient<IRepository<Rss>, RssRepository>();
+            services.AddTransient<IRepository<Comment>, CommentsRepository>();
+            services.AddTransient<IRepository<User>, UsersRepository>();
+            services.AddTransient<IRepository<Role>, RolesRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IArticleService, ArticleService>();
+            services.AddScoped<IRssService, RssService>();
+            //services.AddScoped<ICommentService, CommentService>();
 
             services.AddDbContext<GoodNewsAggregatorContext>(opt => 
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));

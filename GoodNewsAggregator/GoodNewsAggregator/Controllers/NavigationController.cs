@@ -33,8 +33,6 @@ namespace GoodNewsAggregator.Controllers
             }
 
             return View((await _articleService.GetAll()).Where(a => a.Id == id).FirstOrDefault());
-
-            //return View(_articleService.GetRandomArticles(10).ToList().Where(a => a.Id == id).FirstOrDefault());
         }
     }
 }

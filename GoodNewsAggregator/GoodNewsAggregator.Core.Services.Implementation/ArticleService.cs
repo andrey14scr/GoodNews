@@ -1,56 +1,74 @@
 ﻿using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace GoodNewsAggregator.Core.Services.Implementation
 {
     public class ArticleService : IArticleService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly Mapper _mapper = new Mapper(new MapperConfiguration(mc => mc.CreateMap<Article, ArticleDto>()));
+        
         public ArticleService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public Task Add(ArticleDto articleDto)
+        public async Task Add(ArticleDto articleDto)
         {
-            throw new NotImplementedException();
+            var article = _mapper.Map<ArticleDto, Article>(articleDto);
+            await _unitOfWork.Articles.Add(article);
         }
 
-        public Task AddRange(IEnumerable<ArticleDto> articleDtos)
+        public async Task AddRange(IEnumerable<ArticleDto> articleDtos)
         {
-            throw new NotImplementedException();
+            var articles = _mapper.Map<List<ArticleDto>, List<Article>>(articleDtos.ToList());
+            await _unitOfWork.Articles.AddRange(articles);
         }
 
-        public Task<int> Delete(ArticleDto articleDto)
+        public async Task Remove(ArticleDto articleDto)
         {
-            throw new NotImplementedException();
+            var article = _mapper.Map<ArticleDto, Article>(articleDto);
+            await _unitOfWork.Articles.Remove(article);
         }
 
-        public Task<int> Update(ArticleDto articelDto)
+        public async Task Update(ArticleDto articleDto)
         {
-            throw new NotImplementedException();
+            var article = _mapper.Map<ArticleDto, Article>(articleDto);
+            await _unitOfWork.Articles.Update(article);
         }
 
-        public Task<IEnumerable<ArticleDto>> GetAll()
+        public async Task<IEnumerable<ArticleDto>> GetAll()
         {
-            throw new NotImplementedException();
+            var articles = await _unitOfWork.Articles.Get().ToListAsync();
+            var articleDtos = _mapper.Map<List<Article>, List<ArticleDto>>(articles);
+            
+            return articleDtos;
         }
 
-        public Task<ArticleDto> GetById(Guid id)
+        public async Task<ArticleDto> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            var article = await _unitOfWork.Articles.GetById(id);
+            var articleDtos = _mapper.Map<Article, ArticleDto>(article);
+            
+            return articleDtos;
         }
 
-        public Task<IEnumerable<ArticleDto>> GetByRssId(Guid? id)
+        public async Task<IEnumerable<ArticleDto>> GetByRssId(Guid id)
         {
-            throw new NotImplementedException();
+            var articleDtos = _mapper.Map<List<Article>, List<ArticleDto>>(await _unitOfWork.Articles.Get().Where(a => a.Rss.Id.Equals(id)).ToListAsync());
+
+            return articleDtos;
         }
 
         public IEnumerable<ArticleDto> GetRandomArticles(int amount)
