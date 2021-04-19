@@ -6,21 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GoodNewsAggregator.DAL.Core;
+using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.Core.DTO;
 
 namespace GoodNewsAggregator.Controllers
 {
     public class RssController : Controller
     {
-        private readonly GoodNewsAggregatorContext _context;
+        //private readonly GoodNewsAggregatorContext _context;
+        private readonly IRssService _rssService;
 
-        public RssController(GoodNewsAggregatorContext context)
+        public RssController(IRssService rssService)
         {
-            _context = context;
+            //_context = context;
+            _rssService = rssService;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Rss.ToListAsync());
+            return View(await _rssService.GetAll());
         }
 
         public IActionResult Create()
@@ -45,14 +49,14 @@ namespace GoodNewsAggregator.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Rss rss)
+        public async Task<IActionResult> Create(RssDto rss)
         {
             if (ModelState.IsValid)
             {
                 rss.Id = Guid.NewGuid();
-                _context.Add(rss);
-                await _context.SaveChangesAsync();
-                
+                await _rssService.Add(rss);
+                //await _context.SaveChangesAsync(); // !
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -61,7 +65,7 @@ namespace GoodNewsAggregator.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, Rss rss)
+        public async Task<IActionResult> Edit(Guid id, RssDto rss)
         {
             if (id != rss.Id)
             {
@@ -72,12 +76,12 @@ namespace GoodNewsAggregator.Controllers
             {
                 try
                 {
-                    _context.Update(rss);
-                    await _context.SaveChangesAsync();
+                    await _rssService.Update(rss);
+                    //await _context.SaveChangesAsync(); // !
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RssExists(rss.Id))
+                    if (!(await RssExistsAsync(rss.Id)))
                     {
                         return NotFound();
                     }
@@ -97,16 +101,16 @@ namespace GoodNewsAggregator.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var rss = await _context.Rss.FindAsync(id);
-            _context.Rss.Remove(rss);
-            await _context.SaveChangesAsync();
+            var rss = await _rssService.GetById(id);
+            await _rssService.Delete(rss);
+            //await _context.SaveChangesAsync(); // !
 
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RssExists(Guid id)
+        private async Task<bool> RssExistsAsync(Guid id) // any !
         {
-            return _context.Rss.Any(e => e.Id == id);
+            return await _rssService.GetById(id) != null;
         }
 
         private async Task<IActionResult> FindRss(Guid? id)
@@ -116,7 +120,7 @@ namespace GoodNewsAggregator.Controllers
                 return NotFound();
             }
 
-            var rss = await _context.Rss.FirstOrDefaultAsync(m => m.Id == id);
+            var rss = await _rssService.GetById(id.Value);
             if (rss == null)
             {
                 return NotFound();
