@@ -8,18 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.Core.DTO;
+using AutoMapper;
 
 namespace GoodNewsAggregator.Controllers
 {
     public class RssController : Controller
     {
-        //private readonly GoodNewsAggregatorContext _context;
         private readonly IRssService _rssService;
+        private readonly IMapper _mapper;
 
-        public RssController(IRssService rssService)
+        public RssController(IRssService rssService, IMapper mapper)
         {
-            //_context = context;
             _rssService = rssService;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
@@ -44,7 +45,10 @@ namespace GoodNewsAggregator.Controllers
 
         public async Task<IActionResult> Delete(Guid? id)
         {
-            return await FindRss(id);
+            var rss = await _rssService.GetById(id.Value);
+            await _rssService.Remove(rss);
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
@@ -55,7 +59,6 @@ namespace GoodNewsAggregator.Controllers
             {
                 rss.Id = Guid.NewGuid();
                 await _rssService.Add(rss);
-                //await _context.SaveChangesAsync(); // !
 
                 return RedirectToAction(nameof(Index));
             }
@@ -77,7 +80,6 @@ namespace GoodNewsAggregator.Controllers
                 try
                 {
                     await _rssService.Update(rss);
-                    //await _context.SaveChangesAsync(); // !
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -97,16 +99,15 @@ namespace GoodNewsAggregator.Controllers
             return View(rss);
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            var rss = await _rssService.GetById(id);
-            await _rssService.Delete(rss);
-            //await _context.SaveChangesAsync(); // !
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(Guid id)
+        //{
+        //    var rss = await _rssService.GetById(id);
+        //    await _rssService.Remove(rss);
 
-            return RedirectToAction(nameof(Index));
-        }
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         private async Task<bool> RssExistsAsync(Guid id) // any !
         {

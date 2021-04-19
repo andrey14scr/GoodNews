@@ -44,6 +44,8 @@ namespace GoodNewsAggregator
             services.AddScoped<IRssService, RssService>();
             //services.AddScoped<ICommentService, CommentService>();
 
+            services.AddAutoMapper(typeof(AutoMap).Assembly);
+
             services.AddDbContext<GoodNewsAggregatorContext>(opt => 
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }

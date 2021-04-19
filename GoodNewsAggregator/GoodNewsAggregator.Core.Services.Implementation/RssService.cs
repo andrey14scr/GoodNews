@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Configuration;
 
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
@@ -18,54 +19,56 @@ namespace GoodNewsAggregator.Core.Services.Implementation
     public class RssService : IRssService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly Mapper _mapper = new Mapper(new MapperConfiguration(mc => mc.CreateMap<Rss, RssDto>()));
+        private readonly IMapper _mapper;
 
-        public RssService(IUnitOfWork unitOfWork)
+        public RssService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public Task<int> Add(RssDto rssDto)
+        public async Task Add(RssDto rssDto)
         {
-            throw new NotImplementedException();
+            await AddRange(new[] { rssDto });
         }
 
-        public Task<IEnumerable<RssDto>> AddRange(IEnumerable<RssDto> rssDtos)
+        public async Task AddRange(IEnumerable<RssDto> rssDtos)
         {
-            throw new NotImplementedException();
+            await _unitOfWork.Rss.AddRange(_mapper.Map<List<Rss>>(rssDtos));
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public Task<int> Delete(RssDto rss)
+        public async Task Remove(RssDto rssDto)
         {
-            throw new NotImplementedException();
+            await RemoveRange(new[] { rssDto });
+        }
+
+        public async Task RemoveRange(IEnumerable<RssDto> rssDtos)
+        {
+            await _unitOfWork.Rss.RemoveRange(_mapper.Map<List<Rss>>(rssDtos));
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<RssDto>> GetAll()
         {
-            var rss = await _unitOfWork.Rss.Get().ToListAsync();
-            var rssDtos = _mapper.Map<List<Rss>, List<RssDto>>(rss);
+            var rss = await _unitOfWork.Rss.GetAll();
+            var rssDtos = _mapper.Map<List<RssDto>>(rss);
 
             return rssDtos;
-
-            /*
-            return await _unitOfWork.RssSources.FindBy(sourse => !string.IsNullOrEmpty(sourse.Name))
-                .Select(sourse => new RssSourseDto()
-                {
-                    Id = sourse.Id,
-                    Name = sourse.Name,
-                    Url = sourse.Url
-                }).ToListAsync();
-            */
         }
 
-        public Task<RssDto> GetById(Guid id)
+        public async Task<RssDto> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            var rss = await _unitOfWork.Rss.GetById(id);
+            var rssDto = _mapper.Map<RssDto>(rss);
+
+            return rssDto;
         }
 
-        public Task<int> Update(RssDto rss)
+        public async Task Update(RssDto rssDto)
         {
-            throw new NotImplementedException();
+            await _unitOfWork.Rss.Update(_mapper.Map<Rss>(rssDto));
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

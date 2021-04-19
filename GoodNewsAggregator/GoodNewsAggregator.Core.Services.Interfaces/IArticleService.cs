@@ -19,7 +19,5 @@ namespace GoodNewsAggregator.Core.Services.Interfaces
         Task Update(ArticleDto article);
 
         Task Remove(ArticleDto article);
-
-        IEnumerable<ArticleDto> GetRandomArticles(int amount);
     }
 }

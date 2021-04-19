@@ -12,11 +12,12 @@ namespace GoodNewsAggregator.Core.Services.Interfaces
         Task<IEnumerable<RssDto>> GetAll();
         Task<RssDto> GetById(Guid id);
 
-        Task<int> Add(RssDto rssDto);
-        Task<IEnumerable<RssDto>> AddRange(IEnumerable<RssDto> rssDtos);
+        Task Add(RssDto rssDto);
+        Task AddRange(IEnumerable<RssDto> rssDtos);
 
-        Task<int> Update(RssDto rss);
+        Task Update(RssDto rssDto);
 
-        Task<int> Delete(RssDto rss);
+        Task Remove(RssDto rssDto);
+        Task RemoveRange(IEnumerable<RssDto> rssDtos);
     }
 }
