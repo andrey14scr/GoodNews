@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using GoodNewsAggregator.Core.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,9 +13,10 @@ namespace GoodNewsAggregator.Controllers
 {
     public class RoleController : Controller
     {
-        private readonly GoodNewsAggregatorContext _context;
+        private readonly IRssService _rssService;
+        private readonly IMapper _mapper;
 
-        public RoleController(GoodNewsAggregatorContext context)
+        public RoleController( context)
         {
             _context = context;
         }

@@ -7,18 +7,8 @@ using System.Threading.Tasks;
 
 namespace GoodNewsAggregator.Core.Services.Interfaces
 {
-    public interface IArticleService
+    public interface IArticleService : IService<ArticleDto>
     {
-        Task<IEnumerable<ArticleDto>> GetAll();
         Task<IEnumerable<ArticleDto>> GetByRssId(Guid id);
-        Task<ArticleDto> GetById(Guid id);
-
-        Task Add(ArticleDto article);
-        Task AddRange(IEnumerable<ArticleDto> articles);
-
-        Task Update(ArticleDto article);
-
-        Task Remove(ArticleDto article);
-        Task RemoveRange(IEnumerable<ArticleDto> articleDtos);
     }
 }

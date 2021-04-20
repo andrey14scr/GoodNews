@@ -1,16 +1,13 @@
-﻿using GoodNewsAggregator.Core.DTO;
-using GoodNewsAggregator.DAL.Core;
-
-using Microsoft.AspNetCore.Mvc.Rendering;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace GoodNewsAggregator.Models
+namespace GoodNewsAggregator.Core.DTO
 {
-    public class ArticleWithRssModel
+    public class ArticleWithRssDto
     {
         public Guid Id { get; set; }
         public string Source { get; set; }

@@ -1,13 +1,13 @@
-﻿using GoodNewsAggregator.Core.DTO;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GoodNewsAggregator.Core.DTO;
 
 namespace GoodNewsAggregator.Core.Services.Interfaces
 {
-    public interface IRssService : IService<RssDto>
+    public interface IRoleService : IService<RoleDto>
     {
 
     }

@@ -6,39 +6,67 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using GoodNewsAggregator.DAL.Core;
+using GoodNewsAggregator.DAL.Repositories.Interfaces;
 
 namespace GoodNewsAggregator.Core.Services.Implementation
 {
     public class CommentService : ICommentService
     {
-        public Task Add(CommentDto comment)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        public CommentService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public Task AddRange(IEnumerable<CommentDto> comments)
+        public async Task<IEnumerable<CommentDto>> GetAll()
         {
-            throw new NotImplementedException();
+            var comments = await _unitOfWork.Comments.GetAll();
+            var commentDtos = _mapper.Map<List<CommentDto>>(comments);
+
+            return commentDtos;
         }
 
-        public Task<int> Delete(CommentDto comment)
+        public async Task<CommentDto> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            var comment = await _unitOfWork.Comments.GetById(id);
+            var commentDto = _mapper.Map<CommentDto>(comment);
+
+            return commentDto;
         }
 
-        public Task<IEnumerable<CommentDto>> GetAll()
+        public async Task Add(CommentDto commentDto)
         {
-            throw new NotImplementedException();
+            await AddRange(new[] { commentDto });
         }
 
-        public Task<CommentDto> GetById(Guid id)
+        public async Task AddRange(IEnumerable<CommentDto> commentDtos)
         {
-            throw new NotImplementedException();
+            var comments = _mapper.Map<List<Comment>>(commentDtos.ToList());
+            await _unitOfWork.Comments.AddRange(comments);
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public Task<int> Update(CommentDto comment)
+        public async Task Update(CommentDto commentDto)
         {
-            throw new NotImplementedException();
+            var comment = _mapper.Map<Comment>(commentDto);
+            await _unitOfWork.Comments.Update(comment);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task Remove(CommentDto commentDto)
+        {
+            await RemoveRange(new[] { commentDto });
+        }
+
+        public async Task RemoveRange(IEnumerable<CommentDto> commentDtos)
+        {
+            var comments = _mapper.Map<List<Comment>>(commentDtos.ToList());
+            await _unitOfWork.Comments.RemoveRange(comments);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }
