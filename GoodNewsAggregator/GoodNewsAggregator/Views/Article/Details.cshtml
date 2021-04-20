@@ -1,4 +1,4 @@
-﻿@model GoodNewsAggregator.DAL.Core.Article
+﻿@model GoodNewsAggregator.Core.DTO.ArticleDto
 
 @{
     ViewData["Title"] = "Details";
@@ -39,12 +39,6 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.GoodFactor)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Rss)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Rss.Id)
         </dd>
     </dl>
 </div>

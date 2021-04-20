@@ -19,5 +19,6 @@ namespace GoodNewsAggregator.Core.Services.Interfaces
         Task Update(ArticleDto article);
 
         Task Remove(ArticleDto article);
+        Task RemoveRange(IEnumerable<ArticleDto> articleDtos);
     }
 }

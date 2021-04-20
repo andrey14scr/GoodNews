@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GoodNewsAggregator.DAL.Core.Article>
+﻿@model IEnumerable<GoodNewsAggregator.Core.DTO.ArticleDto>
 
 @{
     ViewData["Title"] = "Index";
@@ -27,9 +27,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.GoodFactor)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rss)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -50,9 +47,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.GoodFactor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rss.Id)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

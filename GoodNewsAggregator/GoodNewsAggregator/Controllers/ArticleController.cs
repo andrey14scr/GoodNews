@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using GoodNewsAggregator.Core.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,18 +15,20 @@ namespace GoodNewsAggregator.Controllers
 {
     public class ArticleController : Controller
     {
-        private readonly GoodNewsAggregatorContext _context;
         private readonly IRssService _rssService;
+        private readonly IArticleService _articleService;
+        private readonly IMapper _mapper;
 
-        public ArticleController(GoodNewsAggregatorContext context, IRssService rssService)
+        public ArticleController(IArticleService articleService, IRssService rssService, IMapper mapper)
         {
-            _context = context;
+            _articleService = articleService;
             _rssService = rssService;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Articles.ToListAsync());
+            return View(await _articleService.GetAll());
         }
 
         public async Task<IActionResult> Details(Guid? id)
@@ -32,15 +36,10 @@ namespace GoodNewsAggregator.Controllers
             return await FindArticle(id);
         }
 
-        public async Task<IActionResult> CreateAsync()
+        public async Task<IActionResult> Create()
         {
-            var a = new Article();
-            var c = await _rssService.GetAll();
-            var b = new SelectList(await _rssService.GetAll(), "Id", "Name");
-
             var model = new ArticleWithRssModel()
             {
-                //Article = new Article(),
                 RssList = new SelectList(await _rssService.GetAll(), "Id", "Name")
             };
 
@@ -49,7 +48,20 @@ namespace GoodNewsAggregator.Controllers
 
         public async Task<IActionResult> Edit(Guid? id)
         {
-            return await FindArticle(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var articleDto = await _articleService.GetById(id.Value);
+            if (articleDto == null)
+            {
+                return NotFound();
+            }
+
+            var model = await GetArticleWithRssModel(articleDto);
+
+            return View(model);
         }
 
         public async Task<IActionResult> Delete(Guid? id)
@@ -59,25 +71,22 @@ namespace GoodNewsAggregator.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Article article)
+        public async Task<IActionResult> Create(ArticleDto article)
         {
             if (ModelState.IsValid)
             {
                 article.Id = Guid.NewGuid();
-                _context.Add(article);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
+                await _articleService.Add(article);
             }
 
-            return View(article);
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, Article article)
+        public async Task<IActionResult> Edit(Guid id, ArticleWithRssModel articleWithRssModel)
         {
-            if (id != article.Id)
+            if (id != articleWithRssModel.Id)
             {
                 return NotFound();
             }
@@ -86,12 +95,11 @@ namespace GoodNewsAggregator.Controllers
             {
                 try
                 {
-                    _context.Update(article);
-                    await _context.SaveChangesAsync();
+                    await _articleService.Update(GetArticleFromModel(articleWithRssModel));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ArticleExists(article.Id))
+                    if (!ArticleExists(articleWithRssModel.Id))
                     {
                         return NotFound();
                     }
@@ -104,23 +112,21 @@ namespace GoodNewsAggregator.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(article);
+            return View(articleWithRssModel);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var article = await _context.Articles.FindAsync(id);
-            _context.Articles.Remove(article);
-            await _context.SaveChangesAsync();
+            await _articleService.Remove(await _articleService.GetById(id));
 
             return RedirectToAction(nameof(Index));
         }
 
         private bool ArticleExists(Guid id)
         {
-            return _context.Articles.Any(e => e.Id == id);
+            return _articleService.GetById(id) == null;
         }
 
         private async Task<IActionResult> FindArticle(Guid? id)
@@ -130,13 +136,46 @@ namespace GoodNewsAggregator.Controllers
                 return NotFound();
             }
 
-            var article = await _context.Articles.FirstOrDefaultAsync(m => m.Id == id);
+            var article = await _articleService.GetById(id.Value);
             if (article == null)
             {
                 return NotFound();
             }
 
             return View(article);
+        }
+
+        private async Task<ArticleWithRssModel> GetArticleWithRssModel(ArticleDto article)
+        {
+            var model = new ArticleWithRssModel()
+            {
+                Id = article.Id,
+                Source = article.Source,
+                Title = article.Title,
+                Content = article.Content,
+                Date = article.Date,
+                GoodFactor = article.GoodFactor,
+                RssId = article.RssId,
+                RssList = new SelectList(await _rssService.GetAll(), "Id", "Name")
+            };
+
+            return model;
+        }
+
+        private ArticleDto GetArticleFromModel(ArticleWithRssModel articleWithRssModel)
+        {
+            var article = new ArticleDto()
+            {
+                Id = articleWithRssModel.Id,
+                Source = articleWithRssModel.Source,
+                Title = articleWithRssModel.Title,
+                Content = articleWithRssModel.Content,
+                Date = articleWithRssModel.Date,
+                GoodFactor = articleWithRssModel.GoodFactor,
+                RssId = articleWithRssModel.RssId,
+            };
+
+            return article;
         }
     }
 }

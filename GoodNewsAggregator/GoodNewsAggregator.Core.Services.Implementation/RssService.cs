@@ -34,7 +34,8 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         public async Task AddRange(IEnumerable<RssDto> rssDtos)
         {
-            await _unitOfWork.Rss.AddRange(_mapper.Map<List<Rss>>(rssDtos));
+            var rss = _mapper.Map<List<Rss>>(rssDtos);
+            await _unitOfWork.Rss.AddRange(rss);
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -67,7 +68,8 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         public async Task Update(RssDto rssDto)
         {
-            await _unitOfWork.Rss.Update(_mapper.Map<Rss>(rssDto));
+            var rss = _mapper.Map<Rss>(rssDto);
+            await _unitOfWork.Rss.Update(rss);
             await _unitOfWork.SaveChangesAsync();
         }
     }

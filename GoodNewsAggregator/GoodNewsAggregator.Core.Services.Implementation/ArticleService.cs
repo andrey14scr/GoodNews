@@ -17,7 +17,6 @@ namespace GoodNewsAggregator.Core.Services.Implementation
     public class ArticleService : IArticleService
     {
         private readonly IUnitOfWork _unitOfWork;
-        //private readonly Mapper _mapper = new Mapper(new MapperConfiguration(mc => mc.CreateMap<Article, ArticleDto>().ReverseMap()));
         private readonly IMapper _mapper;
         public ArticleService(IUnitOfWork unitOfWork, IMapper mapper)
         {
@@ -27,31 +26,38 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         public async Task Add(ArticleDto articleDto)
         {
-            var article = _mapper.Map<Article>(articleDto);
-            await _unitOfWork.Articles.Add(article);
+            await AddRange(new[] { articleDto });
         }
 
         public async Task AddRange(IEnumerable<ArticleDto> articleDtos)
         {
             var articles = _mapper.Map<List<Article>>(articleDtos.ToList());
             await _unitOfWork.Articles.AddRange(articles);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task Remove(ArticleDto articleDto)
         {
-            var article = _mapper.Map<Article>(articleDto);
-            await _unitOfWork.Articles.Remove(article);
+            await RemoveRange(new[] { articleDto });
+        }
+
+        public async Task RemoveRange(IEnumerable<ArticleDto> articleDtos)
+        {
+            var articles = _mapper.Map<List<Article>>(articleDtos.ToList());
+            await _unitOfWork.Articles.RemoveRange(articles);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task Update(ArticleDto articleDto)
         {
             var article = _mapper.Map<Article>(articleDto);
             await _unitOfWork.Articles.Update(article);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<ArticleDto>> GetAll()
         {
-            var articles = await _unitOfWork.Articles.Get().ToListAsync();
+            var articles = await _unitOfWork.Articles.GetAll();
             var articleDtos = _mapper.Map<List<ArticleDto>>(articles);
             
             return articleDtos;
@@ -60,14 +66,15 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         public async Task<ArticleDto> GetById(Guid id)
         {
             var article = await _unitOfWork.Articles.GetById(id);
-            var articleDtos = _mapper.Map<ArticleDto>(article);
+            var articleDto = _mapper.Map<ArticleDto>(article);
             
-            return articleDtos;
+            return articleDto;
         }
 
         public async Task<IEnumerable<ArticleDto>> GetByRssId(Guid id)
         {
-            var articleDtos = _mapper.Map<List<ArticleDto>>(await _unitOfWork.Articles.Get().Where(a => a.Rss.Id.Equals(id)).ToListAsync());
+            var articles = await _unitOfWork.Articles.Get().Where(a => a.Rss.Id.Equals(id)).ToListAsync();
+            var articleDtos = _mapper.Map<List<ArticleDto>>(articles);
 
             return articleDtos;
         }
