@@ -83,7 +83,7 @@ namespace GoodNewsAggregator.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!(await RssExistsAsync(rss.Id)))
+                    if (!(await RssExists(rss.Id)))
                     {
                         return NotFound();
                     }
@@ -109,7 +109,7 @@ namespace GoodNewsAggregator.Controllers
         //    return RedirectToAction(nameof(Index));
         //}
 
-        private async Task<bool> RssExistsAsync(Guid id) // any !
+        private async Task<bool> RssExists(Guid id)
         {
             return await _rssService.GetById(id) != null;
         }

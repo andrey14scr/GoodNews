@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,17 +14,18 @@ namespace GoodNewsAggregator.Controllers
 {
     public class RoleController : Controller
     {
-        private readonly IRssService _rssService;
+        private readonly IRoleService _roleService;
         private readonly IMapper _mapper;
 
-        public RoleController( context)
+        public RoleController(IRoleService roleService, IMapper mapper)
         {
-            _context = context;
+            _roleService = roleService;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Roles.ToListAsync());
+            return View(await _roleService.GetAll());
         }
 
         public async Task<IActionResult> Details(Guid? id)
@@ -48,25 +50,24 @@ namespace GoodNewsAggregator.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Role role)
+        public async Task<IActionResult> Create(RoleDto roleDto)
         {
             if (ModelState.IsValid)
             {
-                role.Id = Guid.NewGuid();
-                _context.Add(role);
-                await _context.SaveChangesAsync();
+                roleDto.Id = Guid.NewGuid();
+                await _roleService.Add(roleDto);
 
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(role);
+            return View(roleDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, Role role)
+        public async Task<IActionResult> Edit(Guid id, RoleDto roleDto)
         {
-            if (id != role.Id)
+            if (id != roleDto.Id)
             {
                 return NotFound();
             }
@@ -75,12 +76,11 @@ namespace GoodNewsAggregator.Controllers
             {
                 try
                 {
-                    _context.Update(role);
-                    await _context.SaveChangesAsync();
+                    await _roleService.Update(roleDto);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RoleExists(role.Id))
+                    if (!RoleExists(roleDto.Id))
                     {
                         return NotFound();
                     }
@@ -92,23 +92,22 @@ namespace GoodNewsAggregator.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            return View(role);
+            return View(roleDto);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var role = await _context.Roles.FindAsync(id);
-            _context.Roles.Remove(role);
-            await _context.SaveChangesAsync();
+            var roleDto = await _roleService.GetById(id);
+            _roleService.Remove(roleDto);
 
             return RedirectToAction(nameof(Index));
         }
 
         private bool RoleExists(Guid id)
         {
-            return _context.Roles.Any(e => e.Id == id);
+            return _roleService.GetById(id) != null;
         }
 
         private async Task<IActionResult> FindRole(Guid? id)
@@ -118,7 +117,7 @@ namespace GoodNewsAggregator.Controllers
                 return NotFound();
             }
 
-            var role = await _context.Roles.FirstOrDefaultAsync(m => m.Id == id);
+            var role = await _roleService.GetById(id.Value);
             if (role == null)
             {
                 return NotFound();
