@@ -69,6 +69,7 @@ namespace GoodNewsAggregator
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

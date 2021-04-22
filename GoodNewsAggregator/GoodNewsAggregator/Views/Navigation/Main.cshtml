@@ -6,15 +6,15 @@
 
 <div class="text-center">
     <h1 class="display-4">This is main page</h1>
-
+    <a asp-action="Aggregate">Собрать</a>
     <div class="row">
         @foreach (var article in Model)
         {
             <div class="border col-sm-12 col-md-6 col-lg-4">
-               <h1>@article.Title</h1>
-               <h4>Дата: @article.Date</h4>
-               <h4>Хорошесть: @(article.GoodFactor * 100)%</h4>
-               <a asp-action="Article" asp-route-id="@article.Id">Читать -></a>
+                <h1>@article.Title</h1>
+                <h4>Дата: @article.Date</h4>
+                <h4>Хорошесть: @(article.GoodFactor * 100)%</h4>
+                <a asp-action="Article" asp-route-id="@article.Id">Читать -></a>
             </div>
         }
     </div>
