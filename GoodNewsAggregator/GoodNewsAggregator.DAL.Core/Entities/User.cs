@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
-namespace GoodNewsAggregator.DAL.Core
+namespace GoodNewsAggregator.DAL.Core.Entities
 {
-    public class User : IBaseEntity
+    public class User : IdentityUser<Guid>
     {
-        public Guid Id { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public string UserName { get; set; }
-
-        public byte RoleId { get; set; }
-        public virtual Role Role { get; set; }
-
         public virtual ICollection<Comment> Comments { get; set; }
     }
 }

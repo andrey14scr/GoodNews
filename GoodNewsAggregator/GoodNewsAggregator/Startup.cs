@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GoodNewsAggregator.DAL.Core.Entities;
 
 namespace GoodNewsAggregator
 {
@@ -36,13 +37,13 @@ namespace GoodNewsAggregator
             services.AddTransient<IRepository<Article>, ArticlesRepository>();
             services.AddTransient<IRepository<Rss>, RssRepository>();
             services.AddTransient<IRepository<Comment>, CommentsRepository>();
-            services.AddTransient<IRepository<User>, UsersRepository>();
-            services.AddTransient<IRepository<Role>, RolesRepository>();
+            //services.AddTransient<IRepository<User>, UsersRepository>();
+            //services.AddTransient<IRepository<Role>, RolesRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IRssService, RssService>();
-            services.AddScoped<IRoleService, RoleService>();
+            //services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ICommentService, CommentService>();
 
             services.AddAutoMapper(typeof(AutoMap).Assembly);

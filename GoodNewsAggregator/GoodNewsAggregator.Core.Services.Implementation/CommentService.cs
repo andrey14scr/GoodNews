@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.DAL.Core;
+using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 
 namespace GoodNewsAggregator.Core.Services.Implementation

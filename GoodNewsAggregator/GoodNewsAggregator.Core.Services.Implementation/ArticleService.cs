@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using GoodNewsAggregator.DAL.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GoodNewsAggregator.Core.Services.Implementation

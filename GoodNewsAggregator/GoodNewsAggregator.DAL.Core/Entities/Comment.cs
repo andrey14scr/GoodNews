@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GoodNewsAggregator.DAL.Core
+namespace GoodNewsAggregator.DAL.Core.Entities
 {
     public class Comment : IBaseEntity
     {

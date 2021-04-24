@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GoodNewsAggregator.DAL.Core
+namespace GoodNewsAggregator.DAL.Core.Entities
 {
     public class Article : IBaseEntity
     {
