@@ -14,6 +14,7 @@ namespace GoodNewsAggregator.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<User> _userManager;
+        //private readonly RoleManager<User> _roleManager;
 
         public AccountController(ILogger<HomeController> logger, UserManager<User> userManager)
         {
@@ -21,7 +22,12 @@ namespace GoodNewsAggregator.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        public IActionResult Register()
         {
             return View();
         }
