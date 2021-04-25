@@ -14,12 +14,14 @@ namespace GoodNewsAggregator.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<User> _userManager;
-        //private readonly RoleManager<User> _roleManager;
+        private readonly RoleManager<Role> _roleManager;
 
-        public AccountController(ILogger<HomeController> logger, UserManager<User> userManager)
+        public AccountController(ILogger<HomeController> logger, 
+            UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             _logger = logger;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public IActionResult Login()
