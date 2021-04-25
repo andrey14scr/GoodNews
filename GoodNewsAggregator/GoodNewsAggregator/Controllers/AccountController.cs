@@ -9,6 +9,7 @@ using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.Models;
+using GoodNewsAggregator.Views.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -16,9 +17,6 @@ namespace GoodNewsAggregator.Controllers
 {
     public class AccountController : Controller
     {
-        private const string ADMIN = "Admin";
-        private const string USER = "User";
-
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
@@ -84,9 +82,9 @@ namespace GoodNewsAggregator.Controllers
                 {
                     await _signInManager.SignInAsync(user, false);
                     if(_userManager.Users.Count() == 1)
-                        await _userManager.AddToRoleAsync(user, ADMIN);
+                        await _userManager.AddToRoleAsync(user, RoleNames.ADMIN);
                     else
-                        await _userManager.AddToRoleAsync(user, USER);
+                        await _userManager.AddToRoleAsync(user, RoleNames.USER);
                     return RedirectToAction(nameof(MyAccount));
                 }
 

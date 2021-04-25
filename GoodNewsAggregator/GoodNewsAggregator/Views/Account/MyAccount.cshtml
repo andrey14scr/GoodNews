@@ -1,4 +1,5 @@
-﻿@model AccountModel
+﻿@using GoodNewsAggregator.Views.Constants
+@model AccountModel
 
 @{
     ViewData["Title"] = "Details";
@@ -17,6 +18,11 @@
     <label asp-for="UserName">Имя пользователя</label><br />
     <input asp-for="UserName" readonly="readonly" /><br />
     <br />
+    @if (User.Identity.IsAuthenticated && User.IsInRole(RoleNames.ADMIN))
+    {
+        <button type="button" onclick="location.href = '@Url.Action("Index","Administration")'">Перейти к администрированию</button><br /><br />
+    }
+
     <form method="post" asp-controller="Account" asp-action="LogOut">
         <input class="btn btn-primary mb-2" type="submit" value="Выход" />
     </form>
