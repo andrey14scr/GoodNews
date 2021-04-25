@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GoodNewsAggregator.Controllers
 {
@@ -21,7 +22,7 @@ namespace GoodNewsAggregator.Controllers
         }
 
         public async Task<IActionResult> Main()
-        {            
+        {
             return View((await _articleService.GetAll()).ToList());
         }
 
