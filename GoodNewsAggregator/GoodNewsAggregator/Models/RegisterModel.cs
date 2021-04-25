@@ -8,16 +8,20 @@ namespace GoodNewsAggregator.Models
 {
     public class RegisterModel
     {
-        [Required(ErrorMessage = "Please fill email field")]
+        [Required(ErrorMessage = "Это поле должно быть заполнено")]
         [DataType(DataType.EmailAddress)]
+        [EmailAddress(ErrorMessage = "Введите email адрес")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Please fill password field")]
+        [Required(ErrorMessage = "Это поле должно быть заполнено")]
+        public string UserName { get; set; }
+
+        [Required(ErrorMessage = "Это поле должно быть заполнено")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Password is incorrect")]
+        [Compare("Password", ErrorMessage = "Неправильный пароль")]
         public string PasswordConfirmation { get; set; }
     }
 }

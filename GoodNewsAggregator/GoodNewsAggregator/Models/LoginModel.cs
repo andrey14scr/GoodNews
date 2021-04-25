@@ -8,12 +8,13 @@ namespace GoodNewsAggregator.Models
 {
     public class LoginModel
     {
-        [Required(ErrorMessage = "Please fill email field")]
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        [Required(ErrorMessage = "Это поле должно быть заполнено")]
+        public string Username { get; set; }
 
-        [Required(ErrorMessage = "Please fill password field")]
+        [Required(ErrorMessage = "Это поле должно быть заполнено")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        public string ReturnUrl { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             CreateMap<Article, ArticleWithRssDto>().ReverseMap();
             CreateMap<ArticleDto, ArticleWithRssDto>().ReverseMap();
             CreateMap<Comment, CommentDto>().ReverseMap();
-            CreateMap<Role, RoleDto>().ReverseMap();
+            //CreateMap<Role, RoleDto>().ReverseMap();
             CreateMap<Rss, RssDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
         }

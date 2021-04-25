@@ -1,1 +1,20 @@
-﻿
+﻿@model AccountModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Личный аккаунт</h1>
+<hr />
+
+<div>
+    <label asp-for="Email">Эл. почта</label> <br />
+    <input asp-for="Email" readonly="readonly" /><br />
+    <br />
+    <label asp-for="UserName">Имя пользователя</label><br />
+    <input asp-for="UserName" readonly="readonly" /><br />
+    <br />
+    <form method="post" asp-controller="Account" asp-action="LogOut">
+        <input class="btn btn-primary mb-2" type="submit" value="Выход" />
+    </form>
+</div>

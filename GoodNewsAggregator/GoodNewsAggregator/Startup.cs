@@ -42,6 +42,7 @@ namespace GoodNewsAggregator
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IRssService, RssService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddAutoMapper(typeof(AutoMap).Assembly);
 
