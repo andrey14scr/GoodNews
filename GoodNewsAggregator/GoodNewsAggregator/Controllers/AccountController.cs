@@ -16,6 +16,9 @@ namespace GoodNewsAggregator.Controllers
 {
     public class AccountController : Controller
     {
+        private const string ADMIN = "Admin";
+        private const string USER = "User";
+
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
@@ -54,7 +57,12 @@ namespace GoodNewsAggregator.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
-            return View(new AccountModel{UserName = user.UserName, Email = user.Email});
+            return View(new AccountModel
+            {
+                UserName = user.UserName, 
+                Email = user.Email,
+                RoleName = (await _userManager.GetRolesAsync(user)).Aggregate((a, b) => a + ", " + b)
+            });
         }
 
         [HttpPost]
@@ -75,6 +83,10 @@ namespace GoodNewsAggregator.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, false);
+                    if(_userManager.Users.Count() == 1)
+                        await _userManager.AddToRoleAsync(user, ADMIN);
+                    else
+                        await _userManager.AddToRoleAsync(user, USER);
                     return RedirectToAction(nameof(MyAccount));
                 }
 
