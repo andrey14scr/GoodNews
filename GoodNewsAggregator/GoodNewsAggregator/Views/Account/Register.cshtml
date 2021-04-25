@@ -4,32 +4,32 @@
     <h1>Регистрация аккаунта</h1>
 
     <form asp-action="Register" asp-controller="Account" asp-antiforgery="true" method="post">
-        <div class="validation" asp-validation-summary="ModelOnly"></div>
+        <div class="validation text-danger" asp-validation-summary="ModelOnly"></div>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label align-self-center" asp-for="Email">Эл. почта</label>
             <div class="col-sm-10 align-self-center">
-                <span asp-validation-for="Email"></span>
+                <span class="text-danger" asp-validation-for="Email"></span>
                 <input class="form-control" placeholder="Эл. почта" type="text" asp-for="Email">
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label align-self-center" asp-for="UserName">Имя пользователя</label>
             <div class="col-sm-10 align-self-center">
-                <span asp-validation-for="UserName"></span>
+                <span class="text-danger" asp-validation-for="UserName"></span>
                 <input class="form-control" placeholder="Имя пользователя" type="text" asp-for="UserName">
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label align-self-center" asp-for="Password">Пароль</label>
             <div class="col-sm-10 align-self-center">
-                <span asp-validation-for="Password"></span>
+                <span class="text-danger" asp-validation-for="Password"></span>
                 <input class="form-control" placeholder="пароль" type="password" asp-for="Password">
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label align-self-center" asp-for="PasswordConfirmation">Подтверждение пароля</label>
             <div class="col-sm-10 align-self-center">
-                <span asp-validation-for="PasswordConfirmation"></span>
+                <span class="text-danger" asp-validation-for="PasswordConfirmation"></span>
                 <input class="form-control " placeholder="пароль" type="password" asp-for="PasswordConfirmation">
             </div>
         </div>

@@ -99,7 +99,7 @@ namespace GoodNewsAggregator.Controllers
             return View(rss);
         }
 
-        //[HttpPost, ActionName("Delete")]
+        //[HttpPost, ActionName("DeleteRole")]
         //[ValidateAntiForgeryToken]
         //public async Task<IActionResult> DeleteConfirmed(Guid id)
         //{
