@@ -27,7 +27,17 @@ namespace GoodNewsAggregator.Controllers
             return View();
         }
 
+        public IActionResult LogOut()
+        {
+            return RedirectToAction(nameof(Login));
+        }
+
         public IActionResult Register()
+        {
+            return View();
+        }
+
+        public IActionResult MyAccount()
         {
             return View();
         }

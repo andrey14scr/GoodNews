@@ -37,19 +37,18 @@ namespace GoodNewsAggregator
             services.AddTransient<IRepository<Article>, ArticlesRepository>();
             services.AddTransient<IRepository<Rss>, RssRepository>();
             services.AddTransient<IRepository<Comment>, CommentsRepository>();
-            //services.AddTransient<IRepository<User>, UsersRepository>();
-            //services.AddTransient<IRepository<Role>, RolesRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IRssService, RssService>();
-            //services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ICommentService, CommentService>();
 
             services.AddAutoMapper(typeof(AutoMap).Assembly);
 
             services.AddDbContext<GoodNewsAggregatorContext>(opt => 
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<User, Role>().AddEntityFrameworkStores<GoodNewsAggregatorContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
