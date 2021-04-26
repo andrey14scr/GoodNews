@@ -9,9 +9,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using AutoMapper;
 using GoodNewsAggregator.DAL.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Terradue.ServiceModel.Syndication;
 
 namespace GoodNewsAggregator.Core.Services.Implementation
 {
@@ -83,6 +85,37 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         public async Task<IEnumerable<ArticleDto>> GetArticleInfoFromRss(RssDto rss)
         {
             var articleDtos = new List<ArticleDto>();
+
+            using (var reader = XmlReader.Create(rss.Url))
+            {
+                var feed = SyndicationFeed.Load(reader);
+                reader.Close();
+                if (feed.Items.Any())
+                {
+                    var currentArticleUrls = await _unitOfWork.Articles
+                        .Get()
+                        .Select(a => a.Source)
+                        .ToListAsync();
+
+                    Parallel.ForEach(feed.Items, syndicationItem =>
+                    {
+                        if (!currentArticleUrls.Any(url => url.Equals(syndicationItem.Id)))
+                        {
+                            var newsDto = new ArticleDto()
+                            {
+                                Id = Guid.NewGuid(),
+                                RssId = rss.Id,
+                                Source = syndicationItem.Links[0].Uri.ToString(), //no
+                                Title = syndicationItem.Title.Text,
+                                Date = syndicationItem.PublishDate.DateTime
+                            };
+
+                            articleDtos.Add(newsDto);
+                        }
+                    });
+                }
+
+            }
 
             return articleDtos;
         }

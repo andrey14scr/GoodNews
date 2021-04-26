@@ -21,7 +21,12 @@ namespace GoodNewsAggregator
             Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
             .Enrich.FromLogContext()
-            .WriteTo.Console(LogEventLevel.Information)
+            .WriteTo.Logger(lc => 
+                lc.Filter.ByIncludingOnly(evt => evt.Level == LogEventLevel.Information)
+                    .WriteTo.File(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\LogsInfo\\log.log"))
+            .WriteTo.Logger(lc =>
+                lc.Filter.ByIncludingOnly(evt => evt.Level == LogEventLevel.Information)
+                    .WriteTo.File(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\LogsDebug\\log.log"))
             .WriteTo.File(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\Logs\\log.log", LogEventLevel.Warning)
             .CreateLogger();
 

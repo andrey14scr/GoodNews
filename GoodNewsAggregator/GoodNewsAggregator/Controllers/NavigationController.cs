@@ -19,13 +19,15 @@ namespace GoodNewsAggregator.Controllers
     [Authorize]
     public class NavigationController : Controller
     {
-        private IArticleService _articleService;
+        private readonly IArticleService _articleService;
         private readonly IRssService _rssService;
+        private readonly IWebPageParser _parser;
 
-        public NavigationController(IArticleService articleService, IRssService rssService)
+        public NavigationController(IArticleService articleService, IRssService rssService, IWebPageParser parser)
         {
             _articleService = articleService;
             _rssService = rssService;
+            _parser = parser;
         }
 
         public async Task<IActionResult> Main()
@@ -61,24 +63,41 @@ namespace GoodNewsAggregator.Controllers
             List<ArticleDto> articleDtosList = new List<ArticleDto>();
             foreach (var rss in rssSourses)
             {
-                articleDtosList = (List<ArticleDto>) await _articleService.GetArticleInfoFromRss(rss);
-
-                if (rss.Id.Equals(new Guid("4B92ABBF-CAB0-493B-8320-857BD2901735")))
+                try
                 {
-                    foreach (var articleDto in articleDtosList)
+                    articleDtosList = (List<ArticleDto>) await _articleService.GetArticleInfoFromRss(rss);
+                }
+                catch (Exception ex)
+                {
+                    articleDtosList.Clear();
+                    Log.Error($"Error while rss parsing. \n{ex.Message}");
+                }
+
+                if (true) //(rss.Id.Equals(new Guid("4B92ABBF-CAB0-493B-8320-857BD2901735")))
+                {
+                    string body;
+                    Parallel.ForEach(articleDtosList, articleDto =>
                     {
-                        //var body = await _onlinerParser.Parse(articleDto.Source);
-                        //articleDto.Content = body;
-                    }
+                        try
+                        {
+                            body = _parser.Parse(articleDto.Source);
+                            articleDto.Content = body;
+                        }
+                        catch (Exception ex)
+                        {
+                            articleDto.Content = "";
+                            Log.Error($"Error while content page parsing. \n{ex.Message}");
+                        }
+                    });
                 }
 
                 news.AddRange(articleDtosList);
             }
 
-            await _articleService.AddRange(news);
-
             stopwatch.Stop();
-            Log.Information($"Aggregation was executed in {stopwatch.ElapsedMilliseconds}");
+            Log.Information($"Aggregation was executed in {stopwatch.ElapsedMilliseconds}ms and added {news.Count} articles.");
+
+            await _articleService.AddRange(news);
 
             return RedirectToAction(nameof (Main));
         }

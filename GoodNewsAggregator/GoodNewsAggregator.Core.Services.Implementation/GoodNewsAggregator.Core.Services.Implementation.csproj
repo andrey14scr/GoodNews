@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.33" />
+    <PackageReference Include="Terradue.ServiceModel.Syndication" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>
