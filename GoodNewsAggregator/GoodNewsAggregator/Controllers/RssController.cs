@@ -9,9 +9,11 @@ using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.Core.DTO;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GoodNewsAggregator.Controllers
 {
+    [Authorize(Roles = "Admin,Moderator")]
     public class RssController : Controller
     {
         private readonly IRssService _rssService;

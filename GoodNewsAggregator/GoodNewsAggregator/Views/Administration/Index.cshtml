@@ -1,1 +1,13 @@
 ﻿<h1>Панель администратора</h1>
+
+<form method="post" asp-controller="Rss" asp-action="Index">
+    <input class="mb-2" type="submit" value="Rss источники" />
+</form>
+
+<form method="post" asp-controller="Administration" asp-action="Roles">
+    <input class="mb-2" type="submit" value="Управление ролями" />
+</form>
+
+<div>
+    <a class="btn btn-light mb-2" asp-controller="Account" asp-action="MyAccount">Назад в аккаунт</a>
+</div>

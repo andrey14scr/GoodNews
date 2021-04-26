@@ -4,33 +4,33 @@
     ViewData["Title"] = "CreateRole";
 }
 
-<h1>CreateRole</h1>
+<h1>Создать</h1>
 
-<h4>RssDto</h4>
+<h4>Rss источник</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Name" class="control-label">Название</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Url" class="control-label"></label>
+                <label asp-for="Url" class="control-label">Url</label>
                 <input asp-for="Url" class="form-control" />
                 <span asp-validation-for="Url" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="CreateRole" class="btn btn-primary" />
+                <input type="submit" value="Создать" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-light mb-2" asp-action="Index">Назад к таблице</a>
 </div>
 
 @section Scripts {

@@ -4,20 +4,20 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Информация</h1>
 
 <div>
-    <h4>RssDto</h4>
+    <h4>Rss источник</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+            Название
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Url)
+            Url
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Url)
@@ -25,6 +25,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">EditRole</a> |
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-primary mb-2" asp-action="Edit" asp-route-id="@Model.Id">Изменить</a><br/>
+    <a class="btn btn-light mb-2" asp-action="Index">Назад к таблице</a>
 </div>

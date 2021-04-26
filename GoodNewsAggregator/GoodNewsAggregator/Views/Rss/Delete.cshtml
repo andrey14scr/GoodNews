@@ -4,21 +4,21 @@
     ViewData["Title"] = "DeleteRole";
 }
 
-<h1>DeleteRole</h1>
+<h1>Удаление Rss источника</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Вы уверены, что хотите удалить этот объект?</h3>
 <div>
-    <h4>RssDto</h4>
+    <h4>Rss источник</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+            Название
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Url)
+           Url
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Url)
@@ -27,7 +27,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="DeleteRole" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <a class="btn btn-light mb-2" asp-action="Index">Назад к таблице</a>
     </form>
 </div>

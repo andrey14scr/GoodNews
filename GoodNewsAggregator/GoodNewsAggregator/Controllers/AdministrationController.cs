@@ -8,11 +8,13 @@ using AutoMapper;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace GoodNewsAggregator.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdministrationController : Controller
     {
 
