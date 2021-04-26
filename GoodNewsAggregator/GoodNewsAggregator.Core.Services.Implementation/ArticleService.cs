@@ -79,5 +79,12 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
             return articleDtos;
         }
+
+        public async Task<IEnumerable<ArticleDto>> GetArticleInfoFromRss(RssDto rss)
+        {
+            var articleDtos = new List<ArticleDto>();
+
+            return articleDtos;
+        }
     }
 }

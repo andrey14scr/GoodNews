@@ -81,10 +81,12 @@ namespace GoodNewsAggregator.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, false);
+
                     if(_userManager.Users.Count() == 1)
                         await _userManager.AddToRoleAsync(user, RoleNames.ADMIN);
                     else
                         await _userManager.AddToRoleAsync(user, RoleNames.USER);
+
                     return RedirectToAction(nameof(MyAccount));
                 }
 
