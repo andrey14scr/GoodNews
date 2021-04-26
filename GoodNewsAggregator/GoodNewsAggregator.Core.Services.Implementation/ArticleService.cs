@@ -114,7 +114,6 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                         }
                     });
                 }
-
             }
 
             return articleDtos;
