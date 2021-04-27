@@ -1,12 +1,12 @@
 ﻿@using GoodNewsAggregator.Core.DTO;
 @using GoodNewsAggregator.Views.Constants;
-@model IEnumerable<ArticleDto>
+@model NewsWithPages
 @{
-    ViewData["Title"] = "Main page";
+    ViewData["Title"] = "Main pageNumber";
 }
 
 <div class="text-center">
-    <h1 class="display-4">This is main page</h1>
+    <h1 class="display-4">This is main pageNumber</h1>
 
     @if (User.Identity.IsAuthenticated && User.IsInRole(RoleNames.ADMIN))
     {
@@ -14,14 +14,21 @@
     }
 
     <div class="row">
-        @foreach (var article in Model)
+        @foreach (var article in Model.Articles)
         {
-            <div class="border col-sm-12 col-md-6 col-lg-4">
-                <h1>@article.Title</h1>
-                <h4>Дата: @article.Date</h4>
-                <h4>Хорошесть: @(article.GoodFactor * 100)%</h4>
-                <a asp-action="Article" asp-route-id="@article.Id">Читать -></a>
+            <div class="col-sm-12 col-md-6 col-lg-4 mt-3">
+                <div class="border h-100">
+                    <p class="flex-wrap">@article.Title</p>
+                    <p>Дата: @article.Date</p>
+                    <p class="">Хорошесть: @(article.GoodFactor * 100)%</p>
+
+                    <a asp-action="Article" asp-route-id="@article.Id">Читать -></a>
+
+                </div>
             </div>
         }
     </div>
+
+    <pagination page="Model.PageInfo" page-action="Main"></pagination>
+
 </div>

@@ -1,40 +1,41 @@
 ﻿@model RegisterModel
 
-<div class="text-center">
+<div>
     <h1>Регистрация аккаунта</h1>
+    <br/>
 
-    <form asp-action="Register" asp-controller="Account" asp-antiforgery="true" method="post">
+    <form method="post" asp-action="Register" asp-controller="Account" asp-antiforgery="true">
         <div class="validation text-danger" asp-validation-summary="ModelOnly"></div>
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label align-self-center" asp-for="Email">Эл. почта</label>
-            <div class="col-sm-10 align-self-center">
-                <span class="text-danger" asp-validation-for="Email"></span>
+            <label class="col-sm-3 col-form-label align-self-center" asp-for="Email">Эл. почта</label>
+            <div class="col-sm-6 align-self-center">
                 <input class="form-control" placeholder="Эл. почта" type="text" asp-for="Email">
             </div>
+            <span class="text-danger align-self-center ml-3" asp-validation-for="Email"></span>
         </div>
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label align-self-center" asp-for="UserName">Имя пользователя</label>
-            <div class="col-sm-10 align-self-center">
-                <span class="text-danger" asp-validation-for="UserName"></span>
+            <label class="col-sm-3 col-form-label align-self-center" asp-for="UserName">Имя пользователя</label>
+            <div class="col-sm-6 align-self-center">
                 <input class="form-control" placeholder="Имя пользователя" type="text" asp-for="UserName">
             </div>
+            <span class="text-danger align-self-center ml-3" asp-validation-for="UserName"></span>
         </div>
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label align-self-center" asp-for="Password">Пароль</label>
-            <div class="col-sm-10 align-self-center">
-                <span class="text-danger" asp-validation-for="Password"></span>
-                <input class="form-control" placeholder="пароль" type="password" asp-for="Password">
+            <label class="col-sm-3 col-form-label align-self-center" asp-for="Password">Пароль</label>
+            <div class="col-sm-6 align-self-center">
+                <input class="form-control" placeholder="Пароль" type="password" asp-for="Password">
             </div>
+            <span class="text-danger align-self-center ml-3" asp-validation-for="Password"></span>
         </div>
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label align-self-center" asp-for="PasswordConfirmation">Подтверждение пароля</label>
-            <div class="col-sm-10 align-self-center">
-                <span class="text-danger" asp-validation-for="PasswordConfirmation"></span>
-                <input class="form-control " placeholder="пароль" type="password" asp-for="PasswordConfirmation">
+            <label class="col-sm-3 col-form-label align-self-center" asp-for="PasswordConfirmation">Подтверждение пароля</label>
+            <div class="col-sm-6 align-self-center">
+                <input class="form-control " placeholder="Подтверждение пароля" type="password" asp-for="PasswordConfirmation">
             </div>
+            <span class="text-danger align-self-center ml-3" asp-validation-for="PasswordConfirmation"></span>
         </div>
         <div>
-            <input class="btn btn-primary mb-2" type="submit" value="Регистрация" />
+            <input class="btn btn-primary mb-2 mt-2" type="submit" value="Регистрация" />
         </div>
     </form>
 

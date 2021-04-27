@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GoodNewsAggregator.DAL.Core.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace GoodNewsAggregator
 {
@@ -42,7 +43,6 @@ namespace GoodNewsAggregator
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IRssService, RssService>();
             services.AddScoped<ICommentService, CommentService>();
-            services.AddScoped<IUserService, UserService>();
 
             services.AddAutoMapper(typeof(AutoMap).Assembly);
 
@@ -50,6 +50,11 @@ namespace GoodNewsAggregator
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<User, Role>().AddEntityFrameworkStores<GoodNewsAggregatorContext>();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

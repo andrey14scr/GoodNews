@@ -23,18 +23,16 @@ namespace GoodNewsAggregator.Controllers
         private readonly RoleManager<Role> _roleManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IMapper _mapper;
-        private readonly IUserService _userService;
 
         public AdministrationController(ILogger<HomeController> logger,
             UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager,
-            IMapper mapper, IUserService userService)
+            IMapper mapper)
         {
             _logger = logger;
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _mapper = mapper;
-            _userService = userService;
         }
 
         public IActionResult Index()

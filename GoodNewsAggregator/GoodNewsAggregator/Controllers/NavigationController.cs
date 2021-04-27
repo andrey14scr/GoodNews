@@ -11,6 +11,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Implementation;
+using GoodNewsAggregator.Models;
+using GoodNewsAggregator.Views.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Serilog;
@@ -34,9 +36,22 @@ namespace GoodNewsAggregator.Controllers
             _rssService = rssService;
         }
 
-        public async Task<IActionResult> Main()
+        public async Task<IActionResult> Main(int pageNumber = 1)
         {
-            return View((await _articleService.GetAll()).ToList());
+            var news = (await _articleService.GetAll()).ToList();
+
+            var pageSize = Pagination.PAGESIZE;
+
+            var newsPerPages = news.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+
+            var pageInfo = new PageInfo()
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItems = news.Count
+            };
+
+            return View(new NewsWithPages() { Articles = newsPerPages, PageInfo = pageInfo });
         }
 
         public async Task<IActionResult> Article(Guid? id)

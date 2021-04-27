@@ -22,18 +22,16 @@ namespace GoodNewsAggregator.Controllers
         private readonly RoleManager<Role> _roleManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IMapper _mapper;
-        private readonly IUserService _userService;
 
         public AccountController(ILogger<HomeController> logger, 
             UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager,
-            IMapper mapper, IUserService userService)
+            IMapper mapper)
         {
             _logger = logger;
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _mapper = mapper;
-            _userService = userService;
         }
 
         public IActionResult Login()
@@ -126,6 +124,12 @@ namespace GoodNewsAggregator.Controllers
             await _signInManager.SignOutAsync();
 
             return RedirectToAction(nameof(Login));
+        }
+
+        [AcceptVerbs("Get","Post")]
+        public async Task<IActionResult> CheckEmail(string email)
+        {
+            return (await _userManager.FindByEmailAsync(email)) != null ? Json(false) : Json(true);
         }
     }
 }
