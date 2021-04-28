@@ -4,7 +4,7 @@
 }
 
 a.read-next {
-    color:midnightblue;
+    color: black;
     text-align: left;
 }
 
@@ -14,9 +14,21 @@ a.read-next:hover {
 }
 
 a.read-next:visited {
-    color:purple;
+    color: purple;
 }
 
 a.read-next:active {
     color: red;
+}
+
+.red {
+    color: red
+}
+
+.orange {
+    color: orange
+}
+
+.green {
+    color: #00F200
 }
