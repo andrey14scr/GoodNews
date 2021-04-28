@@ -55,7 +55,14 @@ namespace GoodNewsAggregator.Controllers
                 TotalItems = articlesCount
             };
 
-            return View(new NewsWithPages() { Articles = _mapper.Map<IEnumerable<ArticleDto>>(news), PageInfo = pageInfo });
+            var articleDtos = _mapper.Map<IEnumerable<ArticleWithRssNameDto>>(news);
+
+            foreach (var article in articleDtos)
+            {
+                article.RssName = (await _rssService.GetById(article.RssId)).Name;
+            }
+
+            return View(new NewsOnPage() { Articles = articleDtos, PageInfo = pageInfo });
         }
 
         public async Task<IActionResult> Article(Guid? id)
@@ -75,6 +82,7 @@ namespace GoodNewsAggregator.Controllers
             return View(article);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Aggregate()
         {
             var rssSourses = await _rssService.GetAll();

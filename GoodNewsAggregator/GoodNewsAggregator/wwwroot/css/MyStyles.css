@@ -1,18 +1,20 @@
 ﻿.article-card {
-    border: 1px solid black;
+    background: #F2F2F2;
     height: 100%;
 }
 
 a.read-next {
-    color: black;
+    color:midnightblue;
+    text-align: left;
 }
 
 a.read-next:hover {
-    color:crimson;
+    color: crimson;
+    text-decoration: none;
 }
 
 a.read-next:visited {
-    color:darkgray;
+    color:purple;
 }
 
 a.read-next:active {

@@ -6,9 +6,10 @@ using GoodNewsAggregator.Core.DTO;
 
 namespace GoodNewsAggregator.Models
 {
-    public class NewsWithPages
+    public class NewsOnPage
     {
-        public IEnumerable<ArticleDto> Articles { get; set; }
+        public IEnumerable<ArticleWithRssNameDto> Articles { get; set; }
         public PageInfo PageInfo { get; set; }
+        public string SourceName { get; set; }
     }
 }

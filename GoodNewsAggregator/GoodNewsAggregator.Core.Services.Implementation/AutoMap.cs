@@ -17,6 +17,8 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         public AutoMap()
         {
             CreateMap<Article, ArticleDto>().ReverseMap();
+            CreateMap<ArticleWithRssNameDto, ArticleDto>().ReverseMap();
+            CreateMap<ArticleWithRssNameDto, Article>().ReverseMap();
             CreateMap<Article, ArticleWithRssDto>().ReverseMap();
             CreateMap<ArticleDto, ArticleWithRssDto>().ReverseMap();
             CreateMap<Comment, CommentDto>().ReverseMap();
