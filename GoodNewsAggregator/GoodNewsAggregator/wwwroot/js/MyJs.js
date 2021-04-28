@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     var mc = {
-        '0-39': 'bad-goog-factor',
+        '0-39': 'bad-good-factor',
         '40-79': 'normal-good-factor',
         '80-100': 'good-good-factor'
     };

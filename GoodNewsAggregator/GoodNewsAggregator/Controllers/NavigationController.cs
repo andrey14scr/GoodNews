@@ -45,7 +45,9 @@ namespace GoodNewsAggregator.Controllers
             var result = _articleService.Get();
             int articlesCount = result.Count();
 
-            result = result.Skip((pageNumber - 1) * Pagination.PAGESIZE).Take(Pagination.PAGESIZE);
+            result = result.OrderByDescending(a => a.Date)
+                .Skip((pageNumber - 1) * Pagination.PAGESIZE)
+                .Take(Pagination.PAGESIZE);
             var news = await result.ToListAsync();
 
             var pageInfo = new PageInfo()
@@ -87,7 +89,7 @@ namespace GoodNewsAggregator.Controllers
         {
             var rssSourses = await _rssService.GetAll();
             var news = new List<ArticleDto>();
-            var listExceptions = new List<Guid>();
+            //var listExceptions = new List<Guid>();
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -122,8 +124,6 @@ namespace GoodNewsAggregator.Controllers
 
             stopwatch.Stop();
             Log.Information($"Aggregation was executed in {stopwatch.ElapsedMilliseconds}ms and added {news.Count} articles.");
-
-            news = news.Where(a => !listExceptions.Contains(a.Id)).ToList();
 
             await _articleService.AddRange(news);
 
