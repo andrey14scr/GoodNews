@@ -9,12 +9,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Implementation;
 using GoodNewsAggregator.Models;
 using GoodNewsAggregator.Views.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace GoodNewsAggregator.Controllers
@@ -29,29 +31,31 @@ namespace GoodNewsAggregator.Controllers
         private readonly TjournalParser _tjournalParser = new TjournalParser();
         private readonly S13Parser _s13Parser = new S13Parser();
         private readonly DtfParser _dtfParser = new DtfParser();
+        private readonly IMapper _mapper;
 
-        public NavigationController(IArticleService articleService, IRssService rssService)
+        public NavigationController(IArticleService articleService, IRssService rssService, IMapper mapper)
         {
             _articleService = articleService;
             _rssService = rssService;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Main(int pageNumber = 1)
         {
-            var news = (await _articleService.GetAll()).ToList();
+            var result = _articleService.Get();
+            int articlesCount = result.Count();
 
-            var pageSize = Pagination.PAGESIZE;
-
-            var newsPerPages = news.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+            result = result.Skip((pageNumber - 1) * Pagination.PAGESIZE).Take(Pagination.PAGESIZE);
+            var news = await result.ToListAsync();
 
             var pageInfo = new PageInfo()
             {
                 PageNumber = pageNumber,
-                PageSize = pageSize,
-                TotalItems = news.Count
+                PageSize = Pagination.PAGESIZE,
+                TotalItems = articlesCount
             };
 
-            return View(new NewsWithPages() { Articles = newsPerPages, PageInfo = pageInfo });
+            return View(new NewsWithPages() { Articles = _mapper.Map<IEnumerable<ArticleDto>>(news), PageInfo = pageInfo });
         }
 
         public async Task<IActionResult> Article(Guid? id)

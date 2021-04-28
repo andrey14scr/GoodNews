@@ -118,5 +118,10 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
             return articleDtos;
         }
+
+        public IQueryable<Article> Get()
+        {
+            return _unitOfWork.Articles.Get();
+        }
     }
 }

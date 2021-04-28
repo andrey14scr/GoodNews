@@ -1,0 +1,20 @@
+﻿.article-card {
+    border: 1px solid black;
+    height: 100%;
+}
+
+a.read-next {
+    color: black;
+}
+
+a.read-next:hover {
+    color:crimson;
+}
+
+a.read-next:visited {
+    color:darkgray;
+}
+
+a.read-next:active {
+    color: red;
+}
