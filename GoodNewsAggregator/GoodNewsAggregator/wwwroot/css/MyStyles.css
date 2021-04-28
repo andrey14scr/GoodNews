@@ -18,17 +18,17 @@ a.read-next:visited {
 }
 
 a.read-next:active {
-    color: red;
+    color: bad-goog-factor;
 }
 
-.red {
-    color: red
+.bad-goog-factor {
+    color: bad-goog-factor
 }
 
-.orange {
+.normal-good-factor {
     color: orange
 }
 
-.green {
+.good-good-factor {
     color: #00F200
 }

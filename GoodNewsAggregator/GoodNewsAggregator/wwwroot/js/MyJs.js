@@ -1,8 +1,8 @@
 ﻿$(document).ready(function () {
     var mc = {
-        '0-39': 'red',
-        '40-79': 'orange',
-        '80-100': 'green'
+        '0-39': 'bad-goog-factor',
+        '40-79': 'normal-good-factor',
+        '80-100': 'good-good-factor'
     };
 
     function between(x, min, max) {
