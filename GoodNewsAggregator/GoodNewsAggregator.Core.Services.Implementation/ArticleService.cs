@@ -35,6 +35,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         public async Task AddRange(IEnumerable<ArticleDto> articleDtos)
         {
             var articles = _mapper.Map<List<Article>>(articleDtos.ToList());
+
             await _unitOfWork.Articles.AddRange(articles);
             await _unitOfWork.SaveChangesAsync();
         }
@@ -82,7 +83,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             return articleDtos;
         }
 
-        public async Task<IEnumerable<ArticleDto>> GetArticleInfoFromRss(RssDto rss)
+        public async Task<IEnumerable<ArticleDto>> GetArticleInfosFromRss(RssDto rss)
         {
             var articleDtos = new List<ArticleDto>();
 
@@ -105,7 +106,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                             {
                                 Id = Guid.NewGuid(),
                                 RssId = rss.Id,
-                                Source = syndicationItem.Links[0].Uri.ToString(), //no
+                                Source = syndicationItem.Links[0].Uri.ToString(),
                                 Title = syndicationItem.Title.Text,
                                 Date = syndicationItem.PublishDate.DateTime
                             };

@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.Core.DTO;
-using GoodNewsAggregator.Core.Services.Implementation;
+using GoodNewsAggregator.Core.Services.Implementation.Parsers;
 using GoodNewsAggregator.Models;
 using GoodNewsAggregator.Views.Constants;
 using Microsoft.AspNetCore.Authorization;
@@ -40,19 +40,19 @@ namespace GoodNewsAggregator.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> Main(int pageNumber = 1)
+        public async Task<IActionResult> Main(int page = 1)
         {
             var result = _articleService.Get();
             int articlesCount = result.Count();
 
             result = result.OrderByDescending(a => a.Date)
-                .Skip((pageNumber - 1) * Pagination.PAGESIZE)
+                .Skip((page - 1) * Pagination.PAGESIZE)
                 .Take(Pagination.PAGESIZE);
             var news = await result.ToListAsync();
 
             var pageInfo = new PageInfo()
             {
-                PageNumber = pageNumber,
+                PageNumber = page,
                 PageSize = Pagination.PAGESIZE,
                 TotalItems = articlesCount
             };
@@ -87,19 +87,18 @@ namespace GoodNewsAggregator.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Aggregate()
         {
-            var rssSourses = await _rssService.GetAll();
+            var rssSources = await _rssService.GetAll();
             var news = new List<ArticleDto>();
-            //var listExceptions = new List<Guid>();
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            List<ArticleDto> articleDtosList = new List<ArticleDto>();
-            var tasks = rssSourses.Select(async rss =>
+            var tasks = rssSources.Select(async rss =>
             {
+                var articleDtosList = new List<ArticleDto>();
                 try
                 {
-                    articleDtosList = (List<ArticleDto>) await _articleService.GetArticleInfoFromRss(rss);
+                    articleDtosList = (List<ArticleDto>) await _articleService.GetArticleInfosFromRss(rss);
                 }
                 catch (Exception ex)
                 {
@@ -107,18 +106,21 @@ namespace GoodNewsAggregator.Controllers
                     Log.Error($"Error while rss parsing. \n{ex.Message}");
                 }
 
-                if (rss.Id.Equals(new Guid("0feb39f3-5287-4a6d-acd9-e4d27cfc69d6"))) //onliner
-                    WebSiteParse(_onlinerParser, ref articleDtosList);
-                else if (rss.Id.Equals(new Guid("8d96b48b-1b3d-4981-9595-18b526bd93b6"))) //tutby
-                    WebSiteParse(_tutbyParser, ref articleDtosList);
-                else if (rss.Id.Equals(new Guid("5a8710cf-a819-4cbb-9003-0be2f975aba5"))) //tjournal
-                    WebSiteParse(_tjournalParser, ref articleDtosList);
-                else if (rss.Id.Equals(new Guid("c288fe8e-ca4d-482a-baa1-bf2ff7244726"))) //s13
-                    WebSiteParse(_s13Parser, ref articleDtosList);
-                else if (rss.Id.Equals(new Guid("62cffea0-1a14-4ac9-9ce6-4b082f029b46"))) //dtf
-                    WebSiteParse(_dtfParser, ref articleDtosList);
+                if (articleDtosList.Count != 0)
+                {
+                    if (rss.Id.Equals(new Guid("0feb39f3-5287-4a6d-acd9-e4d27cfc69d6"))) //onliner
+                        WebSiteParse(_onlinerParser, ref articleDtosList);
+                    else if (rss.Id.Equals(new Guid("8d96b48b-1b3d-4981-9595-18b526bd93b6"))) //tutby
+                        WebSiteParse(_tutbyParser, ref articleDtosList);
+                    else if (rss.Id.Equals(new Guid("5a8710cf-a819-4cbb-9003-0be2f975aba5"))) //tjournal
+                        WebSiteParse(_tjournalParser, ref articleDtosList);
+                    else if (rss.Id.Equals(new Guid("c288fe8e-ca4d-482a-baa1-bf2ff7244726"))) //s13
+                        WebSiteParse(_s13Parser, ref articleDtosList);
+                    else if (rss.Id.Equals(new Guid("62cffea0-1a14-4ac9-9ce6-4b082f029b46"))) //dtf
+                        WebSiteParse(_dtfParser, ref articleDtosList);
 
-                news.AddRange(articleDtosList);
+                    news.AddRange(articleDtosList);
+                }
             });
             await Task.WhenAll(tasks);
 

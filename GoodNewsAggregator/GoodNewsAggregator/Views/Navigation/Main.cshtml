@@ -2,12 +2,21 @@
 @using GoodNewsAggregator.Views.Constants;
 @model NewsOnPage
 @{
-    ViewData["Title"] = "Main pageNumber";
+    ViewData["Title"] = "Main page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Агрегатор хороших новостей</h1>
 </div>
+
+@if (Model.Articles.Count() == 0)
+{
+    <div class="text-center mt-5">
+        <h2>
+            Новостей пока нет :(
+        </h2>
+    </div>
+}
 
 <div class="row">
     @foreach (var article in Model.Articles)
@@ -18,7 +27,7 @@
                 <div class="text-right mr-1">@article.Date.ToShortDateString()</div>
                 <div class="float-left ml-1" data-color="@(article.GoodFactor * 100)">@((article.GoodFactor * 100).ToString("0.##"))%</div>
                 <div class="text-right mr-1">@article.Date.ToShortTimeString()</div>
-                <div class="text-left ml-1 mr-1 mt-2">Источник: 
+                <div class="text-left ml-1 mr-1 mt-2">Источник:
                     <a class="font-weight-bold read-next" href="@article.Source">@article.RssName</a>
                 </div>
                 <div class="text-left ml-1 mr-1 mt-2 mb-1">

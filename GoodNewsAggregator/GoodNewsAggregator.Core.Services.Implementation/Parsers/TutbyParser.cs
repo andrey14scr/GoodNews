@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GoodNewsAggregator.Core.Services.Interfaces;
 using HtmlAgilityPack;
-using GoodNewsAggregator.Core.Services.Interfaces;
 
-namespace GoodNewsAggregator.Core.Services.Implementation
+namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
 {
     public class TutbyParser : IWebPageParser
     {
         public string Parse(string url)
         {
-            return "tutby content";
-
             var web = new HtmlWeb();
 
             var htmlDoc = web.Load(url);
@@ -21,7 +14,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             if (htmlDoc == null)
                 return null;
 
-            var node = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='b-article']"); //b-article
+            var node = htmlDoc.GetElementbyId("article_body");
 
             if (node == null || node.InnerHtml == "")
                 return null;

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GoodNewsAggregator.Core.Services.Interfaces;
+﻿using GoodNewsAggregator.Core.Services.Interfaces;
 using HtmlAgilityPack;
 
-namespace GoodNewsAggregator.Core.Services.Implementation
+namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
 {
     public class TjournalParser : IWebPageParser
     {

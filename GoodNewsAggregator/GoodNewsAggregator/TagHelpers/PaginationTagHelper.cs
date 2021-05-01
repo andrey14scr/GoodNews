@@ -39,20 +39,21 @@ namespace GoodNewsAggregator.TagHelpers
             {
                 var tag = new TagBuilder("a");
                 anchorInnerHtml = GetAnchorInnerHtml(i, Page);
+
+                if (string.IsNullOrEmpty(anchorInnerHtml))
+                    continue;
+
+                tag.InnerHtml.Append(anchorInnerHtml);
+
                 if (anchorInnerHtml == Pagination.POINTS)
                 {
-                    tag.InnerHtml.Append(anchorInnerHtml);
-                    tag.AddCssClass("btn btn-outline-dark mt-3 ml-1");
+                    tag.AddCssClass("btn btn-outline-dark mt-3 ml-1 disabled");
                     result.InnerHtml.AppendHtml(tag);
                     continue;
                 }
-                else if (string.IsNullOrEmpty(anchorInnerHtml))
-                {
-                    continue;
-                }
-                tag.Attributes["href"] = urlHelper.Action(PageAction, new { pageNumber = i});
-                tag.InnerHtml.Append(anchorInnerHtml);
-                if(i == Page.PageNumber)
+                
+                tag.Attributes["href"] = urlHelper.Action(PageAction, new { page = i});
+                if (i == Page.PageNumber)
                     tag.AddCssClass("btn btn-dark mt-3 ml-1");
                 else
                     tag.AddCssClass("btn btn-outline-dark mt-3 ml-1");
