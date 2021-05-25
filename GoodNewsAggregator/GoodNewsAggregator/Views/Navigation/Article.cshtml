@@ -8,4 +8,19 @@
     <h1 class="display-4">@Model.Title</h1>
 
     <p>@Model.Content</p>
+
+    <div class="row">
+        <button id="comments-display-switcher" class="btn btn-primary col-sm-12" onclick="getComments('@Model.Id')">Посмотреть комментарии</button>
+        <div class="container">
+            <div id="comments-container" class="row">
+
+            </div>
+        </div>
+    </div>
+
 </div>
+
+@section Scripts
+{
+    <script src="~/js/comments.js"></script>
+}
