@@ -1,5 +1,4 @@
 ﻿var btnComments = document.getElementById('comments-display-switcher');
-
 var isOpened = false;
 
 function getComments(articleId) {
@@ -8,17 +7,20 @@ function getComments(articleId) {
             btnComments.innerHTML = 'Посмотреть комментарии';
             btnComments.classList.remove('btn-outline-primary');
             btnComments.classList.add('btn-primary');
+
             document.getElementById('comments-container').innerHTML = '';
         } else {
             btnComments.innerHTML = 'Скрыть комментарии';
             btnComments.classList.remove('btn-primary');
             btnComments.classList.add('btn-outline-primary');
+
             var comments = document.getElementById('comments-container');
             loadComments(articleId, comments);
         }
 
         btnComments.blur();
     }
+
     isOpened = !isOpened;
 }
 
@@ -32,6 +34,7 @@ function loadComments(articleId, comments) {
             var response = request.responseText;
             console.log(response);
             comments.innerHTML = response;
+            comments.innerHTML += response;
             document.getElementById('create-comment-btn').addEventListener("click", createComment);
         }
     }
