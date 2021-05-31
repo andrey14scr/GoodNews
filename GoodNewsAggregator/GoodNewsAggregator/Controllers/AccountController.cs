@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using GoodNewsAggregator.Constants;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.Models;
-using GoodNewsAggregator.Views.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 

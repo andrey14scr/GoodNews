@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
+using GoodNewsAggregator.Constants;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using GoodNewsAggregator.Models;
-using GoodNewsAggregator.Views.Constants;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 
 namespace GoodNewsAggregator.TagHelpers

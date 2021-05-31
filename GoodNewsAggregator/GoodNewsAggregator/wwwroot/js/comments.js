@@ -34,8 +34,8 @@ function loadComments(articleId, comments) {
             var response = request.responseText;
             console.log(response);
             comments.innerHTML = response;
-            comments.innerHTML += response;
             document.getElementById('create-comment-btn').addEventListener("click", createComment);
+            document.getElementById('next-comments-btn').addEventListener("click", nextComments);
         }
     }
 
@@ -63,4 +63,8 @@ function createComment() {
             loadComments(articleId, comments);
         }
     }
+}
+
+function nextComments() {
+    alert("HI!");
 }
