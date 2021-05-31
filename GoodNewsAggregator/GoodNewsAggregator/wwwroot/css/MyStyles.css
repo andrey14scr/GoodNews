@@ -36,6 +36,8 @@ a.read-next:active {
 
 .comment-card {
     margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .write-comment-btn {
@@ -44,4 +46,8 @@ a.read-next:active {
 
 .comments-block {
     margin-top: 20px;
+}
+
+.black {
+    color: black;
 }

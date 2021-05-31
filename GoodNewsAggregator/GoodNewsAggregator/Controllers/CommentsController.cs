@@ -43,6 +43,8 @@ namespace GoodNewsAggregator.Controllers
                 });
             }
 
+            result = result.OrderByDescending(x => x.Date).ToList();
+
             return View(new CommentsListModel
             {
                 ArticleId = articleId,
@@ -52,23 +54,20 @@ namespace GoodNewsAggregator.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CommentDto model)
+        public async Task<IActionResult> Create([FromBody] CommentInfoModel model)
         {
-            /*
-            var user = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimsIdentity.DefaultNameClaimType));
-            var userEmail = user?.Value;
-            var userId = (await _userService.GetUserByEmail(userEmail)).Id;
+            var id = _userManager.GetUserId(User);
 
             var commentDto = new CommentDto()
             {
-                Id = Guid.NewGuid(),
-                NewsId = model.NewsId,
-                Text = model.CommentText,
-                Created = DateTime.Now,
-                UserId = userId
+                Id = Guid.NewGuid(), 
+                ArticleId = model.ArticleId, 
+                Date = DateTime.Now, 
+                Text = model.Text, 
+                UserId = Guid.Parse(id)
             };
-            await _commentService.AddComment(commentDto);
-            */
+            await _commentService.Add(commentDto);
+            
             return Ok();
         }
     }

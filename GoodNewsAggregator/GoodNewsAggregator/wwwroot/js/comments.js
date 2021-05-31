@@ -6,60 +6,58 @@ function getComments(articleId) {
     if (btnComments != null) {
         if (isOpened) {
             btnComments.innerHTML = 'Посмотреть комментарии';
+            btnComments.classList.remove('btn-outline-primary');
+            btnComments.classList.add('btn-primary');
             document.getElementById('comments-container').innerHTML = '';
         } else {
             btnComments.innerHTML = 'Скрыть комментарии';
+            btnComments.classList.remove('btn-primary');
+            btnComments.classList.add('btn-outline-primary');
             var comments = document.getElementById('comments-container');
             loadComments(articleId, comments);
         }
+
+        btnComments.blur();
     }
     isOpened = !isOpened;
-    //console.log(isOpened);
 }
 
 function loadComments(articleId, comments) {
     var request = new XMLHttpRequest();
     request.open('GET', `/Comments/List?articleId=${articleId}`, true);
 
-    request.onload = function() {
-        if (request.status >= 200 && request.stat < 400) {
+    request.onload = function () {
+        console.log(request.status);
+        if (request.status >= 200 && request.status < 400) {
             var response = request.responseText;
+            console.log(response);
             comments.innerHTML = response;
-
             document.getElementById('create-comment-btn').addEventListener("click", createComment);
         }
     }
 
     request.send();
 }
-/*
+
 function createComment() {
     var commentText = document.getElementById('commentText').value;
-    var newsId = document.getElementById('newsId').value;
-
-    //validateCommentData();
+    var articleId = document.getElementById('articleId').value;
 
     var postRequest = new XMLHttpRequest();
     postRequest.open("POST", '/Comments/Create', true);
     postRequest.setRequestHeader('Content-Type', 'application/json');
 
-    //let requestData = new {
-    //    commentText: commentText
-    //}
-
     postRequest.send(JSON.stringify({
-        commentText: commentText,
-        newsId: newsId
+        Text: commentText,
+        ArticleId: articleId
     }));
-
+    
     postRequest.onload = function () {
         if (postRequest.status >= 200 && postRequest.status < 400) {
             document.getElementById('commentText').value = '';
 
-            //commentsContainer.innerHTML += '';
-
-            loadComments(newsId);
+            var comments = document.getElementById('comments-container');
+            loadComments(articleId, comments);
         }
     }
 }
-*/
