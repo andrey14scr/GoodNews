@@ -33,3 +33,15 @@ a.read-next:active {
 .good-good-factor {
     color: #00F200
 }
+
+.comment-card {
+    margin-top: 5px;
+}
+
+.write-comment-btn {
+    margin-top: 10px;
+}
+
+.comments-block {
+    margin-top: 20px;
+}

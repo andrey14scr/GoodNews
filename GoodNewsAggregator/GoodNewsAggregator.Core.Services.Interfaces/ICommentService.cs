@@ -10,6 +10,6 @@ namespace GoodNewsAggregator.Core.Services.Interfaces
 {
     public interface ICommentService : IService<CommentDto>
     {
-
+        Task<IEnumerable<CommentDto>> GetByArticleId(Guid id);
     }
 }

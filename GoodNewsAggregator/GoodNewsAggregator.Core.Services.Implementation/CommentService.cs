@@ -10,6 +10,7 @@ using AutoMapper;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace GoodNewsAggregator.Core.Services.Implementation
 {
@@ -35,6 +36,14 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         {
             var comment = await _unitOfWork.Comments.GetById(id);
             var commentDto = _mapper.Map<CommentDto>(comment);
+
+            return commentDto;
+        }
+
+        public async Task<IEnumerable<CommentDto>> GetByArticleId(Guid id)
+        {
+            var comment = await _unitOfWork.Comments.Get().Where(c => c.ArticleId == id).ToListAsync();
+            var commentDto = _mapper.Map<List<CommentDto>>(comment);
 
             return commentDto;
         }
