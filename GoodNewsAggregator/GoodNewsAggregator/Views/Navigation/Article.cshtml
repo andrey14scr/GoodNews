@@ -6,13 +6,18 @@
 
 <div class="">
     <h1 class="display-4 text-center">@Model.Title</h1>
-    <p class="text-left">
+    <div class="text-center">
+        <a class="read-next source-link" href="@Model.Source">Читать в источнике</a>
+    </div>
+    <br/>
+    
+    <div class="text-left medium-size">
         @Html.Raw(Model.Content)
-    </p>
-
+    </div>
+    
     <hr />
     <div class="row">
-        <input type="hidden" id="articleId" name="articleId" value="@Model.Id"/>
+        <input type="hidden" id="articleId" name="articleId" value="@Model.Id" />
         <div class="col-sm-12 azure-background text-center">
             <label for="commentText">Ваш комментарий:</label>
             <textarea name="commentText" class="form-control" id="commentText" rows="3"></textarea>

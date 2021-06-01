@@ -34,6 +34,10 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
                 {
                     result += "<h3>" + node.InnerText + "</h3>";
                 }
+                else if (node.Name == "ul")
+                {
+                    result += "<ul>" + node.InnerHtml + "</ul>";
+                }
             }
             
             if (string.IsNullOrWhiteSpace(result))

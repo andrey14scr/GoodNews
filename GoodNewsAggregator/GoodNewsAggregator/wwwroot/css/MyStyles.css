@@ -4,7 +4,16 @@
     height: 100%;
 }
 
+a.title-link {
+    font-family: sans-serif;
+}
+
+a.source-link {
+    font-family: initial;
+}
+
 a.read-next {
+    font-weight: bold;
     color: black;
     text-align: left;
 }
@@ -16,6 +25,11 @@ a.read-next:hover {
 
 a.read-next:visited {
     color: purple;
+}
+
+a:visited:hover {
+    color: crimson;
+    text-decoration: none;
 }
 
 a.read-next:active {
@@ -50,4 +64,8 @@ a.read-next:active {
 
 .azure-background {
     background: azure;
+}
+
+.medium-size {
+    font-size: medium;
 }
