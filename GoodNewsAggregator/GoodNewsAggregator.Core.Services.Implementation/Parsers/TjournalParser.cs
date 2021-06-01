@@ -1,4 +1,5 @@
-﻿using GoodNewsAggregator.Core.Services.Interfaces;
+﻿using System.Linq;
+using GoodNewsAggregator.Core.Services.Interfaces;
 using HtmlAgilityPack;
 
 namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
@@ -7,8 +8,6 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
     {
         public string Parse(string url)
         {
-            return "tjournal content";
-
             var web = new HtmlWeb();
 
             var htmlDoc = web.Load(url);
@@ -16,19 +15,29 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
             if (htmlDoc == null)
                 return null;
 
-            var nodes = htmlDoc.DocumentNode.SelectNodes("//div[@class='l-island-a']");
+            var nodes = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='content content--full ']");
 
             if (nodes == null)
                 return null;
 
-            string res = "";
+            string result = "";
 
-            foreach (var node in nodes)
+            foreach (var node in nodes.ChildNodes)
             {
-                res += node.InnerHtml;
+                if (node.Name == "div")
+                {
+                    var paragraph = node.ChildNodes.FirstOrDefault(n => n.Name == "p");
+                    if (paragraph != null)
+                    {
+                        result += "<p>" + paragraph.InnerText + "</p>";
+                    }
+                }
             }
 
-            return res;
+            if (string.IsNullOrWhiteSpace(result))
+                return null;
+
+            return result;
         }
     }
 }
