@@ -15,21 +15,27 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
             if (htmlDoc == null)
                 return null;
 
-            var nodes = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='content content--full ']");
+            var value = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='content content--full ']");
 
-            if (nodes == null)
+            if (value == null || value.InnerHtml == "")
                 return null;
 
             string result = "";
 
-            foreach (var node in nodes.ChildNodes)
+            var nodes = value.SelectNodes("//div[@class='l-island-a']");
+
+            foreach (var node in nodes)
             {
-                if (node.Name == "div")
+                if (node.Name == "div" && node.Attributes.Count > 0 && node.Attributes[0].Value == "l-island-a")
                 {
-                    var paragraph = node.ChildNodes.FirstOrDefault(n => n.Name == "p");
+                    var paragraph = node.ChildNodes.FirstOrDefault(n => n.Name == "p" || n.Name == "ul");
                     if (paragraph != null)
                     {
-                        result += "<p>" + paragraph.InnerText + "</p>";
+                        result += node.InnerHtml;
+                    }
+                    else if(node.ParentNode.Name == "h2" || node.ParentNode.Name == "h3")
+                    {
+                        result += $"<{node.ParentNode.Name}>{node.InnerText}</{node.ParentNode.Name}>";
                     }
                 }
             }

@@ -33,7 +33,7 @@ namespace GoodNewsAggregator.Controllers
             (new OnlinerParser(), new Guid("7EE20FB5-B62A-4DF0-A34E-2DC738D87CDE")),
             (new TjournalParser(), new Guid("95AC927C-4BA7-43E8-B408-D3B1F4C4164F")),
             //(new S13Parser(), new Guid("EC7101DA-B135-4035-ACFE-F48F1970B4CB")),
-            //(new DtfParser(), new Guid("5707D1F0-6A5C-46FB-ACEC-0288962CB53F")),
+            (new DtfParser(), new Guid("5707D1F0-6A5C-46FB-ACEC-0288962CB53F")),
         };
         
         private readonly IMapper _mapper;
