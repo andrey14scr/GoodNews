@@ -26,11 +26,16 @@ namespace GoodNewsAggregator.Controllers
     {
         private readonly IArticleService _articleService;
         private readonly IRssService _rssService;
-        private readonly TutbyParser _tutbyParser = new TutbyParser();
-        private readonly OnlinerParser _onlinerParser = new OnlinerParser();
-        private readonly TjournalParser _tjournalParser = new TjournalParser();
-        private readonly S13Parser _s13Parser = new S13Parser();
-        private readonly DtfParser _dtfParser = new DtfParser();
+
+        private readonly List<(IWebPageParser Parser, Guid Id)> _parsers = new List<(IWebPageParser parser, Guid id)>()
+        {
+            //(new TutbyParser(), new Guid("5932E5D6-AFE4-44BF-AFD7-8BC808D66A61")),
+            (new OnlinerParser(), new Guid("7EE20FB5-B62A-4DF0-A34E-2DC738D87CDE")),
+            //(new TjournalParser(), new Guid("95AC927C-4BA7-43E8-B408-D3B1F4C4164F")),
+            //(new S13Parser(), new Guid("EC7101DA-B135-4035-ACFE-F48F1970B4CB")),
+            //(new DtfParser(), new Guid("5707D1F0-6A5C-46FB-ACEC-0288962CB53F")),
+        };
+        
         private readonly IMapper _mapper;
 
         public NavigationController(IArticleService articleService, IRssService rssService, IMapper mapper)
@@ -72,7 +77,7 @@ namespace GoodNewsAggregator.Controllers
             if (id is null)
             {
                 return NotFound();
-            }
+          }
 
             var article = await _articleService.GetById(id.Value);
 
@@ -88,12 +93,14 @@ namespace GoodNewsAggregator.Controllers
         public async Task<IActionResult> Aggregate()
         {
             var rssSources = await _rssService.GetAll();
+            rssSources = rssSources.Where(r => _parsers.Exists(p => p.Id == r.Id));
             var news = new List<ArticleDto>();
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            var tasks = rssSources.Select(async rss =>
+            //var tasks = rssSources.Select(async rss =>
+            foreach (var rss in rssSources)
             {
                 var articleDtosList = new List<ArticleDto>();
                 try
@@ -108,21 +115,16 @@ namespace GoodNewsAggregator.Controllers
 
                 if (articleDtosList.Count != 0)
                 {
-                    if (rss.Id.Equals(new Guid("0feb39f3-5287-4a6d-acd9-e4d27cfc69d6"))) //onliner
-                        WebSiteParse(_onlinerParser, ref articleDtosList);
-                    else if (rss.Id.Equals(new Guid("8d96b48b-1b3d-4981-9595-18b526bd93b6"))) //tutby
-                        WebSiteParse(_tutbyParser, ref articleDtosList);
-                    else if (rss.Id.Equals(new Guid("5a8710cf-a819-4cbb-9003-0be2f975aba5"))) //tjournal
-                        WebSiteParse(_tjournalParser, ref articleDtosList);
-                    else if (rss.Id.Equals(new Guid("c288fe8e-ca4d-482a-baa1-bf2ff7244726"))) //s13
-                        WebSiteParse(_s13Parser, ref articleDtosList);
-                    else if (rss.Id.Equals(new Guid("62cffea0-1a14-4ac9-9ce6-4b082f029b46"))) //dtf
-                        WebSiteParse(_dtfParser, ref articleDtosList);
+                    var parser = _parsers.FirstOrDefault(p => p.Id == rss.Id).Parser;
 
-                    news.AddRange(articleDtosList);
+                    if (parser != null)
+                    {
+                        WebSiteParse(parser, ref articleDtosList);
+                        news.AddRange(articleDtosList);
+                    }                    
                 }
-            });
-            await Task.WhenAll(tasks);
+            }//);
+            //await Task.WhenAll(tasks);
 
             stopwatch.Stop();
             Log.Information($"Aggregation was executed in {stopwatch.ElapsedMilliseconds}ms and added {news.Count} articles.");
