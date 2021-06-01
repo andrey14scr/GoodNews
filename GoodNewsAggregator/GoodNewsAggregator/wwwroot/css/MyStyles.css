@@ -44,10 +44,10 @@ a.read-next:active {
     margin-top: 10px;
 }
 
-.comments-block {
-    margin-top: 20px;
-}
-
 .black {
     color: black;
+}
+
+.azure-background {
+    background: azure;
 }

@@ -1,9 +1,13 @@
 ﻿var btnComments = document.getElementById('comments-display-switcher');
 var isOpened = false;
+var isAdd = true;
+var next = 0;
 
 function getComments(articleId) {
     if (btnComments != null) {
         if (isOpened) {
+            next = 0;
+
             btnComments.innerHTML = 'Посмотреть комментарии';
             btnComments.classList.remove('btn-outline-primary');
             btnComments.classList.add('btn-primary');
@@ -26,24 +30,24 @@ function getComments(articleId) {
 
 function loadComments(articleId, comments) {
     var request = new XMLHttpRequest();
-    request.open('GET', `/Comments/List?articleId=${articleId}`, true);
+    request.open('GET', `/Comments/List?articleId=${articleId}&next=${next}&add=${isAdd}`, true);
+    console.log(next);
+    console.log(isAdd);
+    isAdd = true;
 
     request.onload = function () {
-        console.log(request.status);
         if (request.status >= 200 && request.status < 400) {
             var response = request.responseText;
-            console.log(response);
-            comments.innerHTML = response;
-            document.getElementById('create-comment-btn').addEventListener("click", createComment);
-            document.getElementById('next-comments-btn').addEventListener("click", nextComments);
+            comments.innerHTML += response;
         }
     }
 
     request.send();
 }
 
-function createComment() {
-    var commentText = document.getElementById('commentText').value;
+function addComment() {
+    var textField = document.getElementById('commentText');
+    var commentText = textField.value;
     var articleId = document.getElementById('articleId').value;
 
     var postRequest = new XMLHttpRequest();
@@ -54,17 +58,30 @@ function createComment() {
         Text: commentText,
         ArticleId: articleId
     }));
-    
+
     postRequest.onload = function () {
         if (postRequest.status >= 200 && postRequest.status < 400) {
-            document.getElementById('commentText').value = '';
+            textField.value = '';
 
-            var comments = document.getElementById('comments-container');
-            loadComments(articleId, comments);
+            if (isOpened) {
+                isAdd = false;
+                var comments = document.getElementById('comments-container');
+                comments.innerHTML = '';
+                isOpened = false;
+                getComments(articleId);
+            }
         }
     }
 }
 
-function nextComments() {
-    alert("HI!");
+function nextComments(articleId) {
+    next++;
+
+    var nextBtn = document.getElementById('next-comments-btn');
+    if (nextBtn != null) {
+        nextBtn.remove();
+    }
+
+    var comments = document.getElementById('comments-container');
+    loadComments(articleId, comments);
 }

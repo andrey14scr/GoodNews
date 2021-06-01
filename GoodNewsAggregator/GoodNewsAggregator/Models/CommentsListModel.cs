@@ -10,5 +10,7 @@ namespace GoodNewsAggregator.Models
     {
         public Guid ArticleId { get; set; }
         public IEnumerable<CommentViewModel> Comments { get; set; }
+
+        public bool HasNext { get; set; }
     }
 }

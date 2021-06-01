@@ -9,13 +9,21 @@
 
     <p>@Model.Content</p>
 
+    <hr />
     <div class="row">
-        <button id="comments-display-switcher" class="btn btn-primary col-sm-12" onclick="getComments('@Model.Id')">Посмотреть комментарии</button>
+        <input type="hidden" id="articleId" name="articleId" value="@Model.Id"/>
+        <div class="col-sm-12 azure-background">
+            <label for="commentText">Ваш комментарий:</label>
+            <textarea name="commentText" class="form-control" id="commentText" rows="3"></textarea>
+            <button class="btn btn-primary write-comment-btn" id="create-comment-btn" onclick="addComment()">Отправить</button>
+        </div>
+
+        <button id="comments-display-switcher" class="btn btn-primary col-sm-12 mt-4" onclick="getComments('@Model.Id')">Посмотреть комментарии</button>
+
         <div class="container">
-            <div id="comments-container" class="row"></div>
+            <div id="comments-container" class="row mt-4"></div>
         </div>
     </div>
-
 </div>
 
 @section Scripts

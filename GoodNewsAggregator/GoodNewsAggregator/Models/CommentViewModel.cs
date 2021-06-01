@@ -11,8 +11,6 @@ namespace GoodNewsAggregator.Models
         public string Text { get; set; }
         public DateTime Date { get; set; }
 
-        public Guid ArticleId { get; set; }
-
-        public virtual string UserName { get; set; }
+        public string UserName { get; set; }
     }
 }

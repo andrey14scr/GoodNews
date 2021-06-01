@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using GoodNewsAggregator.Constants;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace GoodNewsAggregator.Controllers
 {
@@ -25,30 +27,32 @@ namespace GoodNewsAggregator.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> List(Guid articleId)
+        public async Task<IActionResult> List(Guid articleId, int next, bool add = true)
         {
-            var comments = await _commentService.GetByArticleId(articleId);
+            var comments = _commentService.Get().Where(c => c.ArticleId == articleId)
+                .OrderByDescending(c => c.Date);
+            int amount = comments.Count();
+            var list = await comments.Skip(add ? next * Comments.COMMENTSSIZE : 0)
+                .Take(add ? Comments.COMMENTSSIZE : (next + 1) * Comments.COMMENTSSIZE).ToListAsync();
 
             List<CommentViewModel> result = new List<CommentViewModel>();
 
-            foreach (var item in comments)
+            foreach (var item in list)
             {
                 result.Add(new CommentViewModel()
                 {
                     Id = item.Id,
-                    ArticleId = item.ArticleId,
                     Text = item.Text, 
                     Date = item.Date, 
                     UserName = _userManager.FindByIdAsync(item.UserId.ToString()).Result.UserName
                 });
             }
 
-            result = result.OrderByDescending(x => x.Date).ToList();
-
             return View(new CommentsListModel
             {
                 ArticleId = articleId,
-                Comments = result
+                Comments = result,
+                HasNext = amount - (next + 1) * Comments.COMMENTSSIZE > 0
             });
         }
 

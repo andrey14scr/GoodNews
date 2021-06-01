@@ -1,37 +1,33 @@
-﻿@using Microsoft.AspNetCore.Mvc.Rendering
-@model GoodNewsAggregator.Models.CommentsListModel
+﻿@model GoodNewsAggregator.Models.CommentsListModel
 
 @{
     Layout = null;
 }
 
-<div class="container comments-block">
-    @await Html.PartialAsync("CreateCommentPartial")
-    <hr />
-
-    <div id="comments-container" class="row">
-        @if (Model.Comments.Count() == 0)
+<div class="container mt-n3">
+    @if (Model.Comments.Count() == 0)
+    {
+        <div class="col-sm-12">
+            <p class="font-weight-bold h4">Комментариев пока нет. Но Вы можете оставить первый!</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var comment in Model.Comments)
         {
-            <div class="col-sm-12">
-                <p class="font-weight-bold h4">Комментариев пока нет. Но Вы можете оставить первый!</p>
-            </div>
-        }
-        else
-        {
-            foreach (var comment in Model.Comments)
-            {
-                <div class="card comment-card col-sm-12">
-                    <div class="card-body">
-                        <p class="card-text m-0 float-right">@comment.Date.ToString("g")</p>
-                        <p class="card-text m-0 text-left">@comment.UserName пишет:</p>
-                        <p class="card-text text-left mt-2">@comment.Text</p>
-                    </div>
+            <div class="card comment-card col-sm-12">
+                <div class="card-body">
+                    <p class="card-text m-0 float-right">@comment.Date.ToString("g")</p>
+                    <p class="card-text m-0 text-left">@comment.UserName пишет:</p>
+                    <p class="card-text text-left mt-2">@comment.Text</p>
                 </div>
-            }
-
-            <div class="col-sm-12 mt-3">
-                <button class="btn btn-primary" id="next-comments-btn">Следующие</button>
             </div>
         }
-    </div>
+        @if (Model.HasNext)
+        {
+            <div class="col-sm-12 mt-3">
+                <button class="btn btn-primary" id="next-comments-btn" onclick="nextComments('@Model.ArticleId')">Следующие</button>
+            </div>
+        }
+    }
 </div>
