@@ -47,7 +47,15 @@ function loadComments(articleId, comments) {
 
 function addComment() {
     var textField = document.getElementById('commentText');
+    var error = document.getElementById('error-text');
     var commentText = textField.value;
+
+    if (!commentText || commentText.length < 3) {
+        error.innerText = '*Комментарий не должен быть пустым и минимум 3 символа';
+        return;
+    }
+    error.innerText = '';
+
     var articleId = document.getElementById('articleId').value;
 
     var postRequest = new XMLHttpRequest();

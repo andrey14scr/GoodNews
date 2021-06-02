@@ -69,3 +69,11 @@ a.read-next:active {
 .medium-size {
     font-size: medium;
 }
+
+.large-size {
+    font-size: large;
+}
+
+.red {
+    color: red;
+}
