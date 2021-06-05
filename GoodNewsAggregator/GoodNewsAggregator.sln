@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.DAL.Repo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.DAL.Repositories.Interfaces", "GoodNewsAggregator.DAL.Repositories.Interfaces\GoodNewsAggregator.DAL.Repositories.Interfaces.csproj", "{C1F29CAD-B451-46D3-A8DE-51BD0D4BF90E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodNewsAggregator.WebAPI", "GoodNewsAggregator.WebAPI\GoodNewsAggregator.WebAPI.csproj", "{6111A298-3E56-4731-B7C0-74BCC9269485}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{C1F29CAD-B451-46D3-A8DE-51BD0D4BF90E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1F29CAD-B451-46D3-A8DE-51BD0D4BF90E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1F29CAD-B451-46D3-A8DE-51BD0D4BF90E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6111A298-3E56-4731-B7C0-74BCC9269485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6111A298-3E56-4731-B7C0-74BCC9269485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6111A298-3E56-4731-B7C0-74BCC9269485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6111A298-3E56-4731-B7C0-74BCC9269485}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
