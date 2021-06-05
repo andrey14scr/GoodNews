@@ -77,7 +77,7 @@ namespace GoodNewsAggregator.Controllers
             if (id is null)
             {
                 return NotFound();
-          }
+            }
 
             var article = await _articleService.GetById(id.Value);
 
