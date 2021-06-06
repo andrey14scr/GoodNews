@@ -11,13 +11,16 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.Services.Implementation;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Core.Entities;
+using GoodNewsAggregator.DAL.CQRS.QueryHandlers;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace GoodNewsAggregator.WebAPI
@@ -44,8 +47,11 @@ namespace GoodNewsAggregator.WebAPI
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IRssService, RssService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IArticleCqrsService, ArticleCqrsService>();
 
             services.AddAutoMapper(typeof(AutoMap).Assembly);
+
+            services.AddMediatR(typeof(GetArticleByIdHandler).GetTypeInfo().Assembly);
 
             services.AddDbContext<GoodNewsAggregatorContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
