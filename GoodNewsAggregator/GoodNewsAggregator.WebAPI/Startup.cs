@@ -12,6 +12,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GoodNewsAggregator.Core.Services.Implementation;
+using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.DAL.Core;
+using GoodNewsAggregator.DAL.Core.Entities;
+using GoodNewsAggregator.DAL.Repositories.Implementation;
+using GoodNewsAggregator.DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace GoodNewsAggregator.WebAPI
 {
@@ -27,6 +34,21 @@ namespace GoodNewsAggregator.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews();
+
+            services.AddTransient<IRepository<Article>, ArticlesRepository>();
+            services.AddTransient<IRepository<Rss>, RssRepository>();
+            services.AddTransient<IRepository<Comment>, CommentsRepository>();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IArticleService, ArticleService>();
+            services.AddScoped<IRssService, RssService>();
+            services.AddScoped<ICommentService, CommentService>();
+
+            services.AddAutoMapper(typeof(AutoMap).Assembly);
+
+            services.AddDbContext<GoodNewsAggregatorContext>(opt =>
+                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
