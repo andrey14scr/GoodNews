@@ -20,6 +20,8 @@ using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.QueryHandlers;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
+using Hangfire;
+using Hangfire.SqlServer;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -49,6 +51,21 @@ namespace GoodNewsAggregator.WebAPI
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IArticleCqrsService, ArticleCqrsService>();
 
+            services.AddHangfire(conf => conf
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions()
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(30),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(30),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                })
+            );
+            services.AddHangfireServer();
+
             services.AddAutoMapper(typeof(AutoMap).Assembly);
 
             services.AddMediatR(typeof(GetArticleByIdHandler).GetTypeInfo().Assembly);
@@ -64,7 +81,7 @@ namespace GoodNewsAggregator.WebAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -72,6 +89,10 @@ namespace GoodNewsAggregator.WebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GoodNewsAggregator.WebAPI v1"));
             }
+
+            app.UseHangfireDashboard();
+            var articleService = serviceProvider.GetService(typeof(IArticleService)) as IArticleService;
+            RecurringJob.AddOrUpdate(() => articleService.AggregateNews(), Cron.Minutely());
 
             app.UseHttpsRedirection();
 
@@ -82,6 +103,7 @@ namespace GoodNewsAggregator.WebAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHangfireDashboard();
             });
         }
     }

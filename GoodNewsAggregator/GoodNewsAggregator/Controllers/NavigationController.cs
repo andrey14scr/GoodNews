@@ -83,32 +83,7 @@ namespace GoodNewsAggregator.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Aggregate()
         {
-            var rssSources = await _rssService.GetAll();
-
-            int count = 0;
-
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-
-            //Parallel.ForEach(rssSources, async rss =>
-            foreach (var rss in rssSources)
-            {
-                var articleDtosList = new ConcurrentBag<ArticleDto>();
-                try
-                {
-                    articleDtosList = (ConcurrentBag<ArticleDto>)await _articleService.GetArticleInfosFromRss(rss, _rssService.GetParserById(rss.Id));
-                    count += articleDtosList.Count;
-                    await _articleService.AddRange(articleDtosList);
-                }
-                catch (Exception ex)
-                {
-                    articleDtosList.Clear();
-                    Log.Error($"Error while rss parsing. \n{ex.Message}");
-                }
-            }//);
-
-            stopwatch.Stop();
-            Log.Information($"Aggregation was executed in {stopwatch.ElapsedMilliseconds}ms and added {count} articles.");
+            await _articleService.AggregateNews();
 
             return RedirectToAction(nameof (Main));
         }

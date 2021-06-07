@@ -7,11 +7,13 @@ using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using AutoMapper;
+using GoodNewsAggregator.Core.Services.Implementation.Parsers;
 using GoodNewsAggregator.DAL.Core.Entities;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +26,15 @@ namespace GoodNewsAggregator.Core.Services.Implementation
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+
+        private readonly List<(IWebPageParser Parser, Guid Id)> _parsers = new List<(IWebPageParser parser, Guid id)>()
+        {
+            //(new TutbyParser(), new Guid("5932E5D6-AFE4-44BF-AFD7-8BC808D66A61")),
+            (new OnlinerParser(), new Guid("7EE20FB5-B62A-4DF0-A34E-2DC738D87CDE")),
+            (new TjournalParser(), new Guid("95AC927C-4BA7-43E8-B408-D3B1F4C4164F")),
+            //(new S13Parser(), new Guid("EC7101DA-B135-4035-ACFE-F48F1970B4CB")),
+            (new DtfParser(), new Guid("5707D1F0-6A5C-46FB-ACEC-0288962CB53F")),
+        };
         public ArticleService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
@@ -126,6 +137,33 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             }
 
             return articleDtos;
+        }
+
+        public async Task AggregateNews()
+        {
+            var rssSources = _mapper.Map<List<RssDto>>((await _unitOfWork.Rss.GetAll()).Where( r => _parsers.Exists(p => p.Id == r.Id)));
+
+            int count = 0;
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            foreach (var rss in rssSources)
+            {
+                var articleDtosList = new ConcurrentBag<ArticleDto>();
+                try
+                {
+                    articleDtosList = (ConcurrentBag<ArticleDto>)await this.GetArticleInfosFromRss(rss, _parsers.FirstOrDefault(p => p.Id == rss.Id).Parser);
+                    await this.AddRange(articleDtosList);
+                }
+                catch (Exception ex)
+                {
+                    articleDtosList.Clear();
+                    Log.Error($"Error while rss parsing. \n{ex.Message}");
+                }
+            }
+
+            stopwatch.Stop();
+            Log.Information($"Aggregation was executed in {stopwatch.ElapsedMilliseconds}ms and added {count} articles.");
         }
 
         public IQueryable<Article> Get()

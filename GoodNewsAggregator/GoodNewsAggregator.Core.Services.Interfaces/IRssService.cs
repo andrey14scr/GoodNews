@@ -9,6 +9,5 @@ namespace GoodNewsAggregator.Core.Services.Interfaces
 {
     public interface IRssService : IService<RssDto>
     {
-        public IWebPageParser GetParserById(Guid id);
     }
 }
