@@ -22,22 +22,12 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
 
             foreach (var node in value.ChildNodes)
             {
-                
-                if (node.Name == "p" && node.Attributes.Count == 0)
+                if (node.Name == "p" && node.Attributes.Count == 0 || 
+                    node.Name == "h2" && node.ChildNodes[0].Name != "a" || 
+                    node.Name == "h3" || 
+                    node.Name == "ul")
                 {
-                    result += "<p>" + node.InnerHtml + "</p>";
-                }
-                else if (node.Name == "h2" && node.ChildNodes[0].Name != "a")
-                {
-                    result += "<h2>" + node.InnerHtml + "</h2>";
-                }
-                else if (node.Name == "h3")
-                {
-                    result += "<h3>" + node.InnerHtml + "</h3>";
-                }
-                else if (node.Name == "ul")
-                {
-                    result += "<ul>" + node.InnerHtml + "</ul>";
+                    result += $"<{node.Name}> {HtmlWithoutClasses(node)} </{node.Name}>";
                 }
                 else if (node.Name == "div" && node.HasClass("news-media") )
                 {
@@ -53,19 +43,38 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
                                 temp = temp.FirstChild;
                                 if (temp != null && temp.Name == "img")
                                 {
-                                    result += "<p>" + temp.ParentNode.InnerHtml + "</p>";
+                                    result += $"<p> {HtmlWithoutClasses(temp)} </p>";
                                 }
                             }
                         }
                     }
                 }
-
             }
             
             if (string.IsNullOrWhiteSpace(result))
                 return null;
 
             return result;
+        }
+
+        private string HtmlWithoutClasses(HtmlNode node)
+        {
+            if (node.Name == "img")
+            {
+                node.Attributes.Remove("class");
+                node.Attributes.Remove("id");
+
+                return node.OuterHtml;
+            }
+            else
+            {
+                foreach (var c in node.Attributes.ToArray())
+                {
+                    node.Attributes.Remove(c.Name);
+                }
+
+                return node.InnerHtml;
+            }
         }
     }
 }
