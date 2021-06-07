@@ -18,6 +18,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
 
             var value = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='news-text']");
 
+            if (value == null || value.InnerHtml == "")
+                return null;
+
             string result = "";
 
             foreach (var node in value.ChildNodes)

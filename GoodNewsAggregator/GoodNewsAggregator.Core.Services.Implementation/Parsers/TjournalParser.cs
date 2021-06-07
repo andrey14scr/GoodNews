@@ -38,6 +38,12 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
                     string r = "";
                     FindImage(node, ref r);
                     result += r;
+                    if (string.IsNullOrWhiteSpace(r))
+                    {
+                        FindQuote(node, ref r);
+                        r = $"<blockquote> {r} </blockquote>";
+                        result += r;
+                    }
                 }
             }
 
@@ -52,6 +58,37 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
             }
 
             return node.InnerHtml;
+        }
+
+        private static void FindQuote(HtmlNode node, ref string res)
+        {
+            foreach (var n in node.ChildNodes)
+            {
+                if (n.Name == "p")
+                {
+                    res += $"\"{n.InnerHtml}\"";
+                }
+                else if (n.Name == "div" && n.HasClass("block-quote__author-content"))
+                {
+                    string author = "";
+                    var temp = n.ChildNodes.Where(q => q.HasClass("block-quote__author-name")).FirstOrDefault()?.InnerHtml;
+                    if (temp != null)
+                    {
+                        author += $"<strong> (C) {temp}</strong>";
+                    }
+                    temp = n.ChildNodes.Where(q => q.HasClass("block-quote__author-job")).FirstOrDefault()?.InnerHtml;
+                    if (temp != null)
+                    {
+                        author += $", {temp}";
+                    }
+
+                    res += $"<br><span> {author} </span>";
+                }
+                else
+                {
+                    FindQuote(n, ref res);
+                }
+            }
         }
 
         private static void FindImage(HtmlNode node, ref string res)

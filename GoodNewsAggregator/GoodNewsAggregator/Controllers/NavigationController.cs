@@ -5,6 +5,7 @@ using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -26,16 +27,6 @@ namespace GoodNewsAggregator.Controllers
     {
         private readonly IArticleService _articleService;
         private readonly IRssService _rssService;
-
-        private readonly List<(IWebPageParser Parser, Guid Id)> _parsers = new List<(IWebPageParser parser, Guid id)>()
-        {
-            //(new TutbyParser(), new Guid("5932E5D6-AFE4-44BF-AFD7-8BC808D66A61")),
-            (new OnlinerParser(), new Guid("7EE20FB5-B62A-4DF0-A34E-2DC738D87CDE")),
-            (new TjournalParser(), new Guid("95AC927C-4BA7-43E8-B408-D3B1F4C4164F")),
-            //(new S13Parser(), new Guid("EC7101DA-B135-4035-ACFE-F48F1970B4CB")),
-            (new DtfParser(), new Guid("5707D1F0-6A5C-46FB-ACEC-0288962CB53F")),
-        };
-        
         private readonly IMapper _mapper;
 
         public NavigationController(IArticleService articleService, IRssService rssService, IMapper mapper)
@@ -93,58 +84,33 @@ namespace GoodNewsAggregator.Controllers
         public async Task<IActionResult> Aggregate()
         {
             var rssSources = await _rssService.GetAll();
-            rssSources = rssSources.Where(r => _parsers.Exists(p => p.Id == r.Id));
-            var news = new List<ArticleDto>();
+
+            int count = 0;
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            //var tasks = rssSources.Select(async rss =>
+            //Parallel.ForEach(rssSources, async rss =>
             foreach (var rss in rssSources)
             {
-                var articleDtosList = new List<ArticleDto>();
+                var articleDtosList = new ConcurrentBag<ArticleDto>();
                 try
                 {
-                    articleDtosList = (List<ArticleDto>) await _articleService.GetArticleInfosFromRss(rss);
+                    articleDtosList = (ConcurrentBag<ArticleDto>)await _articleService.GetArticleInfosFromRss(rss, _rssService.GetParserById(rss.Id));
+                    count += articleDtosList.Count;
+                    await _articleService.AddRange(articleDtosList);
                 }
                 catch (Exception ex)
                 {
                     articleDtosList.Clear();
                     Log.Error($"Error while rss parsing. \n{ex.Message}");
                 }
-
-                if (articleDtosList.Count != 0)
-                {
-                    var parser = _parsers.FirstOrDefault(p => p.Id == rss.Id).Parser;
-
-                    if (parser != null)
-                    {
-                        WebSiteParse(parser, ref articleDtosList);
-                        news.AddRange(articleDtosList);
-                    }                    
-                }
             }//);
-            //await Task.WhenAll(tasks);
 
             stopwatch.Stop();
-            Log.Information($"Aggregation was executed in {stopwatch.ElapsedMilliseconds}ms and added {news.Count} articles.");
-
-            await _articleService.AddRange(news);
+            Log.Information($"Aggregation was executed in {stopwatch.ElapsedMilliseconds}ms and added {count} articles.");
 
             return RedirectToAction(nameof (Main));
-        }
-
-        private static void WebSiteParse(IWebPageParser parser, ref List<ArticleDto> articleDtos)
-        {
-            string body;
-
-            Parallel.ForEach(articleDtos, articleDto =>
-            {
-                body = parser.Parse(articleDto.Source);
-
-                if (!string.IsNullOrEmpty(body))
-                    articleDto.Content = body;
-            });
         }
     }
 }

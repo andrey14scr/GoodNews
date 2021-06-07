@@ -5,6 +5,7 @@ using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,9 @@ using System.Threading.Tasks;
 using System.Xml;
 using AutoMapper;
 using GoodNewsAggregator.DAL.Core.Entities;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Terradue.ServiceModel.Syndication;
 
 namespace GoodNewsAggregator.Core.Services.Implementation
@@ -83,24 +86,27 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             return articleDtos;
         }
 
-        public async Task<IEnumerable<ArticleDto>> GetArticleInfosFromRss(RssDto rss)
+        public async Task<IEnumerable<ArticleDto>> GetArticleInfosFromRss(RssDto rss, IWebPageParser parser)
         {
-            var articleDtos = new List<ArticleDto>();
+            var articleDtos = new ConcurrentBag<ArticleDto>();
 
             using (var reader = XmlReader.Create(rss.Url))
             {
                 var feed = SyndicationFeed.Load(reader);
                 reader.Close();
+                
                 if (feed.Items.Any())
                 {
-                    var currentArticleUrls = await _unitOfWork.Articles
+                    var urls = await _unitOfWork.Articles
                         .Get()
                         .Select(a => a.Source)
                         .ToListAsync();
 
+                    ConcurrentBag<string> currentArticleUrls = new ConcurrentBag<string>(urls);
+
                     Parallel.ForEach(feed.Items, syndicationItem =>
                     {
-                        if (!currentArticleUrls.Any(url => url.Equals(syndicationItem.Id)))
+                        if (!currentArticleUrls.Any(url => url.Equals(syndicationItem.Links[0].Uri.ToString())))
                         {
                             var newsDto = new ArticleDto()
                             {
@@ -108,7 +114,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                                 RssId = rss.Id,
                                 Source = syndicationItem.Links[0].Uri.ToString(),
                                 Title = syndicationItem.Title.Text,
-                                Date = syndicationItem.PublishDate.DateTime
+                                Date = syndicationItem.PublishDate.DateTime, 
+                                Content = parser.Parse(syndicationItem.Links[0].Uri.ToString()), 
+                                GoodFactor = 0
                             };
 
                             articleDtos.Add(newsDto);
