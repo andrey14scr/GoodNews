@@ -77,3 +77,8 @@ a.read-next:active {
 .red {
     color: red;
 }
+
+img {
+    max-width: 100%;
+    max-height: auto;
+}

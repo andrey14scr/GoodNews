@@ -63,7 +63,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
                     string a = "";
                     string imgSource = n.GetAttributeValue("data-image-src", a);
                     if (!string.IsNullOrWhiteSpace(imgSource))
-                        res = $"<img src=\"{imgSource}\">";
+                        res = $"<p><img src=\"{imgSource}\"></p>";
                     return;
                 }
 
