@@ -24,6 +24,11 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
             Table = Db.Set<T>();
         }
 
+        public IQueryable<T> Get()
+        {
+            return Table.AsQueryable();
+        }
+
         public async Task Add(T obj)
         {
             await Table.AddAsync(obj);
@@ -73,27 +78,6 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
         public async Task<IEnumerable<T>> GetAll()
         {
             return await Table.ToListAsync();
-        }
-
-        public IQueryable<T> FindBy(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
-        {
-            //var result = Table.Where(predicate);
-            //if (includes.Any())
-            //{
-            //    result = includes
-            //        .Aggregate(result,
-            //            (current, include)
-            //                => current.Include(include));
-            //}
-
-            //return result;
-
-            throw new NotImplementedException();
-        }
-
-        public IQueryable<T> Get()
-        {
-            return Table;
         }
     }
 }

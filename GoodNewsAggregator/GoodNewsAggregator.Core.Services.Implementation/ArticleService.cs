@@ -27,7 +27,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        private readonly List<(IWebPageParser Parser, Guid Id)> _parsers = new List<(IWebPageParser parser, Guid id)>()
+        private readonly ConcurrentBag<(IWebPageParser Parser, Guid Id)> _parsers = new ConcurrentBag<(IWebPageParser parser, Guid id)>()
         {
             //(new TutbyParser(), new Guid("5932E5D6-AFE4-44BF-AFD7-8BC808D66A61")),
             (new OnlinerParser(), new Guid("7EE20FB5-B62A-4DF0-A34E-2DC738D87CDE")),
@@ -73,11 +73,18 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             await _unitOfWork.SaveChangesAsync();
         }
 
+        private async Task UpdateRange(IEnumerable<ArticleDto> articleDtos)
+        {
+            var articles = _mapper.Map<List<Article>>(articleDtos);
+            await _unitOfWork.Articles.UpdateRange(articles);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<ArticleDto>> GetAll()
         {
             var articles = await _unitOfWork.Articles.GetAll();
             var articleDtos = _mapper.Map<List<ArticleDto>>(articles);
-            
+
             return articleDtos;
         }
 
@@ -85,7 +92,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         {
             var article = await _unitOfWork.Articles.GetById(id);
             var articleDto = _mapper.Map<ArticleDto>(article);
-            
+
             return articleDto;
         }
 
@@ -97,73 +104,92 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             return articleDtos;
         }
 
-        public async Task<IEnumerable<ArticleDto>> GetArticleInfosFromRss(RssDto rss, IWebPageParser parser)
-        {
-            var articleDtos = new ConcurrentBag<ArticleDto>();
-
-            using (var reader = XmlReader.Create(rss.Url))
-            {
-                var feed = SyndicationFeed.Load(reader);
-                reader.Close();
-                
-                if (feed.Items.Any())
-                {
-                    var urls = await _unitOfWork.Articles
-                        .Get()
-                        .Select(a => a.Source)
-                        .ToListAsync();
-
-                    ConcurrentBag<string> currentArticleUrls = new ConcurrentBag<string>(urls);
-
-                    Parallel.ForEach(feed.Items, syndicationItem =>
-                    {
-                        if (!currentArticleUrls.Any(url => url.Equals(syndicationItem.Links[0].Uri.ToString())))
-                        {
-                            var newsDto = new ArticleDto()
-                            {
-                                Id = Guid.NewGuid(),
-                                RssId = rss.Id,
-                                Source = syndicationItem.Links[0].Uri.ToString(),
-                                Title = syndicationItem.Title.Text,
-                                Date = syndicationItem.PublishDate.DateTime, 
-                                Content = parser.Parse(syndicationItem.Links[0].Uri.ToString()), 
-                                GoodFactor = 0
-                            };
-
-                            articleDtos.Add(newsDto);
-                        }
-                    });
-                }
-            }
-
-            return articleDtos;
-        }
-
         public async Task AggregateNews()
         {
-            var rssSources = _mapper.Map<List<RssDto>>((await _unitOfWork.Rss.GetAll()).Where( r => _parsers.Exists(p => p.Id == r.Id)));
+            var rssSources = new ConcurrentBag<RssDto>(_mapper.Map<List<RssDto>>((await _unitOfWork.Rss.GetAll()).Where(r => _parsers.Any(p => p.Id == r.Id))));
 
             int count = 0;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
+            ConcurrentBag<ArticleDto> addArticles = new ConcurrentBag<ArticleDto>();
+            ConcurrentBag<ArticleDto> updateArticles = new ConcurrentBag<ArticleDto>();
+
             foreach (var rss in rssSources)
             {
-                var articleDtosList = new ConcurrentBag<ArticleDto>();
                 try
                 {
-                    articleDtosList = (ConcurrentBag<ArticleDto>)await this.GetArticleInfosFromRss(rss, _parsers.FirstOrDefault(p => p.Id == rss.Id).Parser);
-                    await this.AddRange(articleDtosList);
+                    var parser = _parsers.FirstOrDefault(p => p.Id == rss.Id).Parser;
+
+                    using (var reader = XmlReader.Create(rss.Url))
+                    {
+                        var feed = SyndicationFeed.Load(reader);
+                        reader.Close();
+
+                        if (feed.Items.Any())
+                        {
+                            count += feed.Items.Count();
+
+                            var urls = feed.Items.Select(f => f.Links[0].Uri.ToString());
+
+                            var existList = _mapper.Map<List<ArticleDto>>(
+                                await _unitOfWork.Articles.Get()
+                                .Where(a => urls.Any(f => f == a.Source))
+                                .ToListAsync()
+                                );
+
+                            ConcurrentBag<ArticleDto> existingArticles = new ConcurrentBag<ArticleDto>(existList);
+
+                            Parallel.ForEach(feed.Items, syndicationItem =>
+                            {
+                                var uri = syndicationItem.Links[0].Uri.ToString();
+
+                                var existingArticle = existingArticles.FirstOrDefault(a => a.Source == uri);
+
+                                if (existingArticle == null)
+                                {
+                                    var newsDto = new ArticleDto()
+                                    {
+                                        Id = Guid.NewGuid(),
+                                        RssId = rss.Id,
+                                        Source = uri,
+                                        Title = syndicationItem.Title.Text,
+                                        Date = syndicationItem.PublishDate.DateTime,
+                                        Content = parser.Parse(uri),
+                                        GoodFactor = 0
+                                    };
+
+                                    addArticles.Add(newsDto);
+                                }
+                                else if (existingArticle.Date != syndicationItem.PublishDate.DateTime)
+                                {
+                                    existingArticle.Content = parser.Parse(uri);
+                                    existingArticle.Date = syndicationItem.PublishDate.DateTime;
+                                    existingArticle.Title = syndicationItem.Title.Text;
+                                    existingArticle.GoodFactor = 0;
+
+                                    updateArticles.Add(existingArticle);
+                                }
+                            });
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
-                    articleDtosList.Clear();
                     Log.Error($"Error while rss parsing. \n{ex.Message}");
                 }
             }
 
+            await AddRange(addArticles);
+            await UpdateRange(updateArticles);
+
             stopwatch.Stop();
-            Log.Information($"Aggregation was executed in {stopwatch.ElapsedMilliseconds}ms and added {count} articles.");
+            Log.Information($"Aggregation was executed in {stopwatch.ElapsedMilliseconds}ms and added/updated {count} articles.");
+        }
+
+        public async Task RateNews()
+        {
+
         }
 
         public IQueryable<Article> Get()

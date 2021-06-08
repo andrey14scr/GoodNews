@@ -15,7 +15,6 @@ namespace GoodNewsAggregator.DAL.Repositories.Interfaces
         Task<IEnumerable<T>> GetAll();
         Task<T> GetById(Guid id);
 
-        IQueryable<T> FindBy(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
         IQueryable<T> Get();
 
         Task Add(T obj);
