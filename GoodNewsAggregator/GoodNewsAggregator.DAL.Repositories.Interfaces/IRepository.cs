@@ -20,11 +20,11 @@ namespace GoodNewsAggregator.DAL.Repositories.Interfaces
         Task Add(T obj);
         Task AddRange(IEnumerable<T> objs);
 
-        Task Update(T obj);
-        Task UpdateRange(IEnumerable<T> objs);
+        void Update(T obj);
+        void UpdateRange(IEnumerable<T> objs);
 
         Task Remove(Guid id);
-        Task Remove(T obj);
-        Task RemoveRange(IEnumerable<T> objs);
+        void Remove(T obj);
+        void RemoveRange(IEnumerable<T> objs);
     }
 }

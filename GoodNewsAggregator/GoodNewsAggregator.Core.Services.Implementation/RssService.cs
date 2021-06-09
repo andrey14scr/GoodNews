@@ -48,7 +48,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         public async Task RemoveRange(IEnumerable<RssDto> rssDtos)
         {
-            await _unitOfWork.Rss.RemoveRange(_mapper.Map<List<Rss>>(rssDtos));
+            _unitOfWork.Rss.RemoveRange(_mapper.Map<List<Rss>>(rssDtos));
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -71,7 +71,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         public async Task Update(RssDto rssDto)
         {
             var rss = _mapper.Map<Rss>(rssDto);
-            await _unitOfWork.Rss.Update(rss);
+            _unitOfWork.Rss.Update(rss);
             await _unitOfWork.SaveChangesAsync();
         }
     }

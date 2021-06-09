@@ -26,7 +26,7 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
 
         public IQueryable<T> Get()
         {
-            return Table.AsQueryable();
+            return Table.AsNoTracking();
         }
 
         public async Task Add(T obj)
@@ -41,15 +41,15 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
 
         public async Task<T> GetById(Guid id)
         {
-            return await Table.FirstOrDefaultAsync(t => t.Id.Equals(id));
+            return await Table.AsNoTracking().FirstOrDefaultAsync(t => t.Id.Equals(id));
         }
 
-        public async Task Update(T obj)
+        public void Update(T obj)
         {
             Table.Update(obj);
         }
 
-        public async Task UpdateRange(IEnumerable<T> objs)
+        public void UpdateRange(IEnumerable<T> objs)
         {
             Table.UpdateRange(objs);
         }
@@ -59,12 +59,12 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
             Table.Remove(await GetById(id));
         }
 
-        public async Task Remove(T obj)
+        public void Remove(T obj)
         {
             Table.Remove(obj);
         }
 
-        public async Task RemoveRange(IEnumerable<T> objs)
+        public void RemoveRange(IEnumerable<T> objs)
         {
             Table.RemoveRange(objs);
         }
@@ -77,7 +77,7 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
 
         public async Task<IEnumerable<T>> GetAll()
         {
-            return await Table.ToListAsync();
+            return await Table.AsNoTracking().ToListAsync();
         }
     }
 }

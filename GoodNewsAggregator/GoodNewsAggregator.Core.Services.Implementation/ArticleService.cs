@@ -29,11 +29,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         private readonly ConcurrentBag<(IWebPageParser Parser, Guid Id)> _parsers = new ConcurrentBag<(IWebPageParser parser, Guid id)>()
         {
-            //(new TutbyParser(), new Guid("5932E5D6-AFE4-44BF-AFD7-8BC808D66A61")),
-            (new OnlinerParser(), new Guid("7EE20FB5-B62A-4DF0-A34E-2DC738D87CDE")),
-            (new TjournalParser(), new Guid("95AC927C-4BA7-43E8-B408-D3B1F4C4164F")),
-            //(new S13Parser(), new Guid("EC7101DA-B135-4035-ACFE-F48F1970B4CB")),
-            (new DtfParser(), new Guid("5707D1F0-6A5C-46FB-ACEC-0288962CB53F")),
+            (new OnlinerParser(), new Guid("0FEB39F3-5287-4A6D-ACD9-E4D27CFC69D6")),
+            (new TjournalParser(), new Guid("5A8710CF-A819-4CBB-9003-0BE2F975ABA5")),
+            (new DtfParser(), new Guid("62CFFEA0-1A14-4AC9-9CE6-4B082F029B46")),
         };
         public ArticleService(IUnitOfWork unitOfWork, IMapper mapper)
         {
@@ -62,21 +60,21 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         public async Task RemoveRange(IEnumerable<ArticleDto> articleDtos)
         {
             var articles = _mapper.Map<List<Article>>(articleDtos.ToList());
-            await _unitOfWork.Articles.RemoveRange(articles);
+            _unitOfWork.Articles.RemoveRange(articles);
             await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task Update(ArticleDto articleDto)
         {
             var article = _mapper.Map<Article>(articleDto);
-            await _unitOfWork.Articles.Update(article);
+            _unitOfWork.Articles.Update(article);
             await _unitOfWork.SaveChangesAsync();
         }
 
         private async Task UpdateRange(IEnumerable<ArticleDto> articleDtos)
         {
             var articles = _mapper.Map<List<Article>>(articleDtos);
-            await _unitOfWork.Articles.UpdateRange(articles);
+            _unitOfWork.Articles.UpdateRange(articles);
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -186,13 +184,10 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                 }
             });
 
-            existList.Clear();
-            existingArticles.Clear();
-
             try
             {
                 await AddRange(addArticles);
-                await Update(updateArticles.ElementAt(0));
+                await UpdateRange(updateArticles);
             }
             catch (Exception ex)
             {

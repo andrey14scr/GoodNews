@@ -63,7 +63,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         public async Task Update(CommentDto commentDto)
         {
             var comment = _mapper.Map<Comment>(commentDto);
-            await _unitOfWork.Comments.Update(comment);
+            _unitOfWork.Comments.Update(comment);
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -75,7 +75,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         public async Task RemoveRange(IEnumerable<CommentDto> commentDtos)
         {
             var comments = _mapper.Map<List<Comment>>(commentDtos.ToList());
-            await _unitOfWork.Comments.RemoveRange(comments);
+            _unitOfWork.Comments.RemoveRange(comments);
             await _unitOfWork.SaveChangesAsync();
         }
 
