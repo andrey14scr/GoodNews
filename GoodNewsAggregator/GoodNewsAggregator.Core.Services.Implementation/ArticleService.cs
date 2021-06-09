@@ -114,74 +114,90 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
             ConcurrentBag<ArticleDto> addArticles = new ConcurrentBag<ArticleDto>();
             ConcurrentBag<ArticleDto> updateArticles = new ConcurrentBag<ArticleDto>();
+            ConcurrentBag<(RssDto Rss, SyndicationFeed Feed)> rssWithFeed = new ConcurrentBag<(RssDto Rss, SyndicationFeed feed)>();
+
+            List<ArticleDto> existList = new List<ArticleDto>();
 
             foreach (var rss in rssSources)
             {
+                using (var reader = XmlReader.Create(rss.Url))
+                {
+                    var feed = SyndicationFeed.Load(reader);
+                    rssWithFeed.Add((rss, feed));
+                    reader.Close();
+
+                    var urls = feed.Items.Select(f => f.Links[0].Uri.ToString());
+
+                    existList.AddRange(_mapper.Map<List<ArticleDto>>(await _unitOfWork.Articles.Get()
+                            .Where(a => urls.Any(f => f == a.Source))
+                            .ToListAsync())
+                    );
+                }
+            }
+
+            ConcurrentBag<ArticleDto> existingArticles = new ConcurrentBag<ArticleDto>(existList);
+
+            Parallel.ForEach(rssWithFeed, rf =>
+            {
                 try
                 {
-                    var parser = _parsers.FirstOrDefault(p => p.Id == rss.Id).Parser;
+                    var parser = _parsers.FirstOrDefault(p => p.Id == rf.Rss.Id).Parser;
 
-                    using (var reader = XmlReader.Create(rss.Url))
+                    if (rf.Feed.Items.Any())
                     {
-                        var feed = SyndicationFeed.Load(reader);
-                        reader.Close();
+                        count += rf.Feed.Items.Count();
 
-                        if (feed.Items.Any())
+                        Parallel.ForEach(rf.Feed.Items, syndicationItem =>
                         {
-                            count += feed.Items.Count();
+                            var uri = syndicationItem.Links[0].Uri.ToString();
 
-                            var urls = feed.Items.Select(f => f.Links[0].Uri.ToString());
+                            var existingArticle = existingArticles.FirstOrDefault(a => a.Source == uri);
 
-                            var existList = _mapper.Map<List<ArticleDto>>(
-                                await _unitOfWork.Articles.Get()
-                                .Where(a => urls.Any(f => f == a.Source))
-                                .ToListAsync()
-                                );
-
-                            ConcurrentBag<ArticleDto> existingArticles = new ConcurrentBag<ArticleDto>(existList);
-
-                            Parallel.ForEach(feed.Items, syndicationItem =>
+                            if (existingArticle == null)
                             {
-                                var uri = syndicationItem.Links[0].Uri.ToString();
-
-                                var existingArticle = existingArticles.FirstOrDefault(a => a.Source == uri);
-
-                                if (existingArticle == null)
+                                var newsDto = new ArticleDto()
                                 {
-                                    var newsDto = new ArticleDto()
-                                    {
-                                        Id = Guid.NewGuid(),
-                                        RssId = rss.Id,
-                                        Source = uri,
-                                        Title = syndicationItem.Title.Text,
-                                        Date = syndicationItem.PublishDate.DateTime,
-                                        Content = parser.Parse(uri),
-                                        GoodFactor = 0
-                                    };
+                                    Id = Guid.NewGuid(),
+                                    RssId = rf.Rss.Id,
+                                    Source = uri,
+                                    Title = syndicationItem.Title.Text,
+                                    Date = syndicationItem.PublishDate.DateTime,
+                                    Content = parser.Parse(uri),
+                                    GoodFactor = 0
+                                };
 
-                                    addArticles.Add(newsDto);
-                                }
-                                else if (existingArticle.Date != syndicationItem.PublishDate.DateTime)
-                                {
-                                    existingArticle.Content = parser.Parse(uri);
-                                    existingArticle.Date = syndicationItem.PublishDate.DateTime;
-                                    existingArticle.Title = syndicationItem.Title.Text;
-                                    existingArticle.GoodFactor = 0;
+                                addArticles.Add(newsDto);
+                            }
+                            else if (existingArticle.Date != syndicationItem.PublishDate.DateTime)
+                            {
+                                existingArticle.Content = parser.Parse(uri);
+                                existingArticle.Date = syndicationItem.PublishDate.DateTime;
+                                existingArticle.Title = syndicationItem.Title.Text;
+                                existingArticle.GoodFactor = 0;
 
-                                    updateArticles.Add(existingArticle);
-                                }
-                            });
-                        }
+                                updateArticles.Add(existingArticle);
+                            }
+                        });
                     }
                 }
                 catch (Exception ex)
                 {
                     Log.Error($"Error while rss parsing. \n{ex.Message}");
                 }
-            }
+            });
 
-            await AddRange(addArticles);
-            await UpdateRange(updateArticles);
+            existList.Clear();
+            existingArticles.Clear();
+
+            try
+            {
+                await AddRange(addArticles);
+                await Update(updateArticles.ElementAt(0));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error while articles adding. \n{ex.Message}");
+            }
 
             stopwatch.Stop();
             Log.Information($"Aggregation was executed in {stopwatch.ElapsedMilliseconds}ms and added/updated {count} articles.");
