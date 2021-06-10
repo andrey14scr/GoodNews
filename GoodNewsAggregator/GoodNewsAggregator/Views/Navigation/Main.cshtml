@@ -24,7 +24,7 @@
             <div class="article-card">
                 <div class="float-left ml-1">Хорошесть:</div>
                 <div class="text-right mr-1">@article.Date.ToShortDateString()</div>
-                <div class="float-left ml-1" data-color="@(article.GoodFactor * 100)">@((article.GoodFactor * 100).ToString("0.##"))%</div>
+                <div class="float-left ml-1" data-color="@((article.GoodFactor + Model.MinGoodFactor) / Model.MaxGoodFactor)">@(((article.GoodFactor + Model.MinGoodFactor) / Model.MaxGoodFactor).ToString("0.##"))%</div>
                 <div class="text-right mr-1">@article.Date.ToShortTimeString()</div>
                 <div class="text-left ml-1 mr-1 mt-2">Источник:
                     <a class="read-next source-link" href="@article.Source">@article.RssName</a>

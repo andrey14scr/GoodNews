@@ -1,8 +1,8 @@
 ﻿$(document).ready(function () {
     var mc = {
-        '0-39': 'bad-good-factor',
-        '40-79': 'normal-good-factor',
-        '80-100': 'good-good-factor'
+        '0-19': 'bad-good-factor',
+        '20-59': 'normal-good-factor',
+        '60-100': 'good-good-factor'
     };
 
     function between(x, min, max) {
@@ -23,8 +23,6 @@
         $.each(mc, function (name, value) {
             first = parseInt(name.split('-')[0], 10);
             second = parseInt(name.split('-')[1], 10);
-
-            console.log(between(dc, first, second));
 
             if (between(dc, first, second)) {
                 th.addClass(value);

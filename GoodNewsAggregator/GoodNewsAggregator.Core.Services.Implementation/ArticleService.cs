@@ -8,14 +8,17 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using AutoMapper;
+using AutoMapper.Internal;
 using GoodNewsAggregator.Core.Services.Implementation.Parsers;
 using GoodNewsAggregator.DAL.Core.Entities;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -27,18 +30,23 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 {
     public class ArticleService : IArticleService
     {
+        private readonly string RATEINFOJSON = "RateInfo.json";
+        private readonly string AFINNRUJSON = "AFINN-ru.json";
+
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        private readonly ConcurrentBag<(IWebPageParser Parser, Guid Id)> _parsers = new ConcurrentBag<(IWebPageParser parser, Guid id)>()
-        {
-            (new OnlinerParser(), new Guid("7EE20FB5-B62A-4DF0-A34E-2DC738D87CDE")),
-            (new TjournalParser(), new Guid("95AC927C-4BA7-43E8-B408-D3B1F4C4164F")),
-            (new DtfParser(), new Guid("5707D1F0-6A5C-46FB-ACEC-0288962CB53F")),
-            //(new OnlinerParser(), new Guid("0FEB39F3-5287-4A6D-ACD9-E4D27CFC69D6")),
-            //(new TjournalParser(), new Guid("5A8710CF-A819-4CBB-9003-0BE2F975ABA5")),
-            //(new DtfParser(), new Guid("62CFFEA0-1A14-4AC9-9CE6-4B082F029B46")),
-        };
+        private readonly ConcurrentBag<(IWebPageParser Parser, Guid Id)> _parsers =
+            new ConcurrentBag<(IWebPageParser parser, Guid id)>()
+            {
+                (new OnlinerParser(), new Guid("7EE20FB5-B62A-4DF0-A34E-2DC738D87CDE")),
+                (new TjournalParser(), new Guid("95AC927C-4BA7-43E8-B408-D3B1F4C4164F")),
+                (new DtfParser(), new Guid("5707D1F0-6A5C-46FB-ACEC-0288962CB53F")),
+                //(new OnlinerParser(), new Guid("0FEB39F3-5287-4A6D-ACD9-E4D27CFC69D6")),
+                //(new TjournalParser(), new Guid("5A8710CF-A819-4CBB-9003-0BE2F975ABA5")),
+                //(new DtfParser(), new Guid("62CFFEA0-1A14-4AC9-9CE6-4B082F029B46")),
+            };
+
         public ArticleService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
@@ -47,7 +55,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         public async Task Add(ArticleDto commentDto)
         {
-            await AddRange(new[] { commentDto });
+            await AddRange(new[] {commentDto});
         }
 
         public async Task AddRange(IEnumerable<ArticleDto> articleDtos)
@@ -60,7 +68,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         public async Task Remove(ArticleDto articleDto)
         {
-            await RemoveRange(new[] { articleDto });
+            await RemoveRange(new[] {articleDto});
         }
 
         public async Task RemoveRange(IEnumerable<ArticleDto> articleDtos)
@@ -110,51 +118,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         public async Task AggregateNews()
         {
-            var articles = await _unitOfWork.Articles.Get().Where(a => a.GoodFactor == 0).Take(30).ToListAsync();
-
-            foreach (var item in articles)
-            {
-                List<string> articleContent = new List<string>();
-
-                var text = "Привет мой дивный новый мир!"; //item.Content;
-
-                string responseString = "";
-                using (var httpClient = new HttpClient())
-                {
-                    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=e4d5ecb62d3755f4845dc098adf3d25993efc96c")
-                    {
-                        Content = new StringContent("[{\"text\":\"" + text + "\"}]", Encoding.UTF8, "application/json")
-                    };
-                    var response = await httpClient.SendAsync(request);
-                    responseString = await response.Content.ReadAsStringAsync();
-                }
-
-                using (JsonDocument doc = JsonDocument.Parse(responseString))
-                {
-                    JsonElement root = doc.RootElement;
-                    JsonElement arrayElement = root[0];
-                    JsonElement annotationsElement = arrayElement.GetProperty("annotations");
-                    JsonElement lemmaElement = annotationsElement.GetProperty("lemma");
-                    JsonElement valueJson;
-
-                    foreach (var element in lemmaElement.EnumerateArray())
-                    {
-                        if (element.TryGetProperty("value", out valueJson))
-                        {
-                            string valueString = valueJson.ToString();
-                            if (!string.IsNullOrWhiteSpace(valueString))
-                                articleContent.Add(valueString);
-                        }
-                    }
-                }
-
-
-            }
-
-            return;
-            var rssSources = new ConcurrentBag<RssDto>(_mapper.Map<List<RssDto>>((await _unitOfWork.Rss.GetAll()).Where(r => _parsers.Any(p => p.Id == r.Id))));
+            var rssSources = new ConcurrentBag<RssDto>(
+                _mapper.Map<List<RssDto>>(
+                    (await _unitOfWork.Rss.GetAll()).Where(r => _parsers.Any(p => p.Id == r.Id))));
 
             int count = 0;
             var stopwatch = new Stopwatch();
@@ -162,7 +128,8 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
             ConcurrentBag<ArticleDto> addArticles = new ConcurrentBag<ArticleDto>();
             ConcurrentBag<ArticleDto> updateArticles = new ConcurrentBag<ArticleDto>();
-            ConcurrentBag<(RssDto Rss, SyndicationFeed Feed)> rssWithFeed = new ConcurrentBag<(RssDto Rss, SyndicationFeed feed)>();
+            ConcurrentBag<(RssDto Rss, SyndicationFeed Feed)> rssWithFeed =
+                new ConcurrentBag<(RssDto Rss, SyndicationFeed feed)>();
 
             List<ArticleDto> existList = new List<ArticleDto>();
 
@@ -177,8 +144,8 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                     var urls = feed.Items.Select(f => f.Links[0].Uri.ToString());
 
                     existList.AddRange(_mapper.Map<List<ArticleDto>>(await _unitOfWork.Articles.Get()
-                            .Where(a => urls.Any(f => f == a.Source))
-                            .ToListAsync())
+                        .Where(a => urls.Any(f => f == a.Source))
+                        .ToListAsync())
                     );
                 }
             }
@@ -245,37 +212,111 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             }
 
             stopwatch.Stop();
-            Log.Information($"Aggregation was executed in {stopwatch.ElapsedMilliseconds}ms and added/updated {count} articles.");
+            Log.Information(
+                $"Aggregation was executed in {stopwatch.ElapsedMilliseconds}ms and added/updated {count} articles.");
         }
 
         public async Task RateNews()
         {
-            var articles = await _unitOfWork.Articles.Get().Where(a => a.GoodFactor == 0).Take(30).ToListAsync();
+            var articles =
+                _mapper.Map<List<ArticleDto>>(await _unitOfWork.Articles.Get().Where(a => a.GoodFactor == 0).Take(30)
+                    .ToListAsync());
+
+            Dictionary<Guid, List<string>> articleContent = new Dictionary<Guid, List<string>>();
 
             foreach (var item in articles)
             {
-                var text = item.Content;
+                articleContent.Add(item.Id, new List<string>());
 
+                var text = Regex.Replace(item.Content, "<[^>]+>", " ");
+                text = Regex.Replace(text, @"[\u0000-\u001F]", " ");
+
+                string responseString = "";
                 using (var httpClient = new HttpClient())
                 {
-                    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    httpClient.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=e4d5ecb62d3755f4845dc098adf3d25993efc96c")
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post,
+                        "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=e4d5ecb62d3755f4845dc098adf3d25993efc96c")
                     {
                         Content = new StringContent("[{\"text\":\"" + text + "\"}]", Encoding.UTF8, "application/json")
                     };
+                    var response = await httpClient.SendAsync(request);
+                    responseString = await response.Content.ReadAsStringAsync();
+                }
 
-                    var response = await httpClient.SendAsync(message);
+                if (string.IsNullOrWhiteSpace(responseString))
+                {
+                    Log.Error("Error while response getting.");
+                    continue;
+                }
 
-                    var responseString = await response.Content.ReadAsStringAsync();
-
-                    using (JsonDocument doc = JsonDocument.Parse(responseString))
+                using (JsonDocument doc = JsonDocument.Parse(responseString))
+                {
+                    try
                     {
                         JsonElement root = doc.RootElement;
-                        root.GetProperty("name");
+                        JsonElement arrayElement = root[0];
+                        JsonElement annotationsElement = arrayElement.GetProperty("annotations");
+                        JsonElement lemmaElement = annotationsElement.GetProperty("lemma");
+                        JsonElement valueJson;
+
+                        foreach (var element in lemmaElement.EnumerateArray())
+                        {
+                            if (element.TryGetProperty("value", out valueJson))
+                            {
+                                string valueString = valueJson.ToString();
+                                if (!string.IsNullOrWhiteSpace(valueString))
+                                    articleContent[item.Id].Add(valueString);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("Error while adding words from article. More:\n" + ex.Message);
+                    }
+                }
+
+            }
+
+            int temp = 0;
+
+            using (var sr = new StreamReader(AFINNRUJSON))
+            {
+                string jsonContent = await sr.ReadToEndAsync();
+
+                using (JsonDocument doc = JsonDocument.Parse(jsonContent))
+                {
+                    foreach (var item in articleContent)
+                    {
+                        int counter = 0;
+
+                        foreach (var word in item.Value)
+                        {
+                            JsonElement root = doc.RootElement;
+                            JsonElement valueJson;
+
+                            if (root.TryGetProperty(word, out valueJson))
+                            {
+                                if (valueJson.TryGetInt32(out temp))
+                                    counter += temp;
+
+                                temp = 0;
+                            }
+                        }
+
+                        if (counter == 0)
+                        {
+                            counter = 1;
+                        }
+
+                        articles[articles.FindIndex(a => a.Id == item.Key)].GoodFactor = counter;
                     }
                 }
             }
+
+            await UpdateRange(articles);
         }
 
         public IQueryable<Article> Get()

@@ -92,7 +92,8 @@ namespace GoodNewsAggregator.WebAPI
 
             app.UseHangfireDashboard();
             var articleService = serviceProvider.GetService(typeof(IArticleService)) as IArticleService;
-            RecurringJob.AddOrUpdate(() => articleService.AggregateNews(), Cron.Minutely());
+            RecurringJob.AddOrUpdate(() => articleService.AggregateNews(), "*/15 * * * *");
+            RecurringJob.AddOrUpdate(() => articleService.RateNews(), "*/2 * * * *");
 
             app.UseHttpsRedirection();
 

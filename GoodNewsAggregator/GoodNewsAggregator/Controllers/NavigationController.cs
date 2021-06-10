@@ -41,6 +41,9 @@ namespace GoodNewsAggregator.Controllers
             var result = _articleService.Get();
             int articlesCount = result.Count();
 
+            double max = await result.MaxAsync(a => a.GoodFactor);
+            double min = await result.MinAsync(a => a.GoodFactor);
+
             result = result.OrderByDescending(a => a.Date)
                 .Skip((page - 1) * Pagination.PAGESIZE)
                 .Take(Pagination.PAGESIZE);
@@ -60,7 +63,10 @@ namespace GoodNewsAggregator.Controllers
                 article.RssName = (await _rssService.GetById(article.RssId)).Name;
             }
 
-            return View(new NewsOnPage() { Articles = articleDtos, PageInfo = pageInfo });
+            if (max == 0)
+                max = 1;
+
+            return View(new NewsOnPage() { Articles = articleDtos, PageInfo = pageInfo, MaxGoodFactor = (max + Math.Abs(min)) / 100, MinGoodFactor = Math.Abs(min) });
         }
 
         public async Task<IActionResult> Article(Guid? id)
@@ -86,6 +92,14 @@ namespace GoodNewsAggregator.Controllers
             await _articleService.AggregateNews();
 
             return RedirectToAction(nameof (Main));
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Rate()
+        {
+            await _articleService.RateNews();
+
+            return Ok();
         }
     }
 }
