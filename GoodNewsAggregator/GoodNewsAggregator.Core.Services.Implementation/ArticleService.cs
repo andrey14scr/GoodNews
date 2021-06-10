@@ -9,7 +9,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml;
 using AutoMapper;
@@ -29,9 +32,12 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         private readonly ConcurrentBag<(IWebPageParser Parser, Guid Id)> _parsers = new ConcurrentBag<(IWebPageParser parser, Guid id)>()
         {
-            (new OnlinerParser(), new Guid("0FEB39F3-5287-4A6D-ACD9-E4D27CFC69D6")),
-            (new TjournalParser(), new Guid("5A8710CF-A819-4CBB-9003-0BE2F975ABA5")),
-            (new DtfParser(), new Guid("62CFFEA0-1A14-4AC9-9CE6-4B082F029B46")),
+            (new OnlinerParser(), new Guid("7EE20FB5-B62A-4DF0-A34E-2DC738D87CDE")),
+            (new TjournalParser(), new Guid("95AC927C-4BA7-43E8-B408-D3B1F4C4164F")),
+            (new DtfParser(), new Guid("5707D1F0-6A5C-46FB-ACEC-0288962CB53F")),
+            //(new OnlinerParser(), new Guid("0FEB39F3-5287-4A6D-ACD9-E4D27CFC69D6")),
+            //(new TjournalParser(), new Guid("5A8710CF-A819-4CBB-9003-0BE2F975ABA5")),
+            //(new DtfParser(), new Guid("62CFFEA0-1A14-4AC9-9CE6-4B082F029B46")),
         };
         public ArticleService(IUnitOfWork unitOfWork, IMapper mapper)
         {
@@ -104,6 +110,50 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         public async Task AggregateNews()
         {
+            var articles = await _unitOfWork.Articles.Get().Where(a => a.GoodFactor == 0).Take(30).ToListAsync();
+
+            foreach (var item in articles)
+            {
+                List<string> articleContent = new List<string>();
+
+                var text = "Привет мой дивный новый мир!"; //item.Content;
+
+                string responseString = "";
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=e4d5ecb62d3755f4845dc098adf3d25993efc96c")
+                    {
+                        Content = new StringContent("[{\"text\":\"" + text + "\"}]", Encoding.UTF8, "application/json")
+                    };
+                    var response = await httpClient.SendAsync(request);
+                    responseString = await response.Content.ReadAsStringAsync();
+                }
+
+                using (JsonDocument doc = JsonDocument.Parse(responseString))
+                {
+                    JsonElement root = doc.RootElement;
+                    JsonElement arrayElement = root[0];
+                    JsonElement annotationsElement = arrayElement.GetProperty("annotations");
+                    JsonElement lemmaElement = annotationsElement.GetProperty("lemma");
+                    JsonElement valueJson;
+
+                    foreach (var element in lemmaElement.EnumerateArray())
+                    {
+                        if (element.TryGetProperty("value", out valueJson))
+                        {
+                            string valueString = valueJson.ToString();
+                            if (!string.IsNullOrWhiteSpace(valueString))
+                                articleContent.Add(valueString);
+                        }
+                    }
+                }
+
+
+            }
+
+            return;
             var rssSources = new ConcurrentBag<RssDto>(_mapper.Map<List<RssDto>>((await _unitOfWork.Rss.GetAll()).Where(r => _parsers.Any(p => p.Id == r.Id))));
 
             int count = 0;
@@ -200,7 +250,32 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         public async Task RateNews()
         {
+            var articles = await _unitOfWork.Articles.Get().Where(a => a.GoodFactor == 0).Take(30).ToListAsync();
 
+            foreach (var item in articles)
+            {
+                var text = item.Content;
+
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=e4d5ecb62d3755f4845dc098adf3d25993efc96c")
+                    {
+                        Content = new StringContent("[{\"text\":\"" + text + "\"}]", Encoding.UTF8, "application/json")
+                    };
+
+                    var response = await httpClient.SendAsync(message);
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+
+                    using (JsonDocument doc = JsonDocument.Parse(responseString))
+                    {
+                        JsonElement root = doc.RootElement;
+                        root.GetProperty("name");
+                    }
+                }
+            }
         }
 
         public IQueryable<Article> Get()
