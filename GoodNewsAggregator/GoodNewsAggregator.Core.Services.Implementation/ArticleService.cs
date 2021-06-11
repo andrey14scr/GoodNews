@@ -282,39 +282,46 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
             int temp = 0;
 
+            string jsonContent = "";
+
             using (var sr = new StreamReader(AFINNRUJSON))
             {
-                string jsonContent = await sr.ReadToEndAsync();
+                jsonContent = await sr.ReadToEndAsync();
+            }
 
-                using (JsonDocument doc = JsonDocument.Parse(jsonContent))
+            if (string.IsNullOrWhiteSpace(jsonContent))
+            {
+                Log.Error("Empty afinn json file content");
+                return;
+            }
+
+            using (JsonDocument doc = JsonDocument.Parse(jsonContent))
+            {
+                JsonElement root = doc.RootElement;
+                JsonElement valueJson;
+
+                foreach (var item in articleContent)
                 {
-                    foreach (var item in articleContent)
+                    int counter = 0;
+
+                    foreach (var word in item.Value)
                     {
-                        int counter = 0;
-
-                        foreach (var word in item.Value)
+                        if (root.TryGetProperty(word, out valueJson))
                         {
-                            JsonElement root = doc.RootElement;
-                            JsonElement valueJson;
+                            if (valueJson.TryGetInt32(out temp))
+                                counter += temp;
 
-                            if (root.TryGetProperty(word, out valueJson))
-                            {
-                                if (valueJson.TryGetInt32(out temp))
-                                    counter += temp;
-
-                                temp = 0;
-                            }
+                            temp = 0;
                         }
-
-                        if (counter == 0)
-                        {
-                            counter = 1;
-                        }
-
-                        articles[articles.FindIndex(a => a.Id == item.Key)].GoodFactor = counter;
                     }
+
+                    if (counter == 0)
+                        counter = 1;
+
+                    articles[articles.FindIndex(a => a.Id == item.Key)].GoodFactor = counter;
                 }
             }
+
 
             await UpdateRange(articles);
         }
