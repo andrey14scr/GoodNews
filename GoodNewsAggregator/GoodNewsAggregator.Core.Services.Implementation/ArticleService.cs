@@ -299,29 +299,33 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             {
                 JsonElement root = doc.RootElement;
                 JsonElement valueJson;
+                int valueCounter, wordsCounter;
+                float result = 0;
 
                 foreach (var item in articleContent)
                 {
-                    int counter = 0;
+                    valueCounter = 0;
+                    wordsCounter = 0;
 
                     foreach (var word in item.Value)
                     {
-                        if (root.TryGetProperty(word, out valueJson))
+                        if (root.TryGetProperty(word, out valueJson) && valueJson.TryGetInt32(out temp))
                         {
-                            if (valueJson.TryGetInt32(out temp))
-                                counter += temp;
-
+                            valueCounter += temp;
+                            wordsCounter++;
+                            
                             temp = 0;
                         }
                     }
 
-                    if (counter == 0)
-                        counter = 1;
+                    if (wordsCounter == 0)
+                        result = 0.000001f; //null good factor
+                    else
+                        result = (float)valueCounter / wordsCounter;
 
-                    articles[articles.FindIndex(a => a.Id == item.Key)].GoodFactor = counter;
+                    articles[articles.FindIndex(a => a.Id == item.Key)].GoodFactor = result;
                 }
             }
-
 
             await UpdateRange(articles);
         }

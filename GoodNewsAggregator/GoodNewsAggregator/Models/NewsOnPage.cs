@@ -10,7 +10,5 @@ namespace GoodNewsAggregator.Models
     {
         public IEnumerable<ArticleWithRssNameDto> Articles { get; set; }
         public PageInfo PageInfo { get; set; }
-        public double MaxGoodFactor { get; set; }
-        public double MinGoodFactor { get; set; }
     }
 }

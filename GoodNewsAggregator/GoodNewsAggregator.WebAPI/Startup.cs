@@ -10,8 +10,10 @@ using Microsoft.OpenApi.Models;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.Services.Implementation;
 using GoodNewsAggregator.Core.Services.Interfaces;
@@ -20,10 +22,14 @@ using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.QueryHandlers;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
+using GoodNewsAggregator.WebAPI.Auth;
 using Hangfire;
 using Hangfire.SqlServer;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GoodNewsAggregator.WebAPI
 {
@@ -70,6 +76,26 @@ namespace GoodNewsAggregator.WebAPI
 
             services.AddMediatR(typeof(GetArticleByIdHandler).GetTypeInfo().Assembly);
 
+            services.AddAuthentication(opt =>
+                {
+                    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                }
+            ).AddJwtBearer(opt =>
+            {
+                opt.Audience = "GoodNewsAggregator";
+                opt.RequireHttpsMetadata = false;
+                opt.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
+                    ValidAudience = Configuration["Jwt:Issuer"],
+                    ValidIssuer = Configuration["Jwt:Audience"],
+                    ValidateIssuer = true,
+                    ValidateAudience = true
+                };
+            });
+
             services.AddDbContext<GoodNewsAggregatorContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -99,6 +125,7 @@ namespace GoodNewsAggregator.WebAPI
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

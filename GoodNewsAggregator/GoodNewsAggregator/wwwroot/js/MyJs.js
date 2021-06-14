@@ -1,8 +1,8 @@
 ﻿$(document).ready(function () {
     var mc = {
-        '0-19': 'bad-good-factor',
-        '20-59': 'normal-good-factor',
-        '60-100': 'good-good-factor'
+        '0-49': 'bad-good-factor',
+        '50-55': 'normal-good-factor',
+        '56-100': 'good-good-factor'
     };
 
     function between(x, min, max) {

@@ -10,7 +10,7 @@ namespace GoodNewsAggregator.DAL.Core.Entities
         public string Title { get; set; }
         public string Content { get; set; }
         public DateTime Date { get; set; }
-        public int GoodFactor { get; set; }
+        public float GoodFactor { get; set; }
 
         public Guid RssId { get; set; }
         public virtual Rss Rss { get; set; }

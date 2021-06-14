@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -18,20 +19,14 @@ namespace GoodNewsAggregator.Controllers
     public class AccountController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public AccountController(ILogger<HomeController> logger, 
-            UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager,
-            IMapper mapper)
+        public AccountController(ILogger<HomeController> logger, IMapper mapper, IUserService userService)
         {
             _logger = logger;
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _signInManager = signInManager;
             _mapper = mapper;
+            _userService = userService;
         }
 
         public IActionResult Login()
@@ -46,18 +41,15 @@ namespace GoodNewsAggregator.Controllers
 
         public async Task<IActionResult> MyAccount()
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-
-            if (user is null)
-            {
+            var userDto = await _userService.GetCurrentUser(HttpContext.User);
+            if (userDto is null)
                 return RedirectToAction(nameof(Login));
-            }
 
             return View(new AccountModel
             {
-                UserName = user.UserName, 
-                Email = user.Email,
-                RoleName = (await _userManager.GetRolesAsync(user)).Aggregate((a, b) => a + ", " + b)
+                UserName = userDto.UserName,
+                Email = userDto.Email,
+                RoleName = await _userService.GetRolesOfUser(userDto)
             });
         }
 
@@ -67,29 +59,38 @@ namespace GoodNewsAggregator.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User
+                UserDto userDto = new UserDto
                 {
                     Id = Guid.NewGuid(),
                     Email = registerModel.Email,
                     UserName = registerModel.UserName
                 };
 
-                IdentityResult result = await _userManager.CreateAsync(user, registerModel.Password);
+                var resultRegister = await _userService.Register(userDto, registerModel.Password, RoleNames.USER);
 
-                if (result.Succeeded)
+                if (resultRegister != null)
                 {
-                    await _signInManager.SignInAsync(user, false);
+                    if (resultRegister.Succeeded)
+                    {
+                        var resultLogin = await _userService.Login(userDto.UserName, registerModel.Password);
 
-                    if(_userManager.Users.Count() == 1)
-                        await _userManager.AddToRoleAsync(user, RoleNames.ADMIN);
-                    else
-                        await _userManager.AddToRoleAsync(user, RoleNames.USER);
+                        if (resultLogin.Succeeded)
+                            return RedirectToAction(nameof(MyAccount));
 
-                    return RedirectToAction(nameof(MyAccount));
+                        return View("Error", new ErrorViewModel() 
+                            { 
+                            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, 
+                                Message = "Ошибка во время входа в аккаунт."
+                            });
+                    }
+
+                    foreach (IdentityError error in resultRegister.Errors)
+                        ModelState.AddModelError("", error.Description);
                 }
-
-                foreach (IdentityError error in result.Errors)
-                    ModelState.AddModelError("", error.Description);
+                else
+                {
+                    ModelState.AddModelError("", "Аккаунт с такой электронной почтой уже существует!");
+                }
             }
 
             return View();
@@ -101,7 +102,7 @@ namespace GoodNewsAggregator.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(loginModel.Username, loginModel.Password, false, false);
+                var result = await _userService.Login(loginModel.Username, loginModel.Password);
                 if (result.Succeeded)
                 {
                     if (!string.IsNullOrEmpty(loginModel.ReturnUrl) && Url.IsLocalUrl(loginModel.ReturnUrl))
@@ -121,15 +122,14 @@ namespace GoodNewsAggregator.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOut()
         {
-            await _signInManager.SignOutAsync();
-
+            await _userService.Logout();
             return RedirectToAction(nameof(Login));
         }
 
         [AcceptVerbs("Get","Post")]
         public async Task<IActionResult> CheckEmail(string email)
         {
-            return (await _userManager.FindByEmailAsync(email)) != null ? Json(false) : Json(true);
+            return await _userService.Exist(email) ? Json(false) : Json(true);
         }
     }
 }
