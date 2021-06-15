@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.Commands.Articles;
 using GoodNewsAggregator.DAL.CQRS.Commands.Comments;
+using GoodNewsAggregator.DAL.CQRS.Commands.RssSources;
 
 namespace GoodNewsAggregator.Core.Services.Implementation
 {
@@ -33,6 +34,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
             CreateMap<Comment, UpdateCommentCommand>().ReverseMap();
             CreateMap<Comment, AddCommentCommand>().ReverseMap();
+
+            CreateMap<Rss, UpdateRssCommand>().ReverseMap();
+            CreateMap<Rss, AddRssCommand>().ReverseMap();
         }
     }
 }
