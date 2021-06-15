@@ -29,11 +29,15 @@ namespace GoodNewsAggregator.Controllers
 
         public async Task<IActionResult> List(Guid articleId, int next, bool add = true)
         {
-            var comments = _commentService.Get().Where(c => c.ArticleId == articleId)
-                .OrderByDescending(c => c.Date);
+            var comments = (await _commentService.GetByArticleId(articleId))
+                .OrderByDescending(c => c.Date)
+                .ToList();
+
             int amount = comments.Count();
-            var list = await comments.Skip(add ? next * Comments.COMMENTSSIZE : 0)
-                .Take(add ? Comments.COMMENTSSIZE : (next + 1) * Comments.COMMENTSSIZE).ToListAsync();
+
+            var list = comments.Skip(add ? next * Comments.COMMENTSSIZE : 0)
+                .Take(add ? Comments.COMMENTSSIZE : (next + 1) * Comments.COMMENTSSIZE)
+                .ToList();
 
             List<CommentViewModel> result = new List<CommentViewModel>();
 

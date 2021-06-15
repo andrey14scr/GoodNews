@@ -26,7 +26,6 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
         public async Task<int> Handle(RemoveArticlesRangeCommand request, CancellationToken cancellationToken)
         {
             var articles = _dbContext.Articles.Where(a => request.Ids.Contains(a.Id));
-
             _dbContext.Articles.RemoveRange(articles);
             return await _dbContext.SaveChangesAsync(cancellationToken);
         }

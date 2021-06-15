@@ -27,7 +27,6 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
         {
             var articles = _mapper.Map<IEnumerable<Article>>(request.ArticleDtos);
             await _dbContext.Articles.AddRangeAsync(articles);
-
             return await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }

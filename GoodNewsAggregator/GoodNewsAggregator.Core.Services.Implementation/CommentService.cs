@@ -78,10 +78,5 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             _unitOfWork.Comments.RemoveRange(comments);
             await _unitOfWork.SaveChangesAsync();
         }
-
-        public IQueryable<Comment> Get()
-        {
-            return _unitOfWork.Comments.Get();
-        }
     }
 }

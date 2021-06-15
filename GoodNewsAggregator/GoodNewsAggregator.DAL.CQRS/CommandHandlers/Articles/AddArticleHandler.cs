@@ -26,7 +26,6 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
         {
             var article = _mapper.Map<Article>(request);
             await _dbContext.Articles.AddAsync(article);
-
             return await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }

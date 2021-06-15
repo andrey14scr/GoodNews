@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.Commands.Articles;
+using GoodNewsAggregator.DAL.CQRS.Commands.Comments;
 
 namespace GoodNewsAggregator.Core.Services.Implementation
 {
@@ -29,6 +30,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
             CreateMap<Article, UpdateArticleCommand>().ReverseMap();
             CreateMap<Article, AddArticleCommand>().ReverseMap();
+
+            CreateMap<Comment, UpdateCommentCommand>().ReverseMap();
+            CreateMap<Comment, AddCommentCommand>().ReverseMap();
         }
     }
 }
