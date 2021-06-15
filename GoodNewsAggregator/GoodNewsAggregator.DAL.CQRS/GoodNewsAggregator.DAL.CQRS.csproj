@@ -5,17 +5,36 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Terradue.ServiceModel.Syndication" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GoodNewsAggregator.Core.DTO\GoodNewsAggregator.Core.DTO.csproj" />
+    <ProjectReference Include="..\GoodNewsAggregator.Core.Services.Interfaces\GoodNewsAggregator.Core.Services.Interfaces.csproj" />
+    <ProjectReference Include="..\GoodNewsAggregator.Core.Services.Parsers\GoodNewsAggregator.Core.Services.Parsers.csproj" />
     <ProjectReference Include="..\GoodNewsAggregator.DAL.Core\GoodNewsAggregator.DAL.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="CommandHandlers\Comments\" />
+    <Folder Include="CommandHandlers\Roles\" />
+    <Folder Include="CommandHandlers\Rss\" />
+    <Folder Include="CommandHandlers\Users\" />
+    <Folder Include="Commands\Comments\" />
+    <Folder Include="Commands\Roles\" />
+    <Folder Include="Commands\Rss\" />
+    <Folder Include="Commands\Users\" />
+    <Folder Include="Queries\Comments\" />
+    <Folder Include="Queries\Roles\" />
+    <Folder Include="Queries\Rss\" />
+    <Folder Include="Queries\Users\" />
+    <Folder Include="QueryHandlers\Comments\" />
+    <Folder Include="QueryHandlers\Roles\" />
+    <Folder Include="QueryHandlers\Rss\" />
+    <Folder Include="QueryHandlers\Users\" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 using GoodNewsAggregator.Core.DTO;
 using MediatR;
 
-namespace GoodNewsAggregator.DAL.CQRS.Queries
+namespace GoodNewsAggregator.DAL.CQRS.Queries.Articles
 {
     public class GetArticleByIdQuery : IRequest<ArticleDto>
     {

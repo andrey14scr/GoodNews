@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GoodNewsAggregator.DAL.Core.Entities;
+using GoodNewsAggregator.DAL.CQRS.Commands.Articles;
 
 namespace GoodNewsAggregator.Core.Services.Implementation
 {
@@ -25,6 +26,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             CreateMap<Role, RoleDto>().ReverseMap();
             CreateMap<Rss, RssDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
+
+            CreateMap<Article, UpdateArticleCommand>().ReverseMap();
+            CreateMap<Article, AddArticleCommand>().ReverseMap();
         }
     }
 }

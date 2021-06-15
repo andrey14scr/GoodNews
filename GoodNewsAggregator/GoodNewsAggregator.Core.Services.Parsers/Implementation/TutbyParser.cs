@@ -1,7 +1,7 @@
-﻿using GoodNewsAggregator.Core.Services.Interfaces;
+﻿using GoodNewsAggregator.Core.Services.Parsers.Interface;
 using HtmlAgilityPack;
 
-namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
+namespace GoodNewsAggregator.Core.Services.Parsers.Implementation
 {
     public class TutbyParser : IWebPageParser
     {

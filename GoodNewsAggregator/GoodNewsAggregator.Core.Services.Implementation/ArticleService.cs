@@ -19,7 +19,9 @@ using System.Threading.Tasks;
 using System.Xml;
 using AutoMapper;
 using AutoMapper.Internal;
-using GoodNewsAggregator.Core.Services.Implementation.Parsers;
+using GoodNewsAggregator.Core.Services.Parsers;
+using GoodNewsAggregator.Core.Services.Parsers.Implementation;
+using GoodNewsAggregator.Core.Services.Parsers.Interface;
 using GoodNewsAggregator.DAL.Core.Entities;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +32,6 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 {
     public class ArticleService : IArticleService
     {
-        private readonly string RATEINFOJSON = "RateInfo.json";
         private readonly string AFINNRUJSON = "AFINN-ru.json";
 
         private readonly IUnitOfWork _unitOfWork;

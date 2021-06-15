@@ -1,10 +1,10 @@
 ﻿using System.Linq;
-using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.Core.Services.Parsers.Interface;
 using HtmlAgilityPack;
 
-namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
+namespace GoodNewsAggregator.Core.Services.Parsers.Implementation
 {
-    public class DtfParser : IWebPageParser
+    public class TjournalParser : IWebPageParser
     {
         public string Parse(string url)
         {
@@ -103,10 +103,8 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
                         res = $"<p><img src=\"{imgSource}\"></p>";
                     return;
                 }
-                else
-                {
-                    FindImage(n, ref res);
-                }
+
+                FindImage(n, ref res);
             }
         }
     }

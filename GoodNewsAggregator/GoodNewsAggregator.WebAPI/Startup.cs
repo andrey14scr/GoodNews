@@ -20,6 +20,7 @@ using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.QueryHandlers;
+using GoodNewsAggregator.DAL.CQRS.QueryHandlers.Articles;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using GoodNewsAggregator.WebAPI.Auth;
