@@ -12,8 +12,9 @@ namespace GoodNewsAggregator.Core.Services.Interfaces
     public interface IArticleService : IService<ArticleDto>
     {
         Task<IEnumerable<ArticleDto>> GetByRssId(Guid id);
-        Task<IQueryable<ArticleDto>> Get();
+        Task<IEnumerable<ArticleDto>> GetFirst(int skip, int take);
         Task AggregateNews();
         Task RateNews();
+        Task<int> GetArticlesCount();
     }
 }

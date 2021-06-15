@@ -15,67 +15,72 @@ namespace GoodNewsAggregator.Core.Services.Implementation
     public class ArticleCqrsService : IArticleService
     {
         private readonly IMapper _mapper;
-        private readonly IMediator _mediatr;
+        private readonly IMediator _mediator;
 
-        public ArticleCqrsService(IMapper mapper, IMediator mediatr)
+        public ArticleCqrsService(IMapper mapper, IMediator mediator)
         {
             _mapper = mapper;
-            _mediatr = mediatr;
+            _mediator = mediator;
         }
 
         public async Task<IEnumerable<ArticleDto>> GetAll()
         {
-            return await _mediatr.Send(new GetAllArticlesQuery());
+            return await _mediator.Send(new GetAllArticlesQuery());
         }
 
         public async Task<ArticleDto> GetById(Guid id)
         {
-            return await _mediatr.Send(new GetArticleByIdQuery(id));
+            return await _mediator.Send(new GetArticleByIdQuery(id));
         }
 
         public async Task Add(ArticleDto articleDto)
         {
-            await _mediatr.Send(new AddArticleCommand(articleDto));
+            await _mediator.Send(new AddArticleCommand(articleDto));
         }
 
         public async Task AddRange(IEnumerable<ArticleDto> articleDtos)
         {
-            await _mediatr.Send(new AddArticlesRangeCommand(articleDtos));
+            await _mediator.Send(new AddArticlesRangeCommand(articleDtos));
         }
 
         public async Task Update(ArticleDto articleDto)
         {
-            await _mediatr.Send(new UpdateArticleCommand(articleDto));
+            await _mediator.Send(new UpdateArticleCommand(articleDto));
         }
 
         public async Task Remove(ArticleDto articleDto)
         {
-            await _mediatr.Send(new RemoveArticleCommand(articleDto.Id));
+            await _mediator.Send(new RemoveArticleCommand(articleDto.Id));
         }
 
         public async Task RemoveRange(IEnumerable<ArticleDto> articleDtos)
         {
-            await _mediatr.Send(new RemoveArticlesRangeCommand(articleDtos.Select(a => a.Id)));
+            await _mediator.Send(new RemoveArticlesRangeCommand(articleDtos.Select(a => a.Id)));
         }
 
         public async Task<IEnumerable<ArticleDto>> GetByRssId(Guid id)
         {
-            return await _mediatr.Send(new GetArticlesByRssIdQuery(id));
+            return await _mediator.Send(new GetArticlesByRssIdQuery(id));
         }
 
-        public async Task<IQueryable<ArticleDto>> Get()
+        public async Task<IEnumerable<ArticleDto>> GetFirst(int skip, int take)
         {
-            return _mapper.Map<IQueryable<ArticleDto>>(await _mediatr.Send(new GetArticlesQuery()));
+            return await _mediator.Send(new GetFirstArticlesQuery(skip, take));
         }
 
         public async Task AggregateNews()
         {
-            await _mediatr.Send(new AggregateNewsCommand());
+            await _mediator.Send(new AggregateNewsCommand());
         }
 
         public async Task RateNews()
         {
-            await _mediatr.Send(new RateNewsCommand());
+            await _mediator.Send(new RateNewsCommand());
+        }
+
+        public async Task<int> GetArticlesCount()
+        {
+            return await _mediator.Send(new GetArticlesCountQuery());
         }
     }
 }

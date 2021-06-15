@@ -126,7 +126,7 @@ namespace GoodNewsAggregator.Controllers
             return RedirectToAction(nameof(Login));
         }
 
-        [AcceptVerbs("Get","Post")]
+        [AcceptVerbs("GetFirst","Post")]
         public async Task<IActionResult> CheckEmail(string email)
         {
             return await _userService.Exist(email) ? Json(false) : Json(true);

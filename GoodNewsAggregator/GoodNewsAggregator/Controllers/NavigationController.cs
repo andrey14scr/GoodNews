@@ -38,13 +38,9 @@ namespace GoodNewsAggregator.Controllers
 
         public async Task<IActionResult> Main(int page = 1)
         {
-            var result = await _articleService.Get();
-            int articlesCount = result.Count();
+            var news = (await _articleService.GetFirst((page - 1) * Pagination.PAGESIZE, Pagination.PAGESIZE)).ToList();
 
-            result = result.OrderByDescending(a => a.Date)
-                .Skip((page - 1) * Pagination.PAGESIZE)
-                .Take(Pagination.PAGESIZE);
-            var news = await result.ToListAsync();
+            int articlesCount = await _articleService.GetArticlesCount();
 
             var pageInfo = new PageInfo()
             {
