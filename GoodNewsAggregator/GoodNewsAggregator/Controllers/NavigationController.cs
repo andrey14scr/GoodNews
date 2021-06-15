@@ -38,7 +38,7 @@ namespace GoodNewsAggregator.Controllers
 
         public async Task<IActionResult> Main(int page = 1)
         {
-            var result = _articleService.Get();
+            var result = await _articleService.Get();
             int articlesCount = result.Count();
 
             result = result.OrderByDescending(a => a.Date)

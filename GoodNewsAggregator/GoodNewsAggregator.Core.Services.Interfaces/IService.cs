@@ -11,7 +11,7 @@ namespace GoodNewsAggregator.Core.Services.Interfaces
         Task<IEnumerable<T>> GetAll();
         Task<T> GetById(Guid id);
 
-        Task Add(T commentDto);
+        Task Add(T obj);
         Task AddRange(IEnumerable<T> objs);
 
         Task Update(T obj);

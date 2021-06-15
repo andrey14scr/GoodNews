@@ -53,10 +53,10 @@ namespace GoodNewsAggregator.WebAPI
             services.AddTransient<IRepository<Comment>, CommentsRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IArticleService, ArticleService>();
+            //services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IRssService, RssService>();
             services.AddScoped<ICommentService, CommentService>();
-            services.AddScoped<IArticleCqrsService, ArticleCqrsService>();
+            services.AddScoped<IArticleService, ArticleCqrsService>();
 
             services.AddHangfire(conf => conf
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)

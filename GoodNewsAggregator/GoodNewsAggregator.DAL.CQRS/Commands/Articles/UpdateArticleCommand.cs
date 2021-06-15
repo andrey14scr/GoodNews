@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.DAL.Core.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -15,5 +17,16 @@ namespace GoodNewsAggregator.DAL.CQRS.Commands.Articles
         public DateTime Date { get; set; }
         public float GoodFactor { get; set; }
         public Guid RssId { get; set; }
+
+        public UpdateArticleCommand(ArticleDto articleDto)
+        {
+            Id = articleDto.Id;
+            Source = articleDto.Source;
+            Title = articleDto.Title;
+            Content = articleDto.Content;
+            Date = articleDto.Date;
+            GoodFactor = articleDto.GoodFactor;
+            RssId = articleDto.RssId;
+        }
     }
 }

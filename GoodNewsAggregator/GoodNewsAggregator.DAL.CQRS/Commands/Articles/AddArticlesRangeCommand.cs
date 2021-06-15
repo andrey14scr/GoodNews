@@ -7,5 +7,10 @@ namespace GoodNewsAggregator.DAL.CQRS.Commands.Articles
     public class AddArticlesRangeCommand : IRequest<int>
     {
         public IEnumerable<ArticleDto> ArticleDtos { get; set; }
+
+        public AddArticlesRangeCommand(IEnumerable<ArticleDto> articleDtos)
+        {
+            ArticleDtos = articleDtos;
+        }
     }
 }

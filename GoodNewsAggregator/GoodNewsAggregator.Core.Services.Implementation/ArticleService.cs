@@ -54,9 +54,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             _mapper = mapper;
         }
 
-        public async Task Add(ArticleDto commentDto)
+        public async Task Add(ArticleDto articleDto)
         {
-            await AddRange(new[] {commentDto});
+            await AddRange(new[] { articleDto });
         }
 
         public async Task AddRange(IEnumerable<ArticleDto> articleDtos)
@@ -115,6 +115,11 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             var articleDtos = _mapper.Map<List<ArticleDto>>(articles);
 
             return articleDtos;
+        }
+
+        public async Task<IQueryable<ArticleDto>> Get()
+        {
+            return _mapper.Map<IQueryable<ArticleDto>>(await _unitOfWork.Articles.Get().AsNoTracking().AllAsync(a => a.Id != null));
         }
 
         public async Task AggregateNews()
@@ -329,11 +334,6 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             }
 
             await UpdateRange(articles);
-        }
-
-        public IQueryable<Article> Get()
-        {
-            return _unitOfWork.Articles.Get();
         }
     }
 }

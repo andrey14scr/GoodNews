@@ -29,9 +29,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             _mapper = mapper;
         }
 
-        public async Task Add(RssDto commentDto)
+        public async Task Add(RssDto rssDto)
         {
-            await AddRange(new[] { commentDto });
+            await AddRange(new[] { rssDto });
         }
 
         public async Task AddRange(IEnumerable<RssDto> rssDtos)
