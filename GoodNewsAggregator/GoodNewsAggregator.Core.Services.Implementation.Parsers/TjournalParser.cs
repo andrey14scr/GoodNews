@@ -28,7 +28,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
                     {
                         result += HtmlWithoutClasses(node);
                     }
-                    else if (node.ParentNode.Name == "h2" || node.ParentNode.Name == "h3")
+                    else if (node.ParentNode.Name == "h2" || node.ParentNode.Name == "h3" || 
+                             node.ParentNode.Name == "h4" || node.ParentNode.Name == "h5" || 
+                             node.ParentNode.Name == "h6")
                     {
                         result += $"<{node.ParentNode.Name}> {node.InnerText} </{node.ParentNode.Name}>";
                     }
