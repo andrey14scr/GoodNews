@@ -19,7 +19,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.QueryHandlers.Articles;
-using GoodNewsAggregator.Mapper;
+using GoodNewsAggregator.Tools;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 

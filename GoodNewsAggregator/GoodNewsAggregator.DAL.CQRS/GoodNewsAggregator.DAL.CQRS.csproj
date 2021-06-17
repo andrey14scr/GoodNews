@@ -14,8 +14,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GoodNewsAggregator.Core.DTO\GoodNewsAggregator.Core.DTO.csproj" />
+    <ProjectReference Include="..\GoodNewsAggregator.Core.Services.Implementation.Parsers\GoodNewsAggregator.Core.Services.Implementation.Parsers.csproj" />
     <ProjectReference Include="..\GoodNewsAggregator.Core.Services.Interfaces\GoodNewsAggregator.Core.Services.Interfaces.csproj" />
-    <ProjectReference Include="..\GoodNewsAggregator.Core.Services.Parsers\GoodNewsAggregator.Core.Services.Parsers.csproj" />
     <ProjectReference Include="..\GoodNewsAggregator.DAL.Core\GoodNewsAggregator.DAL.Core.csproj" />
   </ItemGroup>
 

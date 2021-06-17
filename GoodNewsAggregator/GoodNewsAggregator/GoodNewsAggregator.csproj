@@ -39,6 +39,8 @@
     <ProjectReference Include="..\GoodNewsAggregator.Core.Services.Implementation\GoodNewsAggregator.Core.Services.Implementation.csproj" />
     <ProjectReference Include="..\GoodNewsAggregator.Core.Services.Interfaces\GoodNewsAggregator.Core.Services.Interfaces.csproj" />
     <ProjectReference Include="..\GoodNewsAggregator.DAL.Core\GoodNewsAggregator.DAL.Core.csproj" />
+    <ProjectReference Include="..\GoodNewsAggregator.Models\GoodNewsAggregator.Models.csproj" />
+    <ProjectReference Include="..\GoodNewsAggregator.Tools\GoodNewsAggregator.Tools.csproj" />
   </ItemGroup>
 
 </Project>

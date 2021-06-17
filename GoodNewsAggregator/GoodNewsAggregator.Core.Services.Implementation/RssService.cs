@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GoodNewsAggregator.Core.Services.Parsers;
 using GoodNewsAggregator.DAL.Core.Entities;
 
 namespace GoodNewsAggregator.Core.Services.Implementation

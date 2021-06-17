@@ -6,7 +6,7 @@ using GoodNewsAggregator.DAL.CQRS.Commands.Comments;
 using GoodNewsAggregator.DAL.CQRS.Commands.RssSources;
 using GoodNewsAggregator.Models;
 
-namespace GoodNewsAggregator.Mapper
+namespace GoodNewsAggregator.Tools
 {
     public class AutoMap : Profile
     {

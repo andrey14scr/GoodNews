@@ -8,13 +8,11 @@ using System.Threading.Tasks;
 using System.Xml;
 using AutoMapper;
 using GoodNewsAggregator.Core.DTO;
+using GoodNewsAggregator.Core.Services.Implementation.Parsers;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.Core.Services.Parsers;
-using GoodNewsAggregator.Core.Services.Parsers.Implementation;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.Commands.Articles;
-using GoodNewsAggregator.DAL.CQRS.Queries.Articles;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -33,9 +31,6 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                 (new OnlinerParser(), new Guid("7EE20FB5-B62A-4DF0-A34E-2DC738D87CDE")),
                 (new TjournalParser(), new Guid("95AC927C-4BA7-43E8-B408-D3B1F4C4164F")),
                 (new DtfParser(), new Guid("5707D1F0-6A5C-46FB-ACEC-0288962CB53F")),
-                //(new OnlinerParser(), new Guid("0FEB39F3-5287-4A6D-ACD9-E4D27CFC69D6")),
-                //(new TjournalParser(), new Guid("5A8710CF-A819-4CBB-9003-0BE2F975ABA5")),
-                //(new DtfParser(), new Guid("62CFFEA0-1A14-4AC9-9CE6-4B082F029B46")),
             };
 
         public AggregateNewsHandler(GoodNewsAggregatorContext dbContext, IMapper mapper)

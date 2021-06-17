@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.Constants;
 using GoodNewsAggregator.Core.DTO;
-using GoodNewsAggregator.Core.Services.Parsers;
 using GoodNewsAggregator.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;

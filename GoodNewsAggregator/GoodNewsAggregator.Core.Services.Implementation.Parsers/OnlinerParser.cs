@@ -2,7 +2,7 @@
 using GoodNewsAggregator.Core.Services.Interfaces;
 using HtmlAgilityPack;
 
-namespace GoodNewsAggregator.Core.Services.Parsers.Implementation
+namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
 {
     public class OnlinerParser : IWebPageParser
     {

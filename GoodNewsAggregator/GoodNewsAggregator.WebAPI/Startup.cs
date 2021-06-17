@@ -23,7 +23,7 @@ using GoodNewsAggregator.DAL.CQRS.QueryHandlers;
 using GoodNewsAggregator.DAL.CQRS.QueryHandlers.Articles;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
-using GoodNewsAggregator.Mapper;
+using GoodNewsAggregator.Tools;
 using GoodNewsAggregator.WebAPI.Auth;
 using Hangfire;
 using Hangfire.SqlServer;

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GoodNewsAggregator.Core.DTO\GoodNewsAggregator.Core.DTO.csproj" />
+    <ProjectReference Include="..\GoodNewsAggregator.DAL.Core\GoodNewsAggregator.DAL.Core.csproj" />
+    <ProjectReference Include="..\GoodNewsAggregator.DAL.CQRS\GoodNewsAggregator.DAL.CQRS.csproj" />
+    <ProjectReference Include="..\GoodNewsAggregator.Models\GoodNewsAggregator.Models.csproj" />
+  </ItemGroup>
+
+</Project>
