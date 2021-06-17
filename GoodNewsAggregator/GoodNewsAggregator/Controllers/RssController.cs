@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.Core.DTO;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 
 namespace GoodNewsAggregator.Controllers
@@ -17,12 +12,10 @@ namespace GoodNewsAggregator.Controllers
     public class RssController : Controller
     {
         private readonly IRssService _rssService;
-        private readonly IMapper _mapper;
 
-        public RssController(IRssService rssService, IMapper mapper)
+        public RssController(IRssService rssService)
         {
             _rssService = rssService;
-            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
@@ -88,10 +81,6 @@ namespace GoodNewsAggregator.Controllers
                     if (!(await RssExists(rss.Id)))
                     {
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
                     }
                 }
 

@@ -1,14 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.Commands.Articles;
-using GoodNewsAggregator.DAL.CQRS.Queries.Articles;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
 {

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.CQRS.CommandHandlers.Users;
 using GoodNewsAggregator.DAL.CQRS.Commands.Users;
 using GoodNewsAggregator.DAL.CQRS.Queries.Users;
 using MediatR;
@@ -13,12 +12,10 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 {
     public class UserCqrsService : IUserService
     {
-        private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public UserCqrsService(IMapper mapper, IMediator mediator)
+        public UserCqrsService(IMediator mediator)
         {
-            _mapper = mapper;
             _mediator = mediator;
         }
 

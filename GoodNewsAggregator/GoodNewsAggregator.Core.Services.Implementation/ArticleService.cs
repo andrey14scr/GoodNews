@@ -1,7 +1,5 @@
 ﻿using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Core;
-using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 
 using System;
@@ -18,10 +16,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using AutoMapper;
-using AutoMapper.Internal;
 using GoodNewsAggregator.Core.Services.Implementation.Parsers;
 using GoodNewsAggregator.DAL.Core.Entities;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Terradue.ServiceModel.Syndication;

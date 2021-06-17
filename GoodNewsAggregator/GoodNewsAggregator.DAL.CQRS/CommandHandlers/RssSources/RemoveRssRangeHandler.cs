@@ -1,9 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using GoodNewsAggregator.DAL.Core;
-using GoodNewsAggregator.DAL.CQRS.Commands.Comments;
 using GoodNewsAggregator.DAL.CQRS.Commands.RssSources;
 using MediatR;
 
@@ -12,12 +10,10 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.RssSources
     public class RemoveRssRangeHandler : IRequestHandler<RemoveRssRangeCommand, int>
     {
         private readonly GoodNewsAggregatorContext _dbContext;
-        private readonly IMapper _mapper;
 
-        public RemoveRssRangeHandler(GoodNewsAggregatorContext dbContext, IMapper mapper)
+        public RemoveRssRangeHandler(GoodNewsAggregatorContext dbContext)
         {
             _dbContext = dbContext;
-            _mapper = mapper;
         }
 
         public async Task<int> Handle(RemoveRssRangeCommand request, CancellationToken cancellationToken)

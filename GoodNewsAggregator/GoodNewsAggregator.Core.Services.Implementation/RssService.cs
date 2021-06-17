@@ -1,17 +1,9 @@
 ﻿using AutoMapper;
-using AutoMapper.Configuration;
-
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
-
-using Microsoft.EntityFrameworkCore;
-
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using GoodNewsAggregator.DAL.Core.Entities;
 

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Core.Entities;
-using GoodNewsAggregator.DAL.CQRS.Commands.Articles;
 using GoodNewsAggregator.DAL.CQRS.Commands.Comments;
 using MediatR;
 

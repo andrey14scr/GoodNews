@@ -10,12 +10,10 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers.Users
 {
     public class LoginUserHandler : IRequestHandler<LoginUserQuery, SignInResult>
     {
-        private readonly IMapper _mapper;
         private readonly SignInManager<User> _signInManager;
 
-        public LoginUserHandler(IMapper mapper, SignInManager<User> signInManager)
+        public LoginUserHandler(SignInManager<User> signInManager)
         {
-            _mapper = mapper;
             _signInManager = signInManager;
         }
 

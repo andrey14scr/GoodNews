@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Core.Entities;
-using GoodNewsAggregator.DAL.CQRS.Commands.Comments;
 using GoodNewsAggregator.DAL.CQRS.Commands.RssSources;
 using MediatR;
 

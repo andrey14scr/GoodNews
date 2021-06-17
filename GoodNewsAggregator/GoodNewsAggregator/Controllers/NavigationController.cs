@@ -1,23 +1,14 @@
 ﻿using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Core;
-using GoodNewsAggregator.DAL.Repositories.Interfaces;
-
 using Microsoft.AspNetCore.Mvc;
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.Constants;
-using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Serilog;
 
 namespace GoodNewsAggregator.Controllers
 {

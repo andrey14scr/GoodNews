@@ -1,7 +1,5 @@
 ﻿using System;
-using GoodNewsAggregator.DAL.Core.Entities;
 using MediatR;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace GoodNewsAggregator.DAL.CQRS.Commands.Articles
 {

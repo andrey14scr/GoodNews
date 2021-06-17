@@ -10,12 +10,10 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers.Users
 {
     public class IsUserExistHandler : IRequestHandler<IsUserExistQuery, bool>
     {
-        private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
 
-        public IsUserExistHandler(IMapper mapper, UserManager<User> userManager)
+        public IsUserExistHandler(UserManager<User> userManager)
         {
-            _mapper = mapper;
             _userManager = userManager;
         }
 

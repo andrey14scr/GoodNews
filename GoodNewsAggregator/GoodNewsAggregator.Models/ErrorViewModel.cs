@@ -1,5 +1,3 @@
-using System;
-
 namespace GoodNewsAggregator.Models
 {
     public class ErrorViewModel

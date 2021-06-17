@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.Commands.Articles;
 using GoodNewsAggregator.DAL.CQRS.Queries.Articles;
 using MediatR;
@@ -14,12 +13,10 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 {
     public class ArticleCqrsService : IArticleService
     {
-        private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public ArticleCqrsService(IMapper mapper, IMediator mediator)
+        public ArticleCqrsService(IMediator mediator)
         {
-            _mapper = mapper;
             _mediator = mediator;
         }
 

@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.Constants;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -18,14 +15,10 @@ namespace GoodNewsAggregator.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly IUserService _userService;
-        private readonly IMapper _mapper;
 
-        public AccountController(ILogger<HomeController> logger, IMapper mapper, IUserService userService)
+        public AccountController(IUserService userService)
         {
-            _logger = logger;
-            _mapper = mapper;
             _userService = userService;
         }
 

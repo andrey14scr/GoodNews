@@ -2,11 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.Core.DTO;
-using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,21 +15,12 @@ namespace GoodNewsAggregator.Controllers
     [Authorize(Roles = "Admin")]
     public class AdministrationController : Controller
     {
-
-        private readonly ILogger<HomeController> _logger;
-        private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
-        private readonly SignInManager<User> _signInManager;
         private readonly IMapper _mapper;
 
-        public AdministrationController(ILogger<HomeController> logger,
-            UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager,
-            IMapper mapper)
+        public AdministrationController(RoleManager<Role> roleManager, IMapper mapper)
         {
-            _logger = logger;
-            _userManager = userManager;
             _roleManager = roleManager;
-            _signInManager = signInManager;
             _mapper = mapper;
         }
 

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.DAL.Core;
-using GoodNewsAggregator.DAL.CQRS.Commands.Comments;
 using GoodNewsAggregator.DAL.CQRS.Commands.RssSources;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +11,10 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.RssSources
     public class RemoveRssHandler : IRequestHandler<RemoveRssCommand, int>
     {
         private readonly GoodNewsAggregatorContext _dbContext;
-        private readonly IMapper _mapper;
 
-        public RemoveRssHandler(GoodNewsAggregatorContext dbContext, IMapper mapper)
+        public RemoveRssHandler(GoodNewsAggregatorContext dbContext)
         {
             _dbContext = dbContext;
-            _mapper = mapper;
         }
 
         public async Task<int> Handle(RemoveRssCommand request, CancellationToken cancellationToken)

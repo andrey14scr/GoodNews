@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -10,7 +8,6 @@ using AutoMapper;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Core.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace GoodNewsAggregator.Core.Services.Implementation
@@ -18,15 +15,13 @@ namespace GoodNewsAggregator.Core.Services.Implementation
     public class UserService : IUserService
     {
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IMapper _mapper;
 
-        public UserService(UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager,
+        public UserService(UserManager<User> userManager, SignInManager<User> signInManager,
             IMapper mapper)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
             _signInManager = signInManager;
             _mapper = mapper;
         }

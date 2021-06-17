@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.CQRS.Queries.Articles;
 using MediatR;
@@ -13,12 +11,10 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers.Articles
     public class GetArticlesCountHandler : IRequestHandler<GetArticlesCountQuery, int>
     {
         private readonly GoodNewsAggregatorContext _dbContext;
-        private readonly IMapper _mapper;
 
-        public GetArticlesCountHandler(GoodNewsAggregatorContext dbContext, IMapper mapper)
+        public GetArticlesCountHandler(GoodNewsAggregatorContext dbContext)
         {
             _dbContext = dbContext;
-            _mapper = mapper;
         }
 
         public async Task<int> Handle(GetArticlesCountQuery request, CancellationToken cancellationToken)

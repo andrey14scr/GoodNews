@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Constants;
 using GoodNewsAggregator.Core.DTO;
@@ -12,7 +11,6 @@ using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace GoodNewsAggregator.Controllers
 {

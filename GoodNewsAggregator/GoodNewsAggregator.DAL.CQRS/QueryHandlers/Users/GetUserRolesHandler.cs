@@ -2,8 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using GoodNewsAggregator.Core.DTO;
-using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.Queries.Users;
 using MediatR;

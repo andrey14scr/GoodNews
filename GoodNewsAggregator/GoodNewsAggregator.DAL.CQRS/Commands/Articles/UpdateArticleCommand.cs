@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-
 using GoodNewsAggregator.Core.DTO;
-using GoodNewsAggregator.DAL.Core.Entities;
 using MediatR;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace GoodNewsAggregator.DAL.CQRS.Commands.Articles
 {
