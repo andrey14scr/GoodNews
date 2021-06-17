@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Terradue.ServiceModel.Syndication" Version="1.1.1" />
   </ItemGroup>
@@ -16,13 +17,6 @@
     <ProjectReference Include="..\GoodNewsAggregator.Core.Services.Interfaces\GoodNewsAggregator.Core.Services.Interfaces.csproj" />
     <ProjectReference Include="..\GoodNewsAggregator.Core.Services.Parsers\GoodNewsAggregator.Core.Services.Parsers.csproj" />
     <ProjectReference Include="..\GoodNewsAggregator.DAL.Core\GoodNewsAggregator.DAL.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="CommandHandlers\Users\" />
-    <Folder Include="Commands\Users\" />
-    <Folder Include="Queries\Users\" />
-    <Folder Include="QueryHandlers\Users\" />
   </ItemGroup>
 
 </Project>

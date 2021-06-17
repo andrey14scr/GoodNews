@@ -9,7 +9,7 @@ using MediatR;
 
 namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.RssSources
 {
-    public class UpdateRssHandler : IRequestHandler<UpdateRssHandler, int>
+    public class UpdateRssHandler : IRequestHandler<UpdateRssCommand, int>
     {
         private readonly GoodNewsAggregatorContext _dbContext;
         private readonly IMapper _mapper;
@@ -20,7 +20,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.RssSources
             _mapper = mapper;
         }
 
-        public async Task<int> Handle(UpdateRssHandler request, CancellationToken cancellationToken)
+        public async Task<int> Handle(UpdateRssCommand request, CancellationToken cancellationToken)
         {
             var rss = _mapper.Map<Rss>(request);
             _dbContext.Rss.Update(rss);

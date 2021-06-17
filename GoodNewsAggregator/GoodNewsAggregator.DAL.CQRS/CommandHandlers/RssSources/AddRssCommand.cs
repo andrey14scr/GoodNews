@@ -26,3 +26,4 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.RssSources
             return await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
+}
