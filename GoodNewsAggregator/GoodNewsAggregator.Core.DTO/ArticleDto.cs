@@ -11,7 +11,7 @@ namespace GoodNewsAggregator.Core.DTO
         public string Title { get; set; }
         public string Content { get; set; }
         public DateTime Date { get; set; }
-        public float GoodFactor { get; set; }
+        public float? GoodFactor { get; set; }
 
         public Guid RssId { get; set; }
     }

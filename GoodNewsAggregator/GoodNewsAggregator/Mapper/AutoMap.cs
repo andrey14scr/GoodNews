@@ -1,29 +1,25 @@
 ﻿using AutoMapper;
-
 using GoodNewsAggregator.Core.DTO;
-using GoodNewsAggregator.DAL.Core;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.Commands.Articles;
 using GoodNewsAggregator.DAL.CQRS.Commands.Comments;
 using GoodNewsAggregator.DAL.CQRS.Commands.RssSources;
+using GoodNewsAggregator.Models;
 
-namespace GoodNewsAggregator.Core.Services.Implementation
+namespace GoodNewsAggregator.Mapper
 {
     public class AutoMap : Profile
     {
         public AutoMap()
         {
+            CreateMap<ArticleDto, ArticleInfoViewModel>().ReverseMap();
+
             CreateMap<Article, ArticleDto>().ReverseMap();
             CreateMap<ArticleWithRssNameDto, ArticleDto>().ReverseMap();
             CreateMap<ArticleWithRssNameDto, Article>().ReverseMap();
             CreateMap<Article, ArticleWithRssDto>().ReverseMap();
             CreateMap<ArticleDto, ArticleWithRssDto>().ReverseMap();
+
             CreateMap<Comment, CommentDto>().ReverseMap();
             CreateMap<Role, RoleDto>().ReverseMap();
             CreateMap<Rss, RssDto>().ReverseMap();

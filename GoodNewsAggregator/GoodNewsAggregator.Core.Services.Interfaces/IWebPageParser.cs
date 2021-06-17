@@ -1,4 +1,4 @@
-﻿namespace GoodNewsAggregator.Core.Services.Parsers.Interface
+﻿namespace GoodNewsAggregator.Core.Services.Interfaces
 {
     public interface IWebPageParser
     {

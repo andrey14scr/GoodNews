@@ -8,7 +8,7 @@ namespace GoodNewsAggregator.Models
 {
     public class NewsOnPage
     {
-        public IEnumerable<ArticleWithRssNameDto> Articles { get; set; }
+        public IEnumerable<ArticleInfoViewModel> ArticleInfos { get; set; }
         public PageInfo PageInfo { get; set; }
     }
 }

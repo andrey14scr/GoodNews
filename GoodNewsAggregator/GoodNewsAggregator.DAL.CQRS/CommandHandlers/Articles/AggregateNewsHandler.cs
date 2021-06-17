@@ -11,7 +11,6 @@ using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.Core.Services.Parsers;
 using GoodNewsAggregator.Core.Services.Parsers.Implementation;
-using GoodNewsAggregator.Core.Services.Parsers.Interface;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.Commands.Articles;
@@ -110,7 +109,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                                     Title = syndicationItem.Title.Text,
                                     Date = syndicationItem.PublishDate.DateTime,
                                     Content = parser.Parse(uri),
-                                    GoodFactor = 0
+                                    GoodFactor = null
                                 };
 
                                 addArticles.Add(newsDto);
@@ -120,7 +119,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                                 existingArticle.Content = parser.Parse(uri);
                                 existingArticle.Date = syndicationItem.PublishDate.DateTime;
                                 existingArticle.Title = syndicationItem.Title.Text;
-                                existingArticle.GoodFactor = 0;
+                                existingArticle.GoodFactor = null;
 
                                 updateArticles.Add(existingArticle);
                             }

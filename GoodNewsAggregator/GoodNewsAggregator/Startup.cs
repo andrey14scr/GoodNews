@@ -19,6 +19,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.QueryHandlers.Articles;
+using GoodNewsAggregator.Mapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -43,10 +44,10 @@ namespace GoodNewsAggregator
             services.AddTransient<IRepository<Comment>, CommentsRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IArticleService, ArticleCqrsService>();
+            services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IRssService, RssService>();
             services.AddScoped<ICommentService, CommentService>();
-            services.AddScoped<IUserService, UserCqrsService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddAutoMapper(typeof(AutoMap).Assembly);
 

@@ -45,6 +45,10 @@ a.read-next:active {
 }
 
 .good-good-factor {
+    color: green
+}
+
+.best-good-factor {
     color: #00F200
 }
 

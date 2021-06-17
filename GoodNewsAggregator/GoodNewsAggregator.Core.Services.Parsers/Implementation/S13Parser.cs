@@ -1,4 +1,4 @@
-﻿using GoodNewsAggregator.Core.Services.Parsers.Interface;
+﻿using GoodNewsAggregator.Core.Services.Interfaces;
 using HtmlAgilityPack;
 
 namespace GoodNewsAggregator.Core.Services.Parsers.Implementation

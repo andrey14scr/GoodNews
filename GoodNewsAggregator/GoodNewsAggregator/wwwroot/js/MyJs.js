@@ -1,32 +1,33 @@
 ﻿$(document).ready(function () {
     var mc = {
-        '0-49': 'bad-good-factor',
-        '50-55': 'normal-good-factor',
-        '56-100': 'good-good-factor'
+        '-5;-0.2': 'bad-good-factor',
+        '-0.2;1': 'normal-good-factor',
+        '1;2': 'good-good-factor',
+        '2;5.1': 'best-good-factor'
     };
 
     function between(x, min, max) {
-        return x >= min && x <= max;
+        return x >= min && x < max;
     }
 
-    var dc;
     var first;
     var second;
-    var th;
+    var element;
 
     $('div').each(function (index) {
+        element = $(this);
 
-        th = $(this);
+        if (element.attr('data-color') != undefined) {
+            var dc = parseFloat(element.attr('data-color').replace(',', '.'));
 
-        dc = parseInt($(this).attr('data-color'), 10);
+            $.each(mc, function (name, value) {
+                first = parseFloat(name.split(';')[0], 10);
+                second = parseFloat(name.split(';')[1], 10);
 
-        $.each(mc, function (name, value) {
-            first = parseInt(name.split('-')[0], 10);
-            second = parseInt(name.split('-')[1], 10);
-
-            if (between(dc, first, second)) {
-                th.addClass(value);
-            }
-        });
+                if (between(dc, first, second)) {
+                    element.addClass(value);
+                }
+            });
+        }
     });
 });

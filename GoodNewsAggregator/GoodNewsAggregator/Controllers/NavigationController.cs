@@ -49,15 +49,14 @@ namespace GoodNewsAggregator.Controllers
                 TotalItems = articlesCount
             };
 
-            var articleDtos = _mapper.Map<IEnumerable<ArticleWithRssNameDto>>(news);
+            var articleInfos = _mapper.Map<IEnumerable<ArticleInfoViewModel>>(news).ToArray();
 
-            foreach (var article in articleDtos)
+            for (int i = 0; i < articleInfos.Count(); i++)
             {
-                article.RssName = (await _rssService.GetById(article.RssId)).Name;
-                article.GoodFactor = (article.GoodFactor + 5) * 10;
+                articleInfos[i].RssName = (await _rssService.GetById(news[i].RssId)).Name;
             }
 
-            return View(new NewsOnPage() { Articles = articleDtos, PageInfo = pageInfo});
+            return View(new NewsOnPage() { ArticleInfos = articleInfos, PageInfo = pageInfo});
         }
 
         public async Task<IActionResult> Article(Guid? id)

@@ -15,7 +15,7 @@ namespace GoodNewsAggregator.DAL.CQRS.Commands.Articles
         public string Title { get; set; }
         public string Content { get; set; }
         public DateTime Date { get; set; }
-        public float GoodFactor { get; set; }
+        public float? GoodFactor { get; set; }
         public Guid RssId { get; set; }
 
         public UpdateArticleCommand(ArticleDto articleDto)

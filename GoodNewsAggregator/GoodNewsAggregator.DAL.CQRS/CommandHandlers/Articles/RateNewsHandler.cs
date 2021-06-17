@@ -37,7 +37,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
         {
             var articles =
                 _mapper.Map<List<ArticleDto>>(await _dbContext.Articles
-                    .Where(a => a.GoodFactor == 0).Take(30)
+                    .Where(a => !a.GoodFactor.HasValue).Take(30)
                     .AsNoTracking()
                     .ToListAsync());
 
@@ -138,7 +138,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                     }
 
                     if (wordsCounter == 0)
-                        result = 0.000001f; //null good factor
+                        result = 0;
                     else
                         result = (float)valueCounter / wordsCounter;
 

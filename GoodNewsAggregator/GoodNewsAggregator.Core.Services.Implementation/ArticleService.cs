@@ -21,7 +21,6 @@ using AutoMapper;
 using AutoMapper.Internal;
 using GoodNewsAggregator.Core.Services.Parsers;
 using GoodNewsAggregator.Core.Services.Parsers.Implementation;
-using GoodNewsAggregator.Core.Services.Parsers.Interface;
 using GoodNewsAggregator.DAL.Core.Entities;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
@@ -192,7 +191,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                                     Title = syndicationItem.Title.Text,
                                     Date = syndicationItem.PublishDate.DateTime,
                                     Content = parser.Parse(uri),
-                                    GoodFactor = 0
+                                    GoodFactor = null
                                 };
 
                                 addArticles.Add(newsDto);
@@ -202,7 +201,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                                 existingArticle.Content = parser.Parse(uri);
                                 existingArticle.Date = syndicationItem.PublishDate.DateTime;
                                 existingArticle.Title = syndicationItem.Title.Text;
-                                existingArticle.GoodFactor = 0;
+                                existingArticle.GoodFactor = null;
 
                                 updateArticles.Add(existingArticle);
                             }
@@ -233,7 +232,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         public async Task RateNews()
         {
             var articles =
-                _mapper.Map<List<ArticleDto>>(await _unitOfWork.Articles.Get().Where(a => a.GoodFactor == 0).Take(30)
+                _mapper.Map<List<ArticleDto>>(await _unitOfWork.Articles.Get().Where(a => !a.GoodFactor.HasValue).Take(30)
                     .ToListAsync());
 
             Dictionary<Guid, List<string>> articleContent = new Dictionary<Guid, List<string>>();
@@ -333,7 +332,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                     }
 
                     if (wordsCounter == 0)
-                        result = 0.000001f; //null good factor
+                        result = 0;
                     else
                         result = (float)valueCounter / wordsCounter;
 
