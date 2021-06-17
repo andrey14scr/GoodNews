@@ -350,4 +350,4 @@ MigrationBackup/
 .ionide/
 
 # Ignore static files:
-GoodNewsAggregator/GoodNewsAggregator/AFINN-ru.json
+/GoodNewsAggregator/GoodNewsAggregator/AFINN-ru.json
