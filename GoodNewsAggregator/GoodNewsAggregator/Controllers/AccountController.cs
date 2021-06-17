@@ -3,13 +3,11 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using AutoMapper;
 using GoodNewsAggregator.Constants;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 
 namespace GoodNewsAggregator.Controllers
 {

@@ -46,17 +46,17 @@ namespace GoodNewsAggregator.Controllers
                 articleInfos[i].RssName = (await _rssService.GetById(news[i].RssId)).Name;
             }
 
-            return View(new NewsOnPage() { ArticleInfos = articleInfos, PageInfo = pageInfo});
+            return View(new NewsOnPageViewModel() { ArticleInfos = articleInfos, PageInfo = pageInfo});
         }
 
         public async Task<IActionResult> Article(Guid? id)
         {
-            if (id is null)
+            if (!id.HasValue)
             {
                 return NotFound();
             }
 
-            var article = await _articleService.GetById(id.Value);
+            var article = _mapper.Map<ArticleViewModel>(await _articleService.GetById(id.Value));
 
             if (article == null)
             {

@@ -13,6 +13,7 @@ namespace GoodNewsAggregator.Tools
         public AutoMap()
         {
             CreateMap<ArticleDto, ArticleInfoViewModel>().ReverseMap();
+            CreateMap<ArticleDto, ArticleViewModel>().ReverseMap();
 
             CreateMap<Article, ArticleDto>().ReverseMap();
             CreateMap<Article, ArticleWithRssDto>().ReverseMap();
