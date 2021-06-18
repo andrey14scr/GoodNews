@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace GoodNewsAggregator.Controllers
 {
+    [Authorize]
     public class CommentsController : Controller
     {
         private readonly ICommentService _commentService;
@@ -58,7 +59,6 @@ namespace GoodNewsAggregator.Controllers
             });
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CommentInfoModel model)
         {

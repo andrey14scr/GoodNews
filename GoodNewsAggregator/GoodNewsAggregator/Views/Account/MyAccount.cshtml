@@ -21,9 +21,7 @@
     @if (User.Identity.IsAuthenticated && User.IsInRole(RoleNames.ADMIN))
     {
         <button type="button" onclick="location.href = '@Url.Action("Index","Administration")'">Перейти к администрированию</button><br /><br />
-        
-        <button type="button" onclick="location.href = '@Url.Action("Aggregate","Navigation")'">Собрать</button>
-        <br/><br />
+        <br/>
     }
 
     <form method="post" asp-controller="Account" asp-action="LogOut">

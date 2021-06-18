@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.Core.DTO;
+using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Core.Entities;
+using GoodNewsAggregator.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
@@ -15,17 +17,36 @@ namespace GoodNewsAggregator.Controllers
     public class AdministrationController : Controller
     {
         private readonly RoleManager<Role> _roleManager;
+        private readonly IArticleService _articleService;
         private readonly IMapper _mapper;
 
-        public AdministrationController(RoleManager<Role> roleManager, IMapper mapper)
+        public AdministrationController(RoleManager<Role> roleManager, IMapper mapper, IArticleService articleService)
         {
             _roleManager = roleManager;
             _mapper = mapper;
+            _articleService = articleService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            int count = await _articleService.GetArticlesCount();
+            int rated = await _articleService.GetRatedArticlesCount();
+
+            return View(new AdminInfo(){ArticleCount = count, RatedArticles = rated});
+        }
+
+        public async Task<IActionResult> Aggregate()
+        {
+            await _articleService.AggregateNews();
+
+            return View("Index");
+        }
+
+        public async Task<IActionResult> Rate()
+        {
+            await _articleService.RateNews();
+
+            return View("Index");
         }
 
         public IActionResult Roles()

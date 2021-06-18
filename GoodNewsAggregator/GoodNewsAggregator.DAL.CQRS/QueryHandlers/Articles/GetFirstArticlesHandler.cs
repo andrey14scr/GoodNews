@@ -25,6 +25,7 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers.Articles
         public async Task<IEnumerable<ArticleDto>> Handle(GetFirstArticlesQuery request, CancellationToken cancellationToken)
         {
             var result = await _dbContext.Articles
+                .Where(a => a.GoodFactor.HasValue != request.HasNulls)
                 .OrderByDescending(a => a.Date)
                 .Skip(request.Skip)
                 .Take(request.Take)

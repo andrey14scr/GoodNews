@@ -20,9 +20,10 @@ namespace GoodNewsAggregator.Controllers
             _userService = userService;
         }
 
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl)
         {
-            return View();
+            var loginModel = new LoginModel() {ReturnUrl = returnUrl };
+            return View(loginModel);
         }
 
         public IActionResult Register()
@@ -66,7 +67,7 @@ namespace GoodNewsAggregator.Controllers
                         var resultLogin = await _userService.Login(userDto.UserName, registerModel.Password);
 
                         if (resultLogin.Succeeded)
-                            return RedirectToAction(nameof(MyAccount));
+                            return RedirectToAction("Index", "Home");
 
                         return View("Error", new ErrorViewModel() 
                             { 
@@ -99,7 +100,7 @@ namespace GoodNewsAggregator.Controllers
                     if (!string.IsNullOrEmpty(loginModel.ReturnUrl) && Url.IsLocalUrl(loginModel.ReturnUrl))
                         return Redirect(loginModel.ReturnUrl);
 
-                    return RedirectToAction(nameof(MyAccount));
+                    return RedirectToAction("Index", "Home");
                 }
 
                 ModelState.AddModelError("", "Неправильный логин и (или) пароль");

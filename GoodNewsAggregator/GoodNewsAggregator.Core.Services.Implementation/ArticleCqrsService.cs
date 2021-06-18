@@ -60,9 +60,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             return await _mediator.Send(new GetArticlesByRssIdQuery(id));
         }
 
-        public async Task<IEnumerable<ArticleDto>> GetFirst(int skip, int take)
+        public async Task<IEnumerable<ArticleDto>> GetFirst(int skip, int take, bool hasNulls)
         {
-            return await _mediator.Send(new GetFirstArticlesQuery(skip, take));
+            return await _mediator.Send(new GetFirstArticlesQuery(skip, take, hasNulls));
         }
 
         public async Task AggregateNews()
@@ -78,6 +78,11 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         public async Task<int> GetArticlesCount()
         {
             return await _mediator.Send(new GetArticlesCountQuery());
+        }
+
+        public async Task<int> GetRatedArticlesCount()
+        {
+            return await _mediator.Send(new GetRatedArticlesCountQuery());
         }
     }
 }

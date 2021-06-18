@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.CQRS.Queries.Articles;
 using MediatR;

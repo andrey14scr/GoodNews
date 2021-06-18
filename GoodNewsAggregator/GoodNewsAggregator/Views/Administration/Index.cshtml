@@ -1,4 +1,6 @@
-﻿<h1>Панель администратора</h1>
+﻿@model AdminInfo
+
+<h1>Панель администратора</h1>
 
 <form method="post" asp-controller="Rss" asp-action="Index">
     <input class="mb-2" type="submit" value="Rss источники" />
@@ -9,8 +11,15 @@
 </form>
 
 <form method="post" asp-controller="Administration" asp-action="Users">
-    <input class="mb-2" type="submit" value="Управление ролями" />
+    <input class="mb-2" type="submit" value="Управление пользователями" />
 </form>
+
+<br />
+
+<button type="button" onclick="location.href = '@Url.Action("Aggregate")'">Собрать</button>
+<button type="button" onclick="location.href = '@Url.Action("Rate")'">Оценить(@Model.RatedArticles/@Model.ArticleCount)</button>
+
+<br /><br />
 
 <div>
     <a class="btn btn-light mb-2" asp-controller="Account" asp-action="MyAccount">Назад в аккаунт</a>

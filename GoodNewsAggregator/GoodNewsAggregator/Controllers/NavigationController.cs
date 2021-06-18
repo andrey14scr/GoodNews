@@ -28,7 +28,7 @@ namespace GoodNewsAggregator.Controllers
 
         public async Task<IActionResult> Main(int page = 1)
         {
-            var news = (await _articleService.GetFirst((page - 1) * Pagination.PAGESIZE, Pagination.PAGESIZE)).ToList();
+            var news = (await _articleService.GetFirst((page - 1) * Pagination.PAGESIZE, Pagination.PAGESIZE, false)).ToList();
 
             int articlesCount = await _articleService.GetArticlesCount();
 
@@ -64,22 +64,6 @@ namespace GoodNewsAggregator.Controllers
             }
 
             return View(article);
-        }
-
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Aggregate()
-        {
-            await _articleService.AggregateNews();
-
-            return RedirectToAction(nameof (Main));
-        }
-
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Rate()
-        {
-            await _articleService.RateNews();
-
-            return Ok();
         }
     }
 }

@@ -6,6 +6,7 @@
 
     <form asp-action="Login" asp-controller="Account" asp-antiforgery="true" method="post">
         <div class="validation text-danger" asp-validation-summary="ModelOnly"></div>
+        <input type="hidden" asp-for="ReturnUrl" />
         <div class="form-group row">
             <label class="col-sm-2 col-form-label align-self-center" asp-for="Username">Имя пользователя</label>
             <div class="col-sm-6 align-self-center">

@@ -8,11 +8,13 @@ namespace GoodNewsAggregator.DAL.CQRS.Queries.Articles
     {
         public int Skip { get; set; }
         public int Take { get; set; }
+        public bool HasNulls { get; set; }
 
-        public GetFirstArticlesQuery(int skip, int take)
+        public GetFirstArticlesQuery(int skip, int take, bool hasNulls)
         {
             Skip = skip;
             Take = take;
+            HasNulls = hasNulls;
         }
     }
 }
