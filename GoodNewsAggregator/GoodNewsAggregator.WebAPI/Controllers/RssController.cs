@@ -7,72 +7,75 @@ using System.Linq;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.DAL.Core.Entities;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ArticleController : ControllerBase
+    public class RssController : ControllerBase
     {
         private readonly IArticleService _articleService;
+        private readonly IRssService _rssService;
 
-        public ArticleController(IArticleService articleService)
+        public RssController(IArticleService articleService, IRssService rssService)
         {
             _articleService = articleService;
+            _rssService = rssService;
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var articleDto = await _articleService.GetById(id);
+            var commentDto = await _rssService.GetById(id);
 
-            if (articleDto == null)
+            if (commentDto == null)
                 return NotFound();
 
-            return Ok(articleDto);
+            return Ok(commentDto);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(int skip, int take, bool hasNulls)
+        public async Task<IActionResult> Get()
         {
-            var articleDtos = await _articleService.GetFirst(skip, take, hasNulls);
+            var rssDtos = await _rssService.GetAll();
 
-            if (articleDtos == null)
+            if (rssDtos == null)
                 return NotFound();
 
-            return Ok(articleDtos);
+            return Ok(rssDtos);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ArticleDto articleDto)
+        public async Task<IActionResult> Create([FromBody] RssDto rssDto)
         {
-            if (articleDto == null)
+            if (rssDto == null)
                 return NotFound();
 
-            await _articleService.Add(articleDto);
+            await _rssService.Add(rssDto);
             return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var articleDto = await _articleService.GetById(id);
+            var rssDto = await _rssService.GetById(id);
 
-            if (articleDto == null)
+            if (rssDto == null)
                 return NotFound();
 
-            await _articleService.Remove(articleDto);
+            await _rssService.Remove(rssDto);
 
             return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] ArticleDto articleDto)
+        public async Task<IActionResult> Update([FromBody] RssDto rssDto)
         {
-            if (articleDto == null)
+            if (rssDto == null)
                 return NotFound();
 
-            await _articleService.Update(articleDto);
+            await _rssService.Update(rssDto);
             return Ok();
         }
     }

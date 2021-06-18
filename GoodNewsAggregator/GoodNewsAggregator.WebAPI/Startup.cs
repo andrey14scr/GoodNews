@@ -19,8 +19,11 @@ using GoodNewsAggregator.Core.Services.Implementation;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Core.Entities;
+using GoodNewsAggregator.DAL.CQRS.Queries.Comments;
 using GoodNewsAggregator.DAL.CQRS.QueryHandlers;
 using GoodNewsAggregator.DAL.CQRS.QueryHandlers.Articles;
+using GoodNewsAggregator.DAL.CQRS.QueryHandlers.Comments;
+using GoodNewsAggregator.DAL.CQRS.QueryHandlers.Users;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using GoodNewsAggregator.Tools;
@@ -54,10 +57,13 @@ namespace GoodNewsAggregator.WebAPI
             services.AddTransient<IRepository<Comment>, CommentsRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            //services.AddScoped<IArticleService, ArticleService>();
+            services.AddScoped<IArticleService, ArticleCqrsService>();
             services.AddScoped<IRssService, RssService>();
             services.AddScoped<ICommentService, CommentService>();
-            services.AddScoped<IArticleService, ArticleCqrsService>();
+
+            services.AddAutoMapper(typeof(AutoMap).Assembly);
+
+            services.AddMediatR(typeof(GetArticleByIdHandler).GetTypeInfo().Assembly);
 
             services.AddHangfire(conf => conf
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -74,9 +80,7 @@ namespace GoodNewsAggregator.WebAPI
             );
             services.AddHangfireServer();
 
-            services.AddAutoMapper(typeof(AutoMap).Assembly);
-
-            services.AddMediatR(typeof(GetArticleByIdHandler).GetTypeInfo().Assembly);
+            services.AddIdentity<User, Role>().AddEntityFrameworkStores<GoodNewsAggregatorContext>();
 
             services.AddAuthentication(opt =>
                 {
