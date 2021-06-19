@@ -64,9 +64,9 @@ namespace GoodNewsAggregator.Controllers
                 {
                     if (resultRegister.Succeeded)
                     {
-                        var resultLogin = await _userService.Login(userDto.UserName, registerModel.Password);
+                        var userModel = await _userService.Login(userDto.UserName, registerModel.Password);
 
-                        if (resultLogin.Succeeded)
+                        if (userModel != null)
                             return RedirectToAction("Index", "Home");
 
                         return View("Error", new ErrorViewModel() 
@@ -94,8 +94,8 @@ namespace GoodNewsAggregator.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _userService.Login(loginModel.Username, loginModel.Password);
-                if (result.Succeeded)
+                var userModel = await _userService.Login(loginModel.Username, loginModel.Password);
+                if (userModel != null)
                 {
                     if (!string.IsNullOrEmpty(loginModel.ReturnUrl) && Url.IsLocalUrl(loginModel.ReturnUrl))
                         return Redirect(loginModel.ReturnUrl);

@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GoodNewsAggregator.Core.DTO\GoodNewsAggregator.Core.DTO.csproj" />
     <ProjectReference Include="..\GoodNewsAggregator.DAL.Core\GoodNewsAggregator.DAL.Core.csproj" />
+    <ProjectReference Include="..\GoodNewsAggregator.Models\GoodNewsAggregator.Models.csproj" />
   </ItemGroup>
 
 </Project>

@@ -11,30 +11,9 @@ namespace GoodNewsAggregator.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class TestController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult Get(string param1, string param2, string param3)
-        {
-            //todo some logic
-            return Ok("answer");
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult Get(Guid id)
-        {
-            //todo some logic
-            return Ok("answer");
-        }
-
-        /*
-        [HttpGet("GetDefault")]
-        public IActionResult GetDefault()
-        {
-            return Ok("Authorized");
-        }
-
         [HttpGet("GetAdmin")]
         [Authorize(Roles = "Admin")]
         public IActionResult GetAdmin()
@@ -48,6 +27,11 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         {
             return Ok("Unauthorized");
         }
-        */
+
+        [HttpGet("GetAuthorized")]
+        public IActionResult GetAuthorized()
+        {
+            return Ok("Authorized");
+        }
     }
 }

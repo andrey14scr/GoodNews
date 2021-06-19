@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.Tools;
+using GoodNewsAggregator.WebAPI.Auth;
 using Microsoft.AspNetCore.Authorization;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
@@ -13,17 +13,55 @@ namespace GoodNewsAggregator.WebAPI.Controllers
     [ApiController]
     public class TokenController : ControllerBase
     {
+        private readonly IUserService _userService;
+        private readonly IJwtAuthManager _jwtAuthManager;
+
+        public TokenController(IUserService userService, IJwtAuthManager jwtAuthManager)
+        {
+            _userService = userService;
+            _jwtAuthManager = jwtAuthManager;
+        }
+
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            return Ok();
+            JwtAuthResult jwtResult;
+            Claim[] claims;
+
+            var userModel = await _userService.Login(request.Username, request.Password);
+
+            if (userModel != null)
+            {
+                if (userModel.Role.ContainsRole(Constants.RoleNames.ADMIN))
+                {
+                    claims = new[]
+                    {
+                        new Claim(ClaimTypes.Role, userModel.Email),
+                        new Claim(ClaimTypes.Role, Constants.RoleNames.ADMIN)
+                    };
+                }
+                else
+                {
+                    claims = new[]
+                    {
+                        new Claim(ClaimTypes.Role, userModel.Email),
+                        new Claim(ClaimTypes.Role, Constants.RoleNames.USER)
+                    };
+                }
+
+                jwtResult = await _jwtAuthManager.GenerateToken(userModel.Email, claims);
+
+                return Ok(jwtResult);
+            }
+
+            return Ok("not logined");
         }
     }
 
     public class LoginRequest
     {
-        public string Email { get; set; }
+        public string Username { get; set; }
         public string Password { get; set; }
     }
 }

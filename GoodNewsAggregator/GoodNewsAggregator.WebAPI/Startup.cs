@@ -58,8 +58,10 @@ namespace GoodNewsAggregator.WebAPI
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IArticleService, ArticleCqrsService>();
+            services.AddScoped<IUserService, UserCqrsService>();
             services.AddScoped<IRssService, RssService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IJwtAuthManager, JwtAuthManager>();
 
             services.AddAutoMapper(typeof(AutoMap).Assembly);
 
@@ -89,16 +91,17 @@ namespace GoodNewsAggregator.WebAPI
                 }
             ).AddJwtBearer(opt =>
             {
-                opt.Audience = "GoodNewsAggregator";
+                opt.Audience = Configuration["Jwt:Audience"];
                 opt.RequireHttpsMetadata = false;
                 opt.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
-                    ValidAudience = Configuration["Jwt:Issuer"],
-                    ValidIssuer = Configuration["Jwt:Audience"],
+                    ValidAudience = Configuration["Jwt:Audience"],
+                    ValidIssuer = Configuration["Jwt:Issuer"],
                     ValidateIssuer = true,
-                    ValidateAudience = true
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
                 };
             });
 

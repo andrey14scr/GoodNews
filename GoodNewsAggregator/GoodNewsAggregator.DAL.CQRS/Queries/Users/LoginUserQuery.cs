@@ -1,9 +1,9 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
+﻿using GoodNewsAggregator.Core.DTO;
+using MediatR;
 
 namespace GoodNewsAggregator.DAL.CQRS.Queries.Users
 {
-    public class LoginUserQuery : IRequest<SignInResult>
+    public class LoginUserQuery : IRequest<UserDto>
     {
         public string Password { get; set; }
         public string UserName { get; set; }

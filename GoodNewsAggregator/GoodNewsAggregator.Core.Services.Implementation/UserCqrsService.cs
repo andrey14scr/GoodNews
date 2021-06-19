@@ -5,6 +5,7 @@ using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.CQRS.Commands.Users;
 using GoodNewsAggregator.DAL.CQRS.Queries.Users;
+using GoodNewsAggregator.Models;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -24,7 +25,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             return await _mediator.Send(new RegisterUserCommand(userDto, password, role));
         }
 
-        public async Task<SignInResult> Login(string userName, string password)
+        public async Task<UserModel> Login(string userName, string password)
         {
             return await _mediator.Send(new LoginUserQuery(userName, password));
         }
@@ -32,6 +33,11 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         public async Task<bool> Exist(string email)
         {
             return await _mediator.Send(new IsUserExistQuery(email));
+        }
+
+        public async Task<UserDto> GetByEmail(string email)
+        {
+            return await _mediator.Send(new GetUserByEmailQuery(email));
         }
 
         public async Task<UserDto> GetCurrentUser(ClaimsPrincipal claims)
