@@ -8,13 +8,11 @@ namespace GoodNewsAggregator.DAL.CQRS.Commands.Users
     {
         public UserDto UserDto { get; set; }
         public string Password { get; set; }
-        public string Role { get; set; }
 
-        public RegisterUserCommand(UserDto userDto, string password, string role)
+        public RegisterUserCommand(UserDto userDto, string password)
         {
             UserDto = userDto;
             Password = password;
-            Role = role;
         }
     }
 }

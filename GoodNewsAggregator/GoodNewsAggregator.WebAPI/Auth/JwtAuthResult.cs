@@ -1,4 +1,6 @@
-﻿namespace GoodNewsAggregator.WebAPI.Auth
+﻿using GoodNewsAggregator.DAL.Core.Entities;
+
+namespace GoodNewsAggregator.WebAPI.Auth
 {
     public class JwtAuthResult
     {

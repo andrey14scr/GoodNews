@@ -1,29 +1,18 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using GoodNewsAggregator.Core.Services.Implementation;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Core.Entities;
-using GoodNewsAggregator.DAL.CQRS.Queries.Comments;
-using GoodNewsAggregator.DAL.CQRS.QueryHandlers;
 using GoodNewsAggregator.DAL.CQRS.QueryHandlers.Articles;
-using GoodNewsAggregator.DAL.CQRS.QueryHandlers.Comments;
-using GoodNewsAggregator.DAL.CQRS.QueryHandlers.Users;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using GoodNewsAggregator.Tools;
@@ -32,8 +21,9 @@ using Hangfire;
 using Hangfire.SqlServer;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
 namespace GoodNewsAggregator.WebAPI
@@ -58,10 +48,13 @@ namespace GoodNewsAggregator.WebAPI
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IArticleService, ArticleCqrsService>();
-            services.AddScoped<IUserService, UserCqrsService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRssService, RssService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<IJwtAuthManager, JwtAuthManager>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddAutoMapper(typeof(AutoMap).Assembly);
 
@@ -82,7 +75,9 @@ namespace GoodNewsAggregator.WebAPI
             );
             services.AddHangfireServer();
 
-            services.AddIdentity<User, Role>().AddEntityFrameworkStores<GoodNewsAggregatorContext>();
+            services.AddIdentity<User, Role>()
+                .AddEntityFrameworkStores<GoodNewsAggregatorContext>()
+                .AddDefaultTokenProviders();
 
             services.AddAuthentication(opt =>
                 {

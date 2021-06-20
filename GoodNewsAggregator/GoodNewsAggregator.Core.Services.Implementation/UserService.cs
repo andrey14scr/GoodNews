@@ -27,18 +27,14 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             _mapper = mapper;
         }
 
-        public async Task<IdentityResult> Register(UserDto userDto, string password, string role)
+        public async Task<IdentityResult> Register(UserDto userDto, string password)
         {
-            var isExist = await Exist(userDto.Email);
-            if (isExist)
-                return null;
-
             var user = _mapper.Map<User>(userDto);
 
             var resultCreating = await _userManager.CreateAsync(user, password);
             if (resultCreating.Succeeded)
             {
-                var resultAdding = await _userManager.AddToRoleAsync(user, role);
+                var resultAdding = await _userManager.AddToRoleAsync(user, userDto.Role);
                 return resultAdding;
             }
 
@@ -53,6 +49,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             {
                 var user = await _userManager.FindByNameAsync(userName);
                 var userDto = _mapper.Map<UserDto>(user);
+                userDto.Role = await GetRoles(user);
 
                 return userDto;
             }
@@ -71,7 +68,16 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             var userDto = _mapper.Map<UserDto>(user);
             userDto.Role = await GetRoles(user);
 
-            return _mapper.Map<UserDto>(await _userManager.FindByEmailAsync(email));
+            return userDto;
+        }
+
+        public async Task<UserDto> GetByUserName(string name)
+        {
+            var user = await _userManager.FindByNameAsync(name);
+            var userDto = _mapper.Map<UserDto>(user);
+            userDto.Role = await GetRoles(user);
+
+            return userDto;
         }
 
         public async Task<UserDto> GetCurrentUser(ClaimsPrincipal claims)
@@ -83,11 +89,6 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         {
             var user = _mapper.Map<User>(userDto);
             return await GetRoles(user);
-        }
-
-        public async Task<Boolean> Exist(string email)
-        {
-            return await _userManager.FindByEmailAsync(email) != null;
         }
 
         private async Task<string> GetRoles(User user)

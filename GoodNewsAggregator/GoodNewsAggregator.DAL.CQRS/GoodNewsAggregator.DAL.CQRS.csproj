@@ -19,4 +19,9 @@
     <ProjectReference Include="..\GoodNewsAggregator.DAL.Core\GoodNewsAggregator.DAL.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Queries\RefreshTokens\" />
+    <Folder Include="QueryHandlers\RefreshTokens\" />
+  </ItemGroup>
+
 </Project>

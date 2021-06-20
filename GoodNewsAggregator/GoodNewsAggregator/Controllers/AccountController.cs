@@ -55,34 +55,28 @@ namespace GoodNewsAggregator.Controllers
                 {
                     Id = Guid.NewGuid(),
                     Email = registerModel.Email,
-                    UserName = registerModel.UserName
+                    UserName = registerModel.UserName, 
+                    Role = RoleNames.USER
                 };
 
-                var resultRegister = await _userService.Register(userDto, registerModel.Password, RoleNames.USER);
+                var resultRegister = await _userService.Register(userDto, registerModel.Password);
 
-                if (resultRegister != null)
+                if (resultRegister.Succeeded)
                 {
-                    if (resultRegister.Succeeded)
+                    var userModel = await _userService.Login(userDto.UserName, registerModel.Password);
+
+                    if (userModel != null)
+                        return RedirectToAction("Index", "Home");
+
+                    return View("Error", new ErrorViewModel()
                     {
-                        var userModel = await _userService.Login(userDto.UserName, registerModel.Password);
-
-                        if (userModel != null)
-                            return RedirectToAction("Index", "Home");
-
-                        return View("Error", new ErrorViewModel() 
-                            { 
-                            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, 
-                                Message = "Ошибка во время входа в аккаунт."
-                            });
-                    }
-
-                    foreach (IdentityError error in resultRegister.Errors)
-                        ModelState.AddModelError("", error.Description);
+                        RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                        Message = "Ошибка во время входа в аккаунт."
+                    });
                 }
-                else
-                {
-                    ModelState.AddModelError("", "Аккаунт с такой электронной почтой уже существует!");
-                }
+
+                foreach (IdentityError error in resultRegister.Errors)
+                    ModelState.AddModelError("", error.Description);
             }
 
             return View();
@@ -121,7 +115,7 @@ namespace GoodNewsAggregator.Controllers
         [AcceptVerbs("GetFirst","Post")]
         public async Task<IActionResult> CheckEmail(string email)
         {
-            return await _userService.Exist(email) ? Json(false) : Json(true);
+            return await _userService.GetByEmail(email) != null ? Json(false) : Json(true);
         }
     }
 }

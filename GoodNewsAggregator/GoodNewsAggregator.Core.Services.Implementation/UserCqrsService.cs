@@ -20,19 +20,19 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             _mediator = mediator;
         }
 
-        public async Task<IdentityResult> Register(UserDto userDto, string password, string role)
+        public async Task<IdentityResult> Register(UserDto userDto, string password)
         {
-            return await _mediator.Send(new RegisterUserCommand(userDto, password, role));
+            return await _mediator.Send(new RegisterUserCommand(userDto, password));
         }
 
-        public async Task<UserModel> Login(string userName, string password)
+        public async Task<UserDto> Login(string userName, string password)
         {
             return await _mediator.Send(new LoginUserQuery(userName, password));
         }
 
-        public async Task<bool> Exist(string email)
+        public async Task<UserDto> GetByUserName(string name)
         {
-            return await _mediator.Send(new IsUserExistQuery(email));
+            return await _mediator.Send(new GetUserByUserNameQuery(name));
         }
 
         public async Task<UserDto> GetByEmail(string email)

@@ -31,6 +31,7 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers.Users
             {
                 var user = await _userManager.FindByNameAsync(request.UserName);
                 var userDto = _mapper.Map<UserDto>(user);
+                userDto.Role = (await _userManager.GetRolesAsync(user)).Aggregate((a, b) => a + ", " + b);
 
                 return userDto;
             }

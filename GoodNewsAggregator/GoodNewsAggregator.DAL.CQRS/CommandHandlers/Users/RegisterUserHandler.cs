@@ -21,16 +21,12 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Users
 
         public async Task<IdentityResult> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
-            var isExist = await _userManager.FindByEmailAsync(request.UserDto.Email) != null;
-            if (isExist)
-                return null;
-
             var user = _mapper.Map<User>(request.UserDto);
 
             var resultCreating = await _userManager.CreateAsync(user, request.Password);
             if (resultCreating.Succeeded)
             {
-                var resultAdding = await _userManager.AddToRoleAsync(user, request.Role);
+                var resultAdding = await _userManager.AddToRoleAsync(user, request.UserDto.Role);
                 return resultAdding;
             }
 

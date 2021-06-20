@@ -10,20 +10,20 @@ using Microsoft.AspNetCore.Identity;
 
 namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers.Users
 {
-    public class GetUserMyEmailHandler : IRequestHandler<GetUserByEmailQuery, UserDto>
+    public class GetUserByUserNameHandler : IRequestHandler<GetUserByUserNameQuery, UserDto>
     {
-        private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
+        private readonly IMapper _mapper;
 
-        public GetUserMyEmailHandler(IMapper mapper, UserManager<User> userManager)
+        public GetUserByUserNameHandler(UserManager<User> userManager, IMapper mapper)
         {
-            _mapper = mapper;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
-        public async Task<UserDto> Handle(GetUserByEmailQuery request, CancellationToken cancellationToken)
+        public async Task<UserDto> Handle(GetUserByUserNameQuery request, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByEmailAsync(request.Email);
+            var user = await _userManager.FindByNameAsync(request.Name);
             var userDto = _mapper.Map<UserDto>(user);
             userDto.Role = (await _userManager.GetRolesAsync(user)).Aggregate((a, b) => a + ", " + b);
 
