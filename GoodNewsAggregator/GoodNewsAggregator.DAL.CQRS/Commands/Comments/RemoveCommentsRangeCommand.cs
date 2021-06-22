@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GoodNewsAggregator.Core.DTO;
 using MediatR;
 
 namespace GoodNewsAggregator.DAL.CQRS.Commands.Comments
 {
     public class RemoveCommentsRangeCommand : IRequest<int>
     {
-        public IEnumerable<Guid> Ids { get; set; }
+        public IEnumerable<CommentDto> CommentDtos { get; set; }
 
-        public RemoveCommentsRangeCommand(IEnumerable<Guid> ids)
+        public RemoveCommentsRangeCommand(IEnumerable<CommentDto> commentDtos)
         {
-            Ids = ids;
+            CommentDtos = commentDtos;
         }
     }
 }

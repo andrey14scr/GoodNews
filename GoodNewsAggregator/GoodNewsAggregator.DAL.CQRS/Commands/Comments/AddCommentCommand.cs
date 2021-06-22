@@ -1,4 +1,5 @@
 ﻿using System;
+using GoodNewsAggregator.Core.DTO;
 using MediatR;
 
 namespace GoodNewsAggregator.DAL.CQRS.Commands.Comments
@@ -11,5 +12,14 @@ namespace GoodNewsAggregator.DAL.CQRS.Commands.Comments
 
         public Guid ArticleId { get; set; }
         public Guid UserId { get; set; }
+
+        public AddCommentCommand(CommentDto commentDto)
+        {
+            Id = commentDto.Id;
+            Text = commentDto.Text;
+            Date = commentDto.Date;
+            ArticleId = commentDto.ArticleId;
+            UserId = commentDto.UserId;
+        }
     }
 }

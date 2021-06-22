@@ -21,8 +21,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
 
         public async Task<int> Handle(UpdateArticleCommand request, CancellationToken cancellationToken)
         {
-            var article = _mapper.Map<Article>(request);
-            _dbContext.Articles.Update(article);
+            _dbContext.Articles.Update(_mapper.Map<Article>(request));
             return await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }

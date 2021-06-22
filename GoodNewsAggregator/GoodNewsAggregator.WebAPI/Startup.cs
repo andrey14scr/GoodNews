@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 using System;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using GoodNewsAggregator.Core.Services.Implementation;
@@ -48,9 +49,9 @@ namespace GoodNewsAggregator.WebAPI
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IArticleService, ArticleCqrsService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IRssService, RssService>();
-            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IUserService, UserCqrsService>();
+            services.AddScoped<IRssService, RssCqrsService>();
+            services.AddScoped<ICommentService, CommentCqrsService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenCqrsService>();
             services.AddScoped<IJwtAuthManager, JwtAuthManager>();
 
@@ -108,6 +109,10 @@ namespace GoodNewsAggregator.WebAPI
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "GoodNewsAggregator.WebAPI", Version = "v1" });
+
+                var xmlPath = Path.Combine($"{Assembly.GetExecutingAssembly().GetName().Name}.XML");
+
+                c.IncludeXmlComments(xmlPath);
             });
         }
 

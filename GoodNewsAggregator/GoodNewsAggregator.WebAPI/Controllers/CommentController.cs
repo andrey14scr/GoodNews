@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 using System;
 using System.Collections.Generic;
@@ -14,15 +13,18 @@ namespace GoodNewsAggregator.WebAPI.Controllers
     [ApiController]
     public class CommentController : ControllerBase
     {
-        private readonly IArticleService _articleService;
         private readonly ICommentService _commentService;
 
-        public CommentController(IArticleService articleService, ICommentService commentService)
+        public CommentController(ICommentService commentService)
         {
-            _articleService = articleService;
             _commentService = commentService;
         }
 
+        /// <summary>
+        /// Create a comment
+        /// </summary>
+        /// <param name="id">Id of some comment</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
@@ -34,6 +36,11 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             return Ok(commentDto);
         }
 
+        /// <summary>
+        /// Get a collection of comments
+        /// </summary>
+        /// <param name="articleId">Id of an article, comments of which you want to get</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Get(Guid? articleId)
         {
@@ -49,6 +56,11 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             return Ok(commentDtos);
         }
 
+        /// <summary>
+        /// Create a new comment
+        /// </summary>
+        /// <param name="commentDto">CommentDto that represents an information about comment</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CommentDto commentDto)
         {
@@ -59,6 +71,11 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Delete a comment
+        /// </summary>
+        /// <param name="id">Id of comment you want to delete</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -72,6 +89,11 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Update a comment
+        /// </summary>
+        /// <param name="commentDto">CommentDto that represents an information about comment</param>
+        /// <returns></returns>
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] CommentDto commentDto)
         {

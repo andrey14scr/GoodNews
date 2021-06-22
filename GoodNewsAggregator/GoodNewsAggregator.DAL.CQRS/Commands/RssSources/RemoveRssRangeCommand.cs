@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GoodNewsAggregator.Core.DTO;
 using MediatR;
 
 namespace GoodNewsAggregator.DAL.CQRS.Commands.RssSources
 {
     public class RemoveRssRangeCommand : IRequest<int>
     {
-        public IEnumerable<Guid> Ids { get; set; }
+        public IEnumerable<RssDto> RssDtos { get; set; }
 
-        public RemoveRssRangeCommand(IEnumerable<Guid> ids)
+        public RemoveRssRangeCommand(IEnumerable<RssDto> rssDto)
         {
-            Ids = ids;
+            RssDtos = rssDto;
         }
     }
 }

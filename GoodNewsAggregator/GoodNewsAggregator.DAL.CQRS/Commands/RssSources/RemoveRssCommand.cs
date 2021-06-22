@@ -1,15 +1,15 @@
-﻿using System;
+﻿using GoodNewsAggregator.Core.DTO;
 using MediatR;
 
 namespace GoodNewsAggregator.DAL.CQRS.Commands.RssSources
 {
     public class RemoveRssCommand : IRequest<int>
     {
-        public Guid Id { get; set; }
+        public RssDto RssDto { get; set; }
 
-        public RemoveRssCommand(Guid id)
+        public RemoveRssCommand(RssDto rssDto)
         {
-            Id = id;
+            RssDto = rssDto;
         }
     }
 }

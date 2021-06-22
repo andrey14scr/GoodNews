@@ -7,5 +7,10 @@ namespace GoodNewsAggregator.DAL.CQRS.Commands.Comments
     public class AddCommentsRangeCommand : IRequest<int>
     {
         public IEnumerable<CommentDto> CommentDtos { get; set; }
+
+        public AddCommentsRangeCommand(IEnumerable<CommentDto> commentDtos)
+        {
+            CommentDtos = commentDtos;
+        }
     }
 }

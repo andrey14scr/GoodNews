@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GoodNewsAggregator.WebAPI</name>
+    </assembly>
+    <members>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.ArticleController.Get(System.Guid)">
+            <summary>
+            Get a single article
+            </summary>
+            <param name="id">Id of some article</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.ArticleController.Get(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Get a collection of articles
+            </summary>
+            <param name="skip">How many articles you don't need to take from the beginning</param>
+            <param name="take">How many articles you want to take</param>
+            <param name="hasNulls">Should articles in result collection have null good factors</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.ArticleController.Create(GoodNewsAggregator.Core.DTO.ArticleDto)">
+            <summary>
+            Create a new article
+            </summary>
+            <param name="articleDto">ArticleDto that represents an information about article</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.ArticleController.Delete(System.Guid)">
+            <summary>
+            Delete an article
+            </summary>
+            <param name="id">Id of article you want to delete</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.ArticleController.Update(GoodNewsAggregator.Core.DTO.ArticleDto)">
+            <summary>
+            Update an article
+            </summary>
+            <param name="articleDto">ArticleDto that represents an information about article</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.AuthenticateController.Login(GoodNewsAggregator.Models.LoginRequest)">
+            <summary>
+            Login user
+            </summary>
+            <param name="request">Request consists of username and password</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.AuthenticateController.Register(GoodNewsAggregator.Models.RegisterModel)">
+            <summary>
+            Register a new user
+            </summary>
+            <param name="registerModel">Registration model with email, username, password and password confirmation</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.AuthenticateController.Refresh(GoodNewsAggregator.Models.RefreshRequest)">
+            <summary>
+            Refresh your access token
+            </summary>
+            <param name="request">Request consists of username and access token</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.CommentController.Get(System.Guid)">
+            <summary>
+            Create a comment
+            </summary>
+            <param name="id">Id of some comment</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.CommentController.Get(System.Nullable{System.Guid})">
+            <summary>
+            Get a collection of comments
+            </summary>
+            <param name="articleId">Id of an article, comments of which you want to get</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.CommentController.Create(GoodNewsAggregator.Core.DTO.CommentDto)">
+            <summary>
+            Create a new comment
+            </summary>
+            <param name="commentDto">CommentDto that represents an information about comment</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.CommentController.Delete(System.Guid)">
+            <summary>
+            Delete a comment
+            </summary>
+            <param name="id">Id of comment you want to delete</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.CommentController.Update(GoodNewsAggregator.Core.DTO.CommentDto)">
+            <summary>
+            Update a comment
+            </summary>
+            <param name="commentDto">CommentDto that represents an information about comment</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.RssController.Get(System.Guid)">
+            <summary>
+            Get a single rss source
+            </summary>
+            <param name="id">Id of some rss source</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.RssController.Get">
+            <summary>
+            Get a collection of rss source
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.RssController.Create(GoodNewsAggregator.Core.DTO.RssDto)">
+            <summary>
+            Create a new rss source
+            </summary>
+            <param name="rssDto">RssDto that represents an information about rss source</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.RssController.Delete(System.Guid)">
+            <summary>
+            Delete a rss source
+            </summary>
+            <param name="id">Id of rss source you want to delete</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.RssController.Update(GoodNewsAggregator.Core.DTO.RssDto)">
+            <summary>
+            Update a rss source
+            </summary>
+            <param name="rssDto">RssDto that represents an information about rss source</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

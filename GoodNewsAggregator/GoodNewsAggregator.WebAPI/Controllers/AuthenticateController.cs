@@ -1,42 +1,36 @@
 ﻿using System;
-using System.Linq;
-using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using AutoMapper.Internal;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.Core.Services.Interfaces.Enums;
 using GoodNewsAggregator.Core.Services.Interfaces.Exceptions;
-using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.Models;
-using GoodNewsAggregator.Tools;
 using GoodNewsAggregator.WebAPI.Auth;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Serilog;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TokenController : ControllerBase
+    [ProducesResponseType(200, Type = typeof(string))]
+    public class AuthenticateController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IRefreshTokenService _refreshTokenService;
         private readonly IJwtAuthManager _jwtAuthManager;
-        private readonly UserManager<User> _userManager;
 
-        public TokenController(IUserService userService, IJwtAuthManager jwtAuthManager, IRefreshTokenService refreshTokenService, UserManager<User> userManager)
+        public AuthenticateController(IUserService userService, IJwtAuthManager jwtAuthManager)
         {
             _userService = userService;
             _jwtAuthManager = jwtAuthManager;
-            _refreshTokenService = refreshTokenService;
-            _userManager = userManager;
         }
 
+        /// <summary>
+        /// Login user
+        /// </summary>
+        /// <param name="request">Request consists of username and password</param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
@@ -45,12 +39,12 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             try
             {
                 UserDto userDto = await _userService.GetByUserName(request.UserName);
-                var isCorrect = await _userService.CheckPassword(request.UserName, request.Password);
+                var isCorrect = await _userService.CheckPassword(request.Password, request.UserName);
                 
                 if (isCorrect)
                 {
                     JwtAuthResult jwtResult = await _jwtAuthManager.GenerateToken(userDto, DateTime.Now);
-                    return Ok(jwtResult);
+                    return Ok(jwtResult.AccessToken);
                 }
 
                 return BadRequest("Password is not correct");
@@ -67,8 +61,14 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Register a new user
+        /// </summary>
+        /// <param name="registerModel">Registration model with email, username, password and password confirmation</param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
+        [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel registerModel)
         {
             var findResult = await _userService.FindSuchUser(null, registerModel.Email, registerModel.UserName);
@@ -94,7 +94,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
                 if (result.Succeeded)
                 {
                     JwtAuthResult jwtResult = await _jwtAuthManager.GenerateToken(userDto, DateTime.Now);
-                    return Ok(jwtResult);
+                    return Ok(jwtResult.AccessToken);
                 }
 
                 return BadRequest(result.Errors);
@@ -111,6 +111,11 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Refresh your access token
+        /// </summary>
+        /// <param name="request">Request consists of username and access token</param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("Refresh")]
@@ -120,7 +125,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             {
                 UserDto userDto = await _userService.GetByUserName(request.UserName);
                 JwtAuthResult jwtResult = await _jwtAuthManager.GenerateToken(userDto, DateTime.Now);
-                return Ok(jwtResult);
+                return Ok(jwtResult.AccessToken);
             }
             catch (UserNotFoundException e)
             {

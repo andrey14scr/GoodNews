@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Core.Entities;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
 {
@@ -24,6 +20,11 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             _rssService = rssService;
         }
 
+        /// <summary>
+        /// Get a single rss source
+        /// </summary>
+        /// <param name="id">Id of some rss source</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
@@ -35,6 +36,10 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             return Ok(commentDto);
         }
 
+        /// <summary>
+        /// Get a collection of rss source
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -46,6 +51,11 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             return Ok(rssDtos);
         }
 
+        /// <summary>
+        /// Create a new rss source
+        /// </summary>
+        /// <param name="rssDto">RssDto that represents an information about rss source</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] RssDto rssDto)
         {
@@ -56,6 +66,11 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Delete a rss source
+        /// </summary>
+        /// <param name="id">Id of rss source you want to delete</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -69,6 +84,11 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Update a rss source
+        /// </summary>
+        /// <param name="rssDto">RssDto that represents an information about rss source</param>
+        /// <returns></returns>
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] RssDto rssDto)
         {

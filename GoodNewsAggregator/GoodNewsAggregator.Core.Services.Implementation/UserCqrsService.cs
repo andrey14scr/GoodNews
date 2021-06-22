@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AutoMapper;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.Core.Services.Interfaces.Enums;
 using GoodNewsAggregator.DAL.CQRS.Commands.Users;
 using GoodNewsAggregator.DAL.CQRS.Queries.Users;
-using GoodNewsAggregator.Models;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 

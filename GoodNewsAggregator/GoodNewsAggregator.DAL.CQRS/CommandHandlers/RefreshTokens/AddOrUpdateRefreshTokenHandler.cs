@@ -30,14 +30,16 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.RefreshTokens
                     UserId = request.UserId, 
                     ExpireAt = request.ExpireAt
                 };
+
+                await _dbContext.RefreshTokens.AddAsync(refreshToken);
             }
             else
             {
                 refreshToken.UserId = request.UserId;
                 refreshToken.ExpireAt = request.ExpireAt;
-            }
 
-            _dbContext.RefreshTokens.Update(refreshToken);
+                _dbContext.RefreshTokens.Update(refreshToken);
+            }
 
             return await _dbContext.SaveChangesAsync(cancellationToken);
         }
