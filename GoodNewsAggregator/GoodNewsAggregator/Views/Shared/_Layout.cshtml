@@ -18,13 +18,28 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        
-                    </ul>
-                </div>
-                <div class="nav-item float-right">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="MyAccount">Аккаунт</a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-info" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Аккаунт
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        @if (User.Identity is { IsAuthenticated: true })
+                        {
+                            <h6 class="dropdown-header">@User.Identity.Name</h6>
+                            <a class="dropdown-item" href="javascript:myAccount()">Кабинет</a>
+                            <div class="dropdown-divider"></div>
+                            <a id="exitBtn" class="dropdown-item btn-danger" href="javascript:exit()">Выход</a>
+                        }
+                        else
+                        {
+                            <h6 class="dropdown-header">Вход не выполнен</h6>
+                            <a class="dropdown-item" href="javascript:login()">Вход</a>
+                            <a class="dropdown-item" href="javascript:register()">Регистрация</a>
+                        }
+                    </div>
+                    <form id="exitForm" method="post" asp-controller="Account" asp-action="LogOut">
+                        <input class="btn btn-danger mb-2" type="hidden"/>
+                    </form>
                 </div>
             </div>
         </nav>
@@ -45,6 +60,7 @@
     <script src="https://code.jquery.com/jquery-1.7.2.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/MyJs.js" asp-append-version="true"></script>
+    <script src="~/js/redirections.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
