@@ -16,35 +16,37 @@
         </h2>
     </div>
 }
-
-<div class="row">
-    @foreach (var article in Model.ArticleInfos)
-    {
-        <div class="col-sm-6 col-md-4 col-lg-3 mt-2 p-1">
-            <div class="article-card">
-                <div class="float-left ml-1">Хорошесть:</div>
-                <div class="text-right mr-1">@article.Date.ToShortDateString()</div>
-                @if (article.GoodFactor.HasValue)
-                {
-                    <div class="float-left ml-1 font-weight-bold" data-color="@(article.GoodFactor.Value)">@(article.GoodFactor.Value.ToString("0.##"))</div>
-                }
-                else
-                {
-                    <div class="float-left ml-1">-</div>
-                }
-                <div class="text-right mr-1">@article.Date.ToShortTimeString()</div>
-                <div class="text-left ml-1 mr-1 mt-2">
-                    Источник:
-                    <a class="read-next source-link" href="@article.Source">@article.RssName</a>
-                </div>
-                <div class="text-left ml-1 mr-1 mt-2 mb-1">
-                    <a class="read-next title-link" asp-action="Article" asp-route-id="@article.Id">@article.Title</a>
+else
+{
+    <div class="row">
+        @foreach (var article in Model.ArticleInfos)
+        {
+            <div class="col-sm-6 col-md-4 col-lg-3 mt-2 p-1">
+                <div class="article-card">
+                    <div class="float-left ml-1">Хорошесть:</div>
+                    <div class="text-right mr-1">@article.Date.ToShortDateString()</div>
+                    @if (article.GoodFactor.HasValue)
+                    {
+                        <div class="float-left ml-1 font-weight-bold" data-color="@(article.GoodFactor.Value)">@(article.GoodFactor.Value.ToString("0.##"))</div>
+                    }
+                    else
+                    {
+                        <div class="float-left ml-1">-</div>
+                    }
+                    <div class="text-right mr-1">@article.Date.ToShortTimeString()</div>
+                    <div class="text-left ml-1 mr-1 mt-2">
+                        Источник:
+                        <a class="read-next source-link" href="@article.Source">@article.RssName</a>
+                    </div>
+                    <div class="text-left ml-1 mr-1 mt-2 mb-1">
+                        <a class="read-next title-link" asp-action="Article" asp-route-id="@article.Id">@article.Title</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
 
-<div class="text-center">
-    <pagination page="Model.PageInfo" page-action="Main"></pagination>
-</div>
+    <div class="text-center">
+        <pagination page="Model.PageInfo" page-action="Main"></pagination>
+    </div>
+}

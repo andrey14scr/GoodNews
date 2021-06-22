@@ -18,7 +18,7 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers.Articles
 
         public async Task<int> Handle(GetArticlesCountQuery request, CancellationToken cancellationToken)
         {
-            return await _dbContext.Articles.AsNoTracking().CountAsync();
+            return await _dbContext.Articles.CountAsync();
         }
     }
 }

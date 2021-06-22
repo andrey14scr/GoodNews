@@ -128,8 +128,8 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
 
             try
             {
-                _dbContext.Articles.AddRange(_mapper.Map<Article>(addArticles));
-                _dbContext.Articles.UpdateRange(_mapper.Map<Article>(updateArticles));
+                _dbContext.Articles.AddRange(_mapper.Map<IEnumerable<Article>>(addArticles));
+                _dbContext.Articles.UpdateRange(_mapper.Map<IEnumerable<Article>>(updateArticles));
             }
             catch (Exception ex)
             {

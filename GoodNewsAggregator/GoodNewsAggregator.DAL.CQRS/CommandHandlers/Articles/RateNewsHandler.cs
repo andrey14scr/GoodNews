@@ -101,7 +101,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
 
             int temp = 0;
 
-            string jsonContent = "";
+            string jsonContent = String.Empty;
 
             using (var sr = new StreamReader(AFINNRUJSON))
             {
@@ -113,6 +113,8 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                 Log.Error("Empty afinn json file content");
                 return -1;
             }
+
+            Dictionary<string, int> notFoundWords = new Dictionary<string, int>();
 
             using (JsonDocument doc = JsonDocument.Parse(jsonContent))
             {
@@ -135,10 +137,17 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
 
                             temp = 0;
                         }
+                        else if(!notFoundWords.ContainsKey(word))
+                        {
+                            notFoundWords.Add(word, 0);
+                        }
                     }
 
                     if (wordsCounter == 0)
+                    {
                         result = 0;
+                        Log.Warning("0 words found for article " + item.Key.ToString());
+                    }
                     else
                         result = (float)valueCounter / wordsCounter;
 
@@ -147,6 +156,19 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
             }
 
             _dbContext.Articles.UpdateRange(_mapper.Map<List<Article>>(articles));
+
+            try
+            {
+                string jsonString = JsonSerializer.Serialize(notFoundWords);
+                using (FileStream fs = new FileStream(DateTime.Now.ToShortDateString() + "-" + DateTime.Now.ToShortTimeString() + "-words.json", FileMode.OpenOrCreate))
+                {
+                    await JsonSerializer.SerializeAsync(fs, notFoundWords);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+            }
 
             return await _dbContext.SaveChangesAsync(cancellationToken);
         }

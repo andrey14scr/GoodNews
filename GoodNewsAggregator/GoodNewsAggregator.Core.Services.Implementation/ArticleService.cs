@@ -299,6 +299,8 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                 return;
             }
 
+            Dictionary<string, int> notFoundWords = new Dictionary<string, int>();
+
             using (JsonDocument doc = JsonDocument.Parse(jsonContent))
             {
                 JsonElement root = doc.RootElement;
@@ -320,15 +322,35 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                             
                             temp = 0;
                         }
+                        else if (!notFoundWords.ContainsKey(word))
+                        {
+                            notFoundWords.Add(word, 0);
+                        }
                     }
 
                     if (wordsCounter == 0)
+                    {
                         result = 0;
+                        Log.Warning("0 words found for article " + item.Key.ToString());
+                    }
                     else
                         result = (float)valueCounter / wordsCounter;
 
                     articles[articles.FindIndex(a => a.Id == item.Key)].GoodFactor = result;
                 }
+            }
+
+            try
+            {
+                string jsonString = JsonSerializer.Serialize(notFoundWords);
+                using (FileStream fs = new FileStream(DateTime.Now.ToShortDateString() + "-" + DateTime.Now.ToShortTimeString() + "-words.json", FileMode.OpenOrCreate))
+                {
+                    await JsonSerializer.SerializeAsync(fs, notFoundWords);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
             }
 
             await UpdateRange(articles);

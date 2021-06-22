@@ -3,11 +3,11 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using GoodNewsAggregator.Constants;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.Models;
 using Microsoft.AspNetCore.Identity;
+using Serilog;
 
 namespace GoodNewsAggregator.Controllers
 {
@@ -51,32 +51,38 @@ namespace GoodNewsAggregator.Controllers
         {
             if (ModelState.IsValid)
             {
-                UserDto userDto = new UserDto
+                var userDto = new UserDto()
                 {
                     Id = Guid.NewGuid(),
                     Email = registerModel.Email,
-                    UserName = registerModel.UserName, 
-                    Role = RoleNames.USER
+                    Role = Constants.RoleNames.USER,
+                    UserName = registerModel.UserName
                 };
 
-                var resultRegister = await _userService.Register(userDto, registerModel.Password);
-
-                if (resultRegister.Succeeded)
+                try
                 {
-                    var userModel = await _userService.Login(userDto.UserName, registerModel.Password);
-
-                    if (userModel != null)
-                        return RedirectToAction("Index", "Home");
-
-                    return View("Error", new ErrorViewModel()
+                    var resultRegister = await _userService.Register(userDto, registerModel.Password);
+                    if (resultRegister.Succeeded)
                     {
-                        RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
-                        Message = "Ошибка во время входа в аккаунт."
-                    });
-                }
+                        var userModel = await _userService.Login(userDto.UserName, registerModel.Password);
 
-                foreach (IdentityError error in resultRegister.Errors)
-                    ModelState.AddModelError("", error.Description);
+                        if (userModel != null)
+                            return RedirectToAction("Index", "Home");
+
+                        return View("Error", new ErrorViewModel()
+                        {
+                            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                            Message = "Ошибка во время входа в аккаунт."
+                        });
+                    }
+
+                    foreach (IdentityError error in resultRegister.Errors)
+                        ModelState.AddModelError("", error.Description);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e.Message);
+                }
             }
 
             return View();
@@ -112,10 +118,20 @@ namespace GoodNewsAggregator.Controllers
             return RedirectToAction(nameof(Login));
         }
 
-        [AcceptVerbs("GetFirst","Post")]
+        [AcceptVerbs("Get", "Post")]
         public async Task<IActionResult> CheckEmail(string email)
         {
-            return await _userService.GetByEmail(email) != null ? Json(false) : Json(true);
+            return (await _userService.GetByEmail(email)) != null
+                ? Json(false)
+                : Json(true);
+        }
+
+        [AcceptVerbs("Get", "Post")]
+        public async Task<IActionResult> CheckUserName(string userName)
+        {
+            return (await _userService.GetByUserName(userName)) != null
+                ? Json(false)
+                : Json(true);
         }
     }
 }
