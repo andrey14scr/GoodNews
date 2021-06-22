@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.Core.Services.Interfaces.Exceptions;
 using GoodNewsAggregator.DAL.Core.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -18,37 +16,28 @@ namespace GoodNewsAggregator.WebAPI.Auth
     {
         private readonly IConfiguration _configuration;
         private readonly IRefreshTokenService _refreshTokenService;
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly IUserService _userService;
 
-        public JwtAuthManager(IConfiguration configuration, IRefreshTokenService refreshTokenService, UserManager<User> userManager, SignInManager<User> signInManager)
+        public JwtAuthManager(IConfiguration configuration, IRefreshTokenService refreshTokenService, IUserService userService)
         {
             _configuration = configuration;
             _refreshTokenService = refreshTokenService;
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _userService = userService;
         }
 
-        public async Task<JwtAuthResult> GenerateToken(string userName, DateTime now)
+        public async Task<JwtAuthResult> GenerateToken(UserDto userDto, DateTime now)
         {
-            var user = await _userManager.FindByNameAsync(userName);
-            var result = _signInManager.SignInAsync(user, false);
-            var userClaims = await _userManager.GetClaimsAsync(user);
-
-            var roles = await _userManager.GetRolesAsync(user);
-            var roleClaims = new List<Claim>();
-            foreach (var role in roles)
-            {
-                roleClaims.Add(new Claim(ClaimTypes.Role, role));
-            }
+            if (userDto == null)
+                throw new NullReferenceException("UserDto was null");
 
             var claims = new Claim[]
             {
-                new Claim(ClaimTypes.Name, userName),
-                new Claim(JwtRegisteredClaimNames.Sub, userName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, userName),
-            }.Union(userClaims).Union(roleClaims);
+                new (ClaimTypes.Name, userDto.UserName),
+                new (ClaimTypes.Email, userDto.Email),
+                new (ClaimTypes.Role, userDto.Role),
+                new (JwtRegisteredClaimNames.Sub, userDto.UserName),
+                new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
             var jwtToken = new JwtSecurityToken(_configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
@@ -56,18 +45,18 @@ namespace GoodNewsAggregator.WebAPI.Auth
                 expires: now.AddMinutes(Convert.ToDouble(_configuration["Jwt:DurationInMinutes"])),
                 signingCredentials: new SigningCredentials(
                     new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
-                    SecurityAlgorithms.HmacSha256Signature));
+                    _configuration["Jwt:SecurityAlg"]));
 
             var accessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken);
 
-            var refreshToken = new RefreshToken()
+            var refreshToken = new RefreshTokenDto()
             {
                 Id = Guid.NewGuid(),
-                UserName = userName,
+                UserId = userDto.Id,
                 ExpireAt = now.AddMinutes(Convert.ToDouble(_configuration["Jwt:ExpiresInMinutes"]))
             };
 
-            await _refreshTokenService.AddOrUpdate(refreshToken.Id, userName, refreshToken.ExpireAt);
+            await _refreshTokenService.AddOrUpdate(refreshToken);
 
             return new JwtAuthResult()
             {
@@ -76,25 +65,28 @@ namespace GoodNewsAggregator.WebAPI.Auth
             };
         }
 
-        public Task<JwtAuthResult> Refresh(RefreshToken refreshToken, string accessToken, DateTime now)
+        public async Task<JwtAuthResult> Refresh(RefreshToken refreshToken, string accessToken, DateTime now)
         {
             var (principal, jwtToken) = DecodeJwtToken(accessToken);
 
+            var userDto = await _userService.GetById(refreshToken.UserId);
+            if (userDto == null)
+                throw new UserNotFoundException($"User with id = {refreshToken.UserId} not found");
+
             var userName = principal.Identity?.Name;
 
-            if (jwtToken == null || 
-                !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256Signature) || 
+            if (jwtToken == null || userName == null ||
+                !jwtToken.Header.Alg.Equals(_configuration["Jwt:SecurityAlg"]) || 
                 refreshToken.ExpireAt < now ||
-                refreshToken.UserName != userName)
+                userDto.UserName != userName)
                 throw new SecurityTokenException("Invalid token");
 
-            return GenerateToken(userName, now);
+            return await GenerateToken(userDto, now);
         }
 
-        public async Task RemoveRefreshTokenByUserName(string userName)
+        public async Task RemoveRefreshTokenByUserId(Guid userId)
         {
-            var refreshToken = await _refreshTokenService.GetRefreshTokenByUserName(userName);
-
+            var refreshToken = await _refreshTokenService.GetRefreshTokenByUserId(userId);
             await _refreshTokenService.Remove(refreshToken);
         }
 

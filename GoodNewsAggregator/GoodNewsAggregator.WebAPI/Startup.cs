@@ -51,7 +51,7 @@ namespace GoodNewsAggregator.WebAPI
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRssService, RssService>();
             services.AddScoped<ICommentService, CommentService>();
-            services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+            services.AddScoped<IRefreshTokenService, RefreshTokenCqrsService>();
             services.AddScoped<IJwtAuthManager, JwtAuthManager>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -97,6 +97,7 @@ namespace GoodNewsAggregator.WebAPI
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 

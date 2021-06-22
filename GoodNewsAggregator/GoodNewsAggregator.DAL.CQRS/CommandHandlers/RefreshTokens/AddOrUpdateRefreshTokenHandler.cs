@@ -20,19 +20,20 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.RefreshTokens
 
         public async Task<int> Handle(AddOrUpdateRefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            var refreshToken = _dbContext.RefreshTokens.AsNoTracking().FirstOrDefault(rt => rt.UserName == request.UserName);
+            var refreshToken = _dbContext.RefreshTokens.AsNoTracking().FirstOrDefault(rt => rt.Id == request.Id);
             
             if (refreshToken == null)
             {
                 refreshToken = new RefreshToken()
                 {
-                    Id = request.Id,
-                    UserName = request.UserName,
+                    Id = request.Id, 
+                    UserId = request.UserId, 
                     ExpireAt = request.ExpireAt
                 };
             }
             else
             {
+                refreshToken.UserId = request.UserId;
                 refreshToken.ExpireAt = request.ExpireAt;
             }
 

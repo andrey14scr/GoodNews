@@ -1,13 +1,11 @@
 ﻿using System;
 
-namespace GoodNewsAggregator.DAL.Core.Entities
+namespace GoodNewsAggregator.Core.DTO
 {
-    public class RefreshToken : IBaseEntity
+    public class RefreshTokenDto
     {
         public Guid Id { get; set; }
         public DateTime ExpireAt { get; set; }
-
         public Guid UserId { get; set; }
-        public virtual User User { get; set; }
     }
 }

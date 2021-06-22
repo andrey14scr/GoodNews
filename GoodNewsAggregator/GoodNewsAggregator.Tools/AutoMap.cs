@@ -23,6 +23,7 @@ namespace GoodNewsAggregator.Tools
             CreateMap<Role, RoleDto>().ReverseMap();
             CreateMap<Rss, RssDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<RefreshToken, RefreshTokenDto>().ReverseMap();
 
             CreateMap<Article, UpdateArticleCommand>().ReverseMap();
             CreateMap<Article, AddArticleCommand>().ReverseMap();

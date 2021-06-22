@@ -1,4 +1,5 @@
 ﻿using System;
+using GoodNewsAggregator.Core.DTO;
 using MediatR;
 
 namespace GoodNewsAggregator.DAL.CQRS.Commands.RefreshTokens
@@ -6,14 +7,15 @@ namespace GoodNewsAggregator.DAL.CQRS.Commands.RefreshTokens
     public class AddOrUpdateRefreshTokenCommand : IRequest<int>
     {
         public Guid Id { get; set; }
-        public string UserName { get; set; }
         public DateTime ExpireAt { get; set; }
+        public string Token { get; set; }
+        public Guid UserId { get; set; }
 
-        public AddOrUpdateRefreshTokenCommand(Guid id, string userName, DateTime expireAt)
+        public AddOrUpdateRefreshTokenCommand(RefreshTokenDto refreshToken)
         {
-            Id = id;
-            UserName = userName;
-            ExpireAt = expireAt;
+            ExpireAt = refreshToken.ExpireAt;
+            Id = refreshToken.Id;
+            UserId = refreshToken.UserId;
         }
     }
 }

@@ -1,10 +1,10 @@
-﻿using GoodNewsAggregator.DAL.Core.Entities;
+﻿using GoodNewsAggregator.Core.DTO;
 
 namespace GoodNewsAggregator.WebAPI.Auth
 {
     public class JwtAuthResult
     {
         public string AccessToken { get; set; }
-        public RefreshToken RefreshToken { get; set; }
+        public RefreshTokenDto RefreshToken { get; set; }
     }
 }

@@ -5,11 +5,11 @@ namespace GoodNewsAggregator.DAL.CQRS.Queries.Users
 {
     public class GetUserByUserNameQuery : IRequest<UserDto>
     {
-        public string Name { get; set; }
+        public string UserName { get; set; }
 
-        public GetUserByUserNameQuery(string name)
+        public GetUserByUserNameQuery(string userName)
         {
-            Name = name;
+            UserName = userName;
         }
     }
 }

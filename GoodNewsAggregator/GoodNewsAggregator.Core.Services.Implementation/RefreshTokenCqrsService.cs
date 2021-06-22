@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.Commands.RefreshTokens;
@@ -8,26 +9,26 @@ using MediatR;
 
 namespace GoodNewsAggregator.Core.Services.Implementation
 {
-    public class RefreshTokenService : IRefreshTokenService
+    public class RefreshTokenCqrsService : IRefreshTokenService
     {
         private readonly IMediator _mediator;
 
-        public RefreshTokenService(IMediator mediator)
+        public RefreshTokenCqrsService(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        public async Task AddOrUpdate(Guid id, string userName, DateTime expireAt)
+        public async Task AddOrUpdate(RefreshTokenDto refreshToken)
         {
-            await _mediator.Send(new AddOrUpdateRefreshTokenCommand(id, userName, expireAt));
+            await _mediator.Send(new AddOrUpdateRefreshTokenCommand(refreshToken));
         }
 
-        public async Task<RefreshToken> GetRefreshTokenByUserName(string userName)
+        public async Task<RefreshTokenDto> GetRefreshTokenByUserId(Guid userId)
         {
-            return await _mediator.Send(new GetRefreshTokenByUserNameQuery(userName));
+            return await _mediator.Send(new GetRefreshTokenByUserIdQuery(userId));
         }
 
-        public async Task Remove(RefreshToken refreshToken)
+        public async Task Remove(RefreshTokenDto refreshToken)
         {
             await _mediator.Send(new RemoveRefreshTokenCommand(refreshToken));
         }

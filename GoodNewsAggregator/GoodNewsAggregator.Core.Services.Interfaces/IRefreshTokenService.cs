@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
-using GoodNewsAggregator.DAL.Core.Entities;
+using GoodNewsAggregator.Core.DTO;
 
 namespace GoodNewsAggregator.Core.Services.Interfaces
 {
     public interface IRefreshTokenService
     {
-        Task AddOrUpdate(Guid id, string userName, DateTime expireAt);
+        Task AddOrUpdate(RefreshTokenDto refreshToken);
 
-        Task<RefreshToken> GetRefreshTokenByUserName(string userName);
+        Task<RefreshTokenDto> GetRefreshTokenByUserId(Guid userId);
 
-        Task Remove(RefreshToken refreshToken);
+        Task Remove(RefreshTokenDto refreshToken);
     }
 }

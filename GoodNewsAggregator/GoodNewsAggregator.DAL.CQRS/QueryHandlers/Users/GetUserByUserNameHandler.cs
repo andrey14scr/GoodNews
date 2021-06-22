@@ -3,10 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.Core.DTO;
+using GoodNewsAggregator.Core.Services.Interfaces.Exceptions;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.Queries.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Serilog;
 
 namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers.Users
 {
@@ -23,7 +25,11 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers.Users
 
         public async Task<UserDto> Handle(GetUserByUserNameQuery request, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByNameAsync(request.Name);
+            var user = await _userManager.FindByNameAsync(request.UserName);
+
+            if (user == null)
+                throw new UserNotFoundException($"User {request.UserName} not found");
+
             var userDto = _mapper.Map<UserDto>(user);
             userDto.Role = (await _userManager.GetRolesAsync(user)).Aggregate((a, b) => a + ", " + b);
 

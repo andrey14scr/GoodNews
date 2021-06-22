@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoMapper.Internal;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.Core.Services.Interfaces.Enums;
+using GoodNewsAggregator.Core.Services.Interfaces.Exceptions;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.Models;
 using GoodNewsAggregator.Tools;
@@ -12,6 +16,7 @@ using GoodNewsAggregator.WebAPI.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Serilog;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
 {
@@ -22,15 +27,13 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         private readonly IUserService _userService;
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IJwtAuthManager _jwtAuthManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<User> _userManager;
 
-        public TokenController(IUserService userService, IJwtAuthManager jwtAuthManager, IRefreshTokenService refreshTokenService, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
+        public TokenController(IUserService userService, IJwtAuthManager jwtAuthManager, IRefreshTokenService refreshTokenService, UserManager<User> userManager)
         {
             _userService = userService;
             _jwtAuthManager = jwtAuthManager;
             _refreshTokenService = refreshTokenService;
-            _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
         }
 
@@ -39,52 +42,73 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            JwtAuthResult jwtResult;
-            Claim[] claims;
-
-            var user = await _userManager.FindByNameAsync(request.Username);
-            var result = await _userManager.CheckPasswordAsync(user, request.Password);
-
-            if (result)
+            try
             {
-                jwtResult = await _jwtAuthManager.GenerateToken(request.Username, DateTime.Now);
+                UserDto userDto = await _userService.GetByUserName(request.UserName);
+                var isCorrect = await _userService.CheckPassword(request.UserName, request.Password);
+                
+                if (isCorrect)
+                {
+                    JwtAuthResult jwtResult = await _jwtAuthManager.GenerateToken(userDto, DateTime.Now);
+                    return Ok(jwtResult);
+                }
 
-                return Ok(jwtResult);
+                return BadRequest("Password is not correct");
             }
-
-            return BadRequest();
+            catch (UserNotFoundException e)
+            {
+                Log.Error(e.Message);
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return BadRequest();
+            }
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterModel registerModel)
         {
+            var findResult = await _userService.FindSuchUser(null, registerModel.Email, registerModel.UserName);
+            switch (findResult)
+            {
+                case EnumUserResults.HasUserWithSuchEmail:
+                    return BadRequest("User with such email already exists");
+                case EnumUserResults.HasUserWithSuchUserName:
+                    return BadRequest("User with such username already exists");
+            }
+
             var userDto = new UserDto()
             {
                 Id = Guid.NewGuid(),
-                Email = model.Email,
+                Email = registerModel.Email,
                 Role = Constants.RoleNames.USER,
-                UserName = model.UserName
+                UserName = registerModel.UserName
             };
 
-            var result = await _userService.Register(userDto, model.Password);
-            
-            if(result.Succeeded)
-                return Ok();
-            else
+            try
+            {
+                var result = await _userService.Register(userDto, registerModel.Password);
+                if (result.Succeeded)
+                {
+                    JwtAuthResult jwtResult = await _jwtAuthManager.GenerateToken(userDto, DateTime.Now);
+                    return Ok(jwtResult);
+                }
+
                 return BadRequest(result.Errors);
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("LogOut")]
-        public async Task<IActionResult> LogOut()
-        {
-            var userName = User.Identity?.Name; // null
-            await _jwtAuthManager.RemoveRefreshTokenByUserName(userName);
-            await _userService.Logout();
-
-            return Ok();
+            }
+            catch (UserExistException e)
+            {
+                Log.Error(e.Message);
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return BadRequest();
+            }
         }
 
         [AllowAnonymous]
@@ -92,26 +116,22 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         [Route("Refresh")]
         public async Task<IActionResult> Refresh([FromBody] RefreshRequest request)
         {
-            var refreshToken = await _refreshTokenService.GetRefreshTokenByUserName(request.Username);
-
-            if (refreshToken == null)
+            try
+            {
+                UserDto userDto = await _userService.GetByUserName(request.UserName);
+                JwtAuthResult jwtResult = await _jwtAuthManager.GenerateToken(userDto, DateTime.Now);
+                return Ok(jwtResult);
+            }
+            catch (UserNotFoundException e)
+            {
+                Log.Error(e.Message);
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
                 return BadRequest();
-
-            var jwtResult = await _jwtAuthManager.Refresh(refreshToken, request.Token, DateTime.Now);
-
-            return Ok(jwtResult);
+            }
         }
-    }
-
-    public class LoginRequest
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
-
-    public class RefreshRequest
-    {
-        public string Username { get; set; }
-        public string Token { get; set; }
     }
 }

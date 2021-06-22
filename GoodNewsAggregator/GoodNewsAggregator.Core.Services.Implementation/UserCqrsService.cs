@@ -1,8 +1,10 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.Core.Services.Interfaces.Enums;
 using GoodNewsAggregator.DAL.CQRS.Commands.Users;
 using GoodNewsAggregator.DAL.CQRS.Queries.Users;
 using GoodNewsAggregator.Models;
@@ -30,9 +32,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             return await _mediator.Send(new LoginUserQuery(userName, password));
         }
 
-        public async Task<UserDto> GetByUserName(string name)
+        public async Task<UserDto> GetByUserName(string userName)
         {
-            return await _mediator.Send(new GetUserByUserNameQuery(name));
+            return await _mediator.Send(new GetUserByUserNameQuery(userName));
         }
 
         public async Task<UserDto> GetByEmail(string email)
@@ -53,6 +55,21 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         public async Task Logout()
         {
             await _mediator.Send(new LogoutUserQuery());
+        }
+
+        public async Task<bool> CheckPassword(string password, string email)
+        {
+            return await _mediator.Send(new CheckPasswordQuery(password, email));
+        }
+
+        public async Task<EnumUserResults> FindSuchUser(Guid? id, string email, string userName)
+        {
+            return await _mediator.Send(new FindSuchUserQuery(id, email, userName));
+        }
+
+        public async Task<UserDto> GetById(Guid id)
+        {
+            return await _mediator.Send(new GetUserByIdQuery(id));
         }
     }
 }
