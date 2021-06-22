@@ -6,11 +6,11 @@ namespace GoodNewsAggregator.DAL.CQRS.Commands.Articles
 {
     public class RemoveArticlesRangeCommand : IRequest<int>
     {
-        public IEnumerable<ArticleDto> ArticleDto { get; set; }
+        public IEnumerable<ArticleDto> ArticleDtos { get; set; }
 
-        public RemoveArticlesRangeCommand(IEnumerable<ArticleDto> articleDto)
+        public RemoveArticlesRangeCommand(IEnumerable<ArticleDto> articleDtos)
         {
-            ArticleDto = articleDto;
+            ArticleDtos = articleDtos;
         }
     }
 }

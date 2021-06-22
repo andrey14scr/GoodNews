@@ -47,12 +47,12 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         public async Task Remove(ArticleDto articleDto)
         {
-            await _mediator.Send(new RemoveArticleCommand(articleDto.Id));
+            await _mediator.Send(new RemoveArticleCommand(articleDto));
         }
 
         public async Task RemoveRange(IEnumerable<ArticleDto> articleDtos)
         {
-            await _mediator.Send(new RemoveArticlesRangeCommand(articleDtos.Select(a => a.Id)));
+            await _mediator.Send(new RemoveArticlesRangeCommand(articleDtos));
         }
 
         public async Task<IEnumerable<ArticleDto>> GetByRssId(Guid id)
