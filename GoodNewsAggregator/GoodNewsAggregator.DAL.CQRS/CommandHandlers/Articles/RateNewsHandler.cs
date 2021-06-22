@@ -5,8 +5,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Text.Unicode;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -26,6 +28,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
         private readonly IMapper _mapper;
 
         private readonly string AFINNRUJSON = "AFINN-ru.json";
+        private readonly string UNKNOWNWORDSDIR = "UnknownWords";
 
         public RateNewsHandler(GoodNewsAggregatorContext dbContext, IMapper mapper)
         {
@@ -159,10 +162,23 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
 
             try
             {
-                string jsonString = JsonSerializer.Serialize(notFoundWords);
-                using (FileStream fs = new FileStream(DateTime.Now.ToShortDateString() + "-" + DateTime.Now.ToShortTimeString() + "-words.json", FileMode.OpenOrCreate))
+                if (!Directory.Exists(UNKNOWNWORDSDIR))
                 {
-                    await JsonSerializer.SerializeAsync(fs, notFoundWords);
+                    Directory.CreateDirectory(UNKNOWNWORDSDIR);
+                }
+                string fileName = Path.Combine(UNKNOWNWORDSDIR, DateTime.Now.ToString("yyyy-MM-dd-HH-mm") + "-words.json");
+                using (var fs = new StreamWriter(fileName, false, Encoding.UTF8))
+                {
+                    var encoderSettings = new TextEncoderSettings();
+                    encoderSettings.AllowRange(UnicodeRanges.All);
+                    var options = new JsonSerializerOptions
+                    {
+                        Encoder = JavaScriptEncoder.Create(encoderSettings),
+                        WriteIndented = true
+                    };
+
+                    string jsonString = JsonSerializer.Serialize(notFoundWords, options);
+                    await fs.WriteLineAsync(jsonString);
                 }
             }
             catch (Exception e)
