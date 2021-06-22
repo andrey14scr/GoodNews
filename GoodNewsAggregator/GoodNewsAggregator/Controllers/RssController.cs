@@ -90,16 +90,6 @@ namespace GoodNewsAggregator.Controllers
             return View(rss);
         }
 
-        //[HttpPost, ActionName("DeleteRole")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(Guid id)
-        //{
-        //    var rss = await _rssService.GetById(id);
-        //    await _rssService.Remove(rss);
-
-        //    return RedirectToAction(nameof(Index));
-        //}
-
         private async Task<bool> RssExists(Guid id)
         {
             return await _rssService.GetById(id) != null;

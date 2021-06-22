@@ -29,24 +29,21 @@ namespace GoodNewsAggregator.Controllers
 
         public async Task<IActionResult> Index()
         {
-            int count = await _articleService.GetArticlesCount();
-            int rated = await _articleService.GetRatedArticlesCount();
-
-            return View(new AdminInfo(){ArticleCount = count, RatedArticles = rated});
+            return View(await GetAdminInfo());
         }
 
         public async Task<IActionResult> Aggregate()
         {
             await _articleService.AggregateNews();
 
-            return View("Index");
+            return View("Index", await GetAdminInfo());
         }
 
         public async Task<IActionResult> Rate()
         {
             await _articleService.RateNews();
 
-            return View("Index");
+            return View("Index", await GetAdminInfo());
         }
 
         public IActionResult Roles()
@@ -75,6 +72,14 @@ namespace GoodNewsAggregator.Controllers
         {
             await _roleManager.DeleteAsync(await _roleManager.FindByIdAsync(id.ToString()));
             return RedirectToAction(nameof(Roles));
+        }
+
+        private async Task<AdminInfo> GetAdminInfo()
+        {
+            int count = await _articleService.GetArticlesCount();
+            int rated = await _articleService.GetRatedArticlesCount();
+
+            return new AdminInfo() { ArticleCount = count, RatedArticles = rated };
         }
     }
 }

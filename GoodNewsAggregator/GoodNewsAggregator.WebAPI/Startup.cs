@@ -43,11 +43,6 @@ namespace GoodNewsAggregator.WebAPI
         {
             services.AddControllersWithViews();
 
-            services.AddTransient<IRepository<Article>, ArticlesRepository>();
-            services.AddTransient<IRepository<Rss>, RssRepository>();
-            services.AddTransient<IRepository<Comment>, CommentsRepository>();
-
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IArticleService, ArticleCqrsService>();
             services.AddScoped<IUserService, UserCqrsService>();
             services.AddScoped<IRssService, RssCqrsService>();

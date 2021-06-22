@@ -6,17 +6,11 @@ using GoodNewsAggregator.DAL.Repositories.Interfaces;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.QueryHandlers.Articles;
 using GoodNewsAggregator.Tools;
@@ -44,10 +38,10 @@ namespace GoodNewsAggregator
             services.AddTransient<IRepository<Comment>, CommentsRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IArticleService, ArticleService>();
-            services.AddScoped<IRssService, RssService>();
-            services.AddScoped<ICommentService, CommentService>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IArticleService, ArticleCqrsService>();
+            services.AddScoped<IRssService, RssCqrsService>();
+            services.AddScoped<ICommentService, CommentCqrsService>();
+            services.AddScoped<IUserService, UserCqrsService>();
 
             services.AddAutoMapper(typeof(AutoMap).Assembly);
 

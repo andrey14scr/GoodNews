@@ -22,7 +22,7 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers.RssSources
 
         public async Task<RssDto> Handle(GetRssByIdQuery request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<RssDto>(await _dbContext.Rss.FirstOrDefaultAsync(r => r.Id.Equals(request.Id)));
+            return _mapper.Map<RssDto>(await _dbContext.Rss.AsNoTracking().FirstOrDefaultAsync(r => r.Id.Equals(request.Id)));
         }
     }
 }

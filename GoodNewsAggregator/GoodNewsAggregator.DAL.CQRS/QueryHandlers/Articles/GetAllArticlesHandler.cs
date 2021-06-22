@@ -23,7 +23,7 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers.Articles
 
         public async Task<IEnumerable<ArticleDto>> Handle(GetAllArticlesQuery request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<IEnumerable<ArticleDto>>(await _dbContext.Articles.ToListAsync());
+            return _mapper.Map<IEnumerable<ArticleDto>>(await _dbContext.Articles.AsNoTracking().ToListAsync());
         }
     }
 }

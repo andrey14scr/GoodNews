@@ -36,10 +36,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             {
                 (new OnlinerParser(), new Guid("7EE20FB5-B62A-4DF0-A34E-2DC738D87CDE")),
                 (new TjournalParser(), new Guid("95AC927C-4BA7-43E8-B408-D3B1F4C4164F")),
-                (new DtfParser(), new Guid("5707D1F0-6A5C-46FB-ACEC-0288962CB53F")),
-                //(new OnlinerParser(), new Guid("0FEB39F3-5287-4A6D-ACD9-E4D27CFC69D6")),
-                //(new TjournalParser(), new Guid("5A8710CF-A819-4CBB-9003-0BE2F975ABA5")),
-                //(new DtfParser(), new Guid("62CFFEA0-1A14-4AC9-9CE6-4B082F029B46")),
+                (new DtfParser(), new Guid("5707D1F0-6A5C-46FB-ACEC-0288962CB53F"))
             };
 
         public ArticleService(IUnitOfWork unitOfWork, IMapper mapper)
@@ -127,9 +124,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         public async Task AggregateNews()
         {
-            var rssSources = new ConcurrentBag<RssDto>(
-                _mapper.Map<List<RssDto>>(
-                    (await _unitOfWork.Rss.GetAll()).Where(r => _parsers.Any(p => p.Id == r.Id))));
+            var rssSources = new ConcurrentBag<RssDto>(_mapper.Map<List<RssDto>>(await _unitOfWork.Rss.GetAll()));
 
             int count = 0;
             var stopwatch = new Stopwatch();

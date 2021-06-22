@@ -43,9 +43,8 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
         {
             var rssSources = new ConcurrentBag<RssDto>(
                 _mapper.Map<List<RssDto>>(await _dbContext.Rss
-                        .Where(r => _parsers.Any(p => p.Id == r.Id))
-                        .AsNoTracking()
-                        .ToListAsync()));
+                .AsNoTracking()
+                .ToListAsync()));
 
             int count = 0;
             var stopwatch = new Stopwatch();

@@ -24,7 +24,7 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers.Articles
 
         public async Task<IEnumerable<ArticleDto>> Handle(GetArticlesByRssIdQuery request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<IEnumerable<ArticleDto>>(await _dbContext.Articles.Where(a => a.RssId.Equals(request.RssId)).ToListAsync());
+            return _mapper.Map<IEnumerable<ArticleDto>>(await _dbContext.Articles.AsNoTracking().Where(a => a.RssId.Equals(request.RssId)).ToListAsync());
         }
     }
 }
