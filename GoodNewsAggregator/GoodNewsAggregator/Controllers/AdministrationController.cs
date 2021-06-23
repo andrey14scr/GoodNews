@@ -53,11 +53,6 @@ namespace GoodNewsAggregator.Controllers
             return View(_mapper.Map<IEnumerable<RoleDto>>(_roleManager.Roles) );
         }
 
-        public IActionResult Users()
-        {
-            return View();
-        }
-
         public IActionResult CreateRole()
         {
             return View();
