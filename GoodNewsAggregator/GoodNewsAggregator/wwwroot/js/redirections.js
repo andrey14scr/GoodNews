@@ -13,3 +13,9 @@ function login() {
 function register() {
     window.location.href = "/Account/Register";
 }
+
+function home() {
+    window.location.href = "/Home/Index";
+
+    console.log($('#carouselwithIndicators').find('.carousel-item img'));
+}

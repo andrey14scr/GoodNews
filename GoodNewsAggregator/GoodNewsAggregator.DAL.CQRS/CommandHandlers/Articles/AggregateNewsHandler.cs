@@ -106,7 +106,8 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                                     GoodFactor = null
                                 };
 
-                                addArticles.Add(newsDto);
+                                if (newsDto.Content != null)
+                                    addArticles.Add(newsDto);
                             }
                             else if (existingArticle.Date != syndicationItem.PublishDate.DateTime)
                             {
@@ -115,7 +116,8 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                                 existingArticle.Title = syndicationItem.Title.Text;
                                 existingArticle.GoodFactor = null;
 
-                                updateArticles.Add(existingArticle);
+                                if (existingArticle.Content != null)
+                                    updateArticles.Add(existingArticle);
                             }
                         });
                     }

@@ -16,8 +16,13 @@
 
 <br />
 
-<button type="button" onclick="location.href = '@Url.Action("Aggregate")'">Собрать</button>
-<button type="button" onclick="location.href = '@Url.Action("Rate")'">Оценить(@Model.RatedArticles/@Model.ArticleCount)</button>
+<form method="post" asp-controller="Administration" asp-action="Aggregate">
+    <input class="mb-2" type="submit" value="Собрать" />
+</form>
+
+<form method="post" asp-controller="Administration" asp-action="Rate">
+    <input class="mb-2" type="submit" value="Оценить(@Model.RatedArticles/@Model.ArticleCount)" />
+</form>
 
 <br /><br />
 

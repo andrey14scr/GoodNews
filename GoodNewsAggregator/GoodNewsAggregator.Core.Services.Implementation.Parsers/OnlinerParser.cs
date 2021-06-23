@@ -24,6 +24,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
 
             foreach (var node in value.ChildNodes)
             {
+                if (node.Name == "p" && (node.InnerText.Contains("Читайте также:") || node.InnerText.Contains("Пишите нам:")))
+                    break;
+
                 if (node.Name == "p" && node.Attributes.Count == 0 || 
                     node.Name == "h2" && node.ChildNodes[0].Name != "a" || 
                     node.Name == "h3" || node.Name == "h4" || node.Name == "h5" || node.Name == "h6" ||

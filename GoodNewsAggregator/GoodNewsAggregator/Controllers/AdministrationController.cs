@@ -32,6 +32,7 @@ namespace GoodNewsAggregator.Controllers
             return View(await GetAdminInfo());
         }
 
+        [HttpPost]
         public async Task<IActionResult> Aggregate()
         {
             await _articleService.AggregateNews();
@@ -39,6 +40,7 @@ namespace GoodNewsAggregator.Controllers
             return View("Index", await GetAdminInfo());
         }
 
+        [HttpPost]
         public async Task<IActionResult> Rate()
         {
             await _articleService.RateNews();

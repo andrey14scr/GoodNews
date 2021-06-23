@@ -28,9 +28,11 @@ namespace GoodNewsAggregator.Controllers
 
         public async Task<IActionResult> Main(int page = 1)
         {
-            var news = (await _articleService.GetFirst((page - 1) * Pagination.PAGESIZE, Pagination.PAGESIZE, false)).ToList();
+            var hasNulls = false;
 
-            int articlesCount = await _articleService.GetArticlesCount();
+            var news = (await _articleService.GetFirst((page - 1) * Pagination.PAGESIZE, Pagination.PAGESIZE, hasNulls)).ToList();
+
+            int articlesCount = hasNulls ? await _articleService.GetArticlesCount() : await _articleService.GetRatedArticlesCount();
 
             var pageInfo = new PageInfo()
             {

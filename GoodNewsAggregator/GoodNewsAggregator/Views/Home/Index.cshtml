@@ -6,8 +6,8 @@
     <h1 class="display-4">Добро пожаловать в агрегатор хороших новостей!</h1>
     <p>Здесь могла быть ваша реклама. Но проект, к сожалению, некоммерческий.</p>
     <a class="mt-5 align-content-around text-info" asp-controller="Navigation" asp-action="Main">Начать читать</a>
-    <br/><br />
-    
+    <br /><br />
+
     <div class="container">
         <div id="carouselwithIndicators" class="carousel slide h-auto" data-ride="carousel">
             <ol class="carousel-indicators">
@@ -20,7 +20,6 @@
                 <div class="carousel-item">
                     <img class="d-block " src="~/resources/img/bee-on-daisy.jpg" alt="First slide">
                 </div>
-
                 <div class="carousel-item">
                     <img class="d-block" src="~/resources/img/chrome-73-mode-sombre-android_large.jpg" alt="Second slide">
                 </div>
@@ -40,5 +39,9 @@
             </a>
         </div>
     </div>
-    <br/><br/>
 </div>
+
+@section Scripts
+{
+    <script src="~/js/carousel.js"></script>
+}
