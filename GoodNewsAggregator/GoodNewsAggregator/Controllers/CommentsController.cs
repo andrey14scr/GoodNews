@@ -11,6 +11,8 @@ using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace GoodNewsAggregator.Controllers
 {
@@ -19,23 +21,32 @@ namespace GoodNewsAggregator.Controllers
     {
         private readonly ICommentService _commentService;
         private readonly UserManager<User> _userManager;
+        private readonly IConfiguration _configuration;
 
-        public CommentsController(ICommentService commentService, UserManager<User> userManager)
+        public CommentsController(ICommentService commentService, UserManager<User> userManager, IConfiguration configuration)
         {
             _commentService = commentService;
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         public async Task<IActionResult> List(Guid articleId, int next, bool add = true)
         {
+            int commentsSize = 0;
+            if (!Int32.TryParse(_configuration["Constants:CommentsSize"], out commentsSize))
+            {
+                Log.Error("Constants:CommentsSize field is not valid");
+                commentsSize = 5;
+            }
+
             var comments = (await _commentService.GetByArticleId(articleId))
                 .OrderByDescending(c => c.Date)
                 .ToList();
 
             int amount = comments.Count();
 
-            var list = comments.Skip(add ? next * Comments.COMMENTSSIZE : 0)
-                .Take(add ? Comments.COMMENTSSIZE : (next + 1) * Comments.COMMENTSSIZE)
+            var list = comments.Skip(add ? next * commentsSize : 0)
+                .Take(add ? commentsSize : (next + 1) * commentsSize)
                 .ToList();
 
             List<CommentViewModel> result = new List<CommentViewModel>();
@@ -55,7 +66,7 @@ namespace GoodNewsAggregator.Controllers
             {
                 ArticleId = articleId,
                 Comments = result,
-                HasNext = amount - (next + 1) * Comments.COMMENTSSIZE > 0
+                HasNext = amount - (next + 1) * commentsSize > 0
             });
         }
 

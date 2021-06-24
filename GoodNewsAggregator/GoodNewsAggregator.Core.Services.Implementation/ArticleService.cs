@@ -30,6 +30,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
     {
         private readonly string AFINNRUJSON = "AFINN-ru.json";
         private readonly string UNKNOWNWORDSDIR = "UnknownWords";
+        private readonly string UNKNOWNWORDSFILE = "words.json";
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -343,13 +344,38 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                 }
             }
 
+            await UpdateRange(articles);
+
+            string fileName = Path.Combine(UNKNOWNWORDSDIR, UNKNOWNWORDSFILE);
+            Dictionary<string, int> existingItems = new Dictionary<string, int>();
+
             try
             {
                 if (!Directory.Exists(UNKNOWNWORDSDIR))
-                {
                     Directory.CreateDirectory(UNKNOWNWORDSDIR);
+                if (!File.Exists(fileName))
+                    File.Create(fileName);
+
+                using (StreamReader r = new StreamReader(fileName))
+                {
+                    string json = await r.ReadToEndAsync();
+                    try
+                    {
+                        existingItems = JsonSerializer.Deserialize<Dictionary<string, int>>(json);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e.Message);
+                        existingItems = new Dictionary<string, int>();
+                    }
                 }
-                string fileName = Path.Combine(UNKNOWNWORDSDIR, DateTime.Now.ToString("yyyy-MM-dd-HH-mm") + "-words.json");
+
+                foreach (var notFoundWord in notFoundWords)
+                {
+                    if (!existingItems.ContainsKey(notFoundWord.Key))
+                        existingItems.Add(notFoundWord.Key, notFoundWord.Value);
+                }
+
                 using (var fs = new StreamWriter(fileName, false, Encoding.UTF8))
                 {
                     var encoderSettings = new TextEncoderSettings();
@@ -360,7 +386,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                         WriteIndented = true
                     };
 
-                    string jsonString = JsonSerializer.Serialize(notFoundWords, options);
+                    string jsonString = JsonSerializer.Serialize(existingItems, options);
                     await fs.WriteLineAsync(jsonString);
                 }
             }
@@ -368,8 +394,6 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             {
                 Log.Error(e.Message);
             }
-
-            await UpdateRange(articles);
         }
 
         public async Task<int> GetArticlesCount()

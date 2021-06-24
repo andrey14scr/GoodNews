@@ -9,6 +9,8 @@ using AutoMapper;
 using GoodNewsAggregator.Constants;
 using GoodNewsAggregator.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace GoodNewsAggregator.Controllers
 {
@@ -18,26 +20,35 @@ namespace GoodNewsAggregator.Controllers
         private readonly IArticleService _articleService;
         private readonly IRssService _rssService;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public NavigationController(IArticleService articleService, IRssService rssService, IMapper mapper)
+        public NavigationController(IArticleService articleService, IRssService rssService, IMapper mapper, IConfiguration configuration)
         {
             _articleService = articleService;
             _rssService = rssService;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         public async Task<IActionResult> Main(int page = 1)
         {
             var hasNulls = false;
 
-            var news = (await _articleService.GetFirst((page - 1) * Pagination.PAGESIZE, Pagination.PAGESIZE, hasNulls)).ToList();
+            int pageSize = 0;
+            if (!Int32.TryParse(_configuration["Constants:PageSize"], out pageSize))
+            {
+                Log.Error("Constants:PageSize field is not valid");
+                pageSize = 20;
+            }
+
+            var news = (await _articleService.GetFirst((page - 1) * pageSize, pageSize, hasNulls)).ToList();
 
             int articlesCount = hasNulls ? await _articleService.GetArticlesCount() : await _articleService.GetRatedArticlesCount();
 
             var pageInfo = new PageInfo()
             {
                 PageNumber = page,
-                PageSize = Pagination.PAGESIZE,
+                PageSize = pageSize,
                 TotalItems = articlesCount
             };
 

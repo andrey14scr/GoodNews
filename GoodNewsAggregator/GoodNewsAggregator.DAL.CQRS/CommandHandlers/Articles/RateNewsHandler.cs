@@ -29,6 +29,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
 
         private readonly string AFINNRUJSON = "AFINN-ru.json";
         private readonly string UNKNOWNWORDSDIR = "UnknownWords";
+        private readonly string UNKNOWNWORDSFILE = "words.json";
 
         public RateNewsHandler(GoodNewsAggregatorContext dbContext, IMapper mapper)
         {
@@ -124,7 +125,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                 JsonElement root = doc.RootElement;
                 JsonElement valueJson;
                 int valueCounter, wordsCounter;
-                float result = 0;
+                float goodFactor = 0;
 
                 foreach (var item in articleContent)
                 {
@@ -148,25 +149,49 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
 
                     if (wordsCounter == 0)
                     {
-                        result = 0;
+                        goodFactor = 0;
                         Log.Warning("0 words found for article " + item.Key.ToString());
                     }
                     else
-                        result = (float)valueCounter / wordsCounter;
+                        goodFactor = (float)valueCounter / wordsCounter;
 
-                    articles[articles.FindIndex(a => a.Id == item.Key)].GoodFactor = result;
+                    articles[articles.FindIndex(a => a.Id == item.Key)].GoodFactor = goodFactor;
                 }
             }
 
             _dbContext.Articles.UpdateRange(_mapper.Map<List<Article>>(articles));
+            int result = await _dbContext.SaveChangesAsync(cancellationToken);
+
+            string fileName = Path.Combine(UNKNOWNWORDSDIR, UNKNOWNWORDSFILE);
+            Dictionary<string, int> existingItems = new Dictionary<string, int>();
 
             try
             {
                 if (!Directory.Exists(UNKNOWNWORDSDIR))
-                {
                     Directory.CreateDirectory(UNKNOWNWORDSDIR);
+                if (!File.Exists(fileName))
+                    File.Create(fileName);
+
+                using (StreamReader r = new StreamReader(fileName))
+                {
+                    string json = await r.ReadToEndAsync();
+                    try
+                    {
+                        existingItems = JsonSerializer.Deserialize<Dictionary<string, int>>(json);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e.Message);
+                        existingItems = new Dictionary<string, int>();
+                    }
                 }
-                string fileName = Path.Combine(UNKNOWNWORDSDIR, DateTime.Now.ToString("yyyy-MM-dd-HH-mm") + "-words.json");
+
+                foreach (var notFoundWord in notFoundWords)
+                {
+                    if (!existingItems.ContainsKey(notFoundWord.Key))
+                        existingItems.Add(notFoundWord.Key, notFoundWord.Value);
+                }
+
                 using (var fs = new StreamWriter(fileName, false, Encoding.UTF8))
                 {
                     var encoderSettings = new TextEncoderSettings();
@@ -177,7 +202,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                         WriteIndented = true
                     };
 
-                    string jsonString = JsonSerializer.Serialize(notFoundWords, options);
+                    string jsonString = JsonSerializer.Serialize(existingItems, options);
                     await fs.WriteLineAsync(jsonString);
                 }
             }
@@ -186,7 +211,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                 Log.Error(e.Message);
             }
 
-            return await _dbContext.SaveChangesAsync(cancellationToken);
+            return result;
         }
     }
 }

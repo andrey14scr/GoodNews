@@ -1,25 +1,23 @@
 ﻿using System;
-using System.Text;
-using System.Threading.Tasks;
-using GoodNewsAggregator.Constants;
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using GoodNewsAggregator.Models;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
+using Microsoft.Extensions.Configuration;
 
 namespace GoodNewsAggregator.TagHelpers
 {
     public class PaginationTagHelper : TagHelper
     {
         private readonly IUrlHelperFactory _urlHelperFactory;
+        private readonly IConfiguration _configuration;
 
-        public PaginationTagHelper(IUrlHelperFactory urlHelperFactory)
+        public PaginationTagHelper(IUrlHelperFactory urlHelperFactory, IConfiguration configuration)
         {
             _urlHelperFactory = urlHelperFactory;
+            _configuration = configuration;
         }
 
         public PageInfo Page { get; set; }
@@ -45,7 +43,7 @@ namespace GoodNewsAggregator.TagHelpers
 
                 tag.InnerHtml.Append(anchorInnerHtml);
 
-                if (anchorInnerHtml == Pagination.POINTS)
+                if (anchorInnerHtml == _configuration["Constants:PaginationDelimiter"])
                 {
                     tag.AddCssClass("btn btn-outline-dark mt-3 ml-1 disabled");
                     result.InnerHtml.AppendHtml(tag);
@@ -69,32 +67,30 @@ namespace GoodNewsAggregator.TagHelpers
             {
                 return i.ToString();
             }
-            else 
-            {
-                if (page.PageNumber <= 5)
-                {
-                    if (i <= page.PageNumber + 2 || i == page.TotalPages)
-                        return i.ToString();
-                    else if (i == page.PageNumber + 3)
-                        return Pagination.POINTS;
-                }
-                else if(page.PageNumber >= page.TotalPages - 4)
-                {
-                    if (i == 1 || i >= page.PageNumber - 2)
-                        return i.ToString();
-                    else if (i == 2)
-                        return Pagination.POINTS;
-                }
-                else
-                {
-                    if (i == 1 || i == page.TotalPages || Math.Abs(page.PageNumber-i) < 3)
-                        return i.ToString();
-                    else if (i == 2 || i == page.TotalPages - 1)
-                        return Pagination.POINTS;
-                }
 
-                return string.Empty;
+            if (page.PageNumber <= 5)
+            {
+                if (i <= page.PageNumber + 2 || i == page.TotalPages)
+                    return i.ToString();
+                if (i == page.PageNumber + 3)
+                    return _configuration["Constants:PaginationDelimiter"];
             }
+            else if(page.PageNumber >= page.TotalPages - 4)
+            {
+                if (i == 1 || i >= page.PageNumber - 2)
+                    return i.ToString();
+                if (i == 2)
+                    return _configuration["Constants:PaginationDelimiter"];
+            }
+            else
+            {
+                if (i == 1 || i == page.TotalPages || Math.Abs(page.PageNumber-i) < 3)
+                    return i.ToString();
+                if (i == 2 || i == page.TotalPages - 1)
+                    return _configuration["Constants:PaginationDelimiter"];
+            }
+
+            return string.Empty;
         }
     }
 }
