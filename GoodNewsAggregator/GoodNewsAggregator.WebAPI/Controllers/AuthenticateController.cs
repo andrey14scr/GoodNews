@@ -39,7 +39,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             try
             {
                 UserDto userDto = await _userService.GetByUserName(request.UserName);
-                var isCorrect = await _userService.CheckPassword(request.Password, request.UserName);
+                var isCorrect = await _userService.CheckPassword(request.Password, userDto.Email);
                 
                 if (isCorrect)
                 {

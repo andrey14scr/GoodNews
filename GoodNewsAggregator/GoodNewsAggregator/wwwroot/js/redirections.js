@@ -19,3 +19,7 @@ function home() {
 
     console.log($('#carouselwithIndicators').find('.carousel-item img'));
 }
+
+function news() {
+    window.location.href = "/Navigation/Main";
+}
