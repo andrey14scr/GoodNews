@@ -3,18 +3,8 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Добро пожаловать в агрегатор хороших новостей!</h1>
-    <p>Здесь могла быть ваша реклама. Но проект, к сожалению, некоммерческий.</p>
-    <a class="mt-5 align-content-around text-info" asp-controller="Navigation" asp-action="Main">Начать читать</a>
-    <br /><br />
-
     <div class="container">
         <div id="carouselwithIndicators" class="carousel slide h-auto" data-ride="carousel">
-            <ol class="carousel-indicators">
-                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="2s"></li>
-            </ol>
 
             <div class=" carousel-inner">
                 <div class="carousel-item active">
@@ -28,16 +18,20 @@
                 </div>
             </div>
 
-            <a class="carousel-control-prev" href="#carouselwithIndicators" role="button" data-slide="prev">
+            <a class="carousel-control-prev carousel-control-width" href="#carouselwithIndicators" role="button" data-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="sr-only">Previous</span>
             </a>
 
-            <a class="carousel-control-next" href="#carouselwithIndicators" role="button" data-slide="next">
+            <a class="carousel-control-next carousel-control-width" href="#carouselwithIndicators" role="button" data-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="sr-only">Next</span>
             </a>
         </div>
+    </div>
+
+    <div class="mt-3 large-size">
+        <a class="align-content-around text-info" asp-controller="Navigation" asp-action="Main">Начать читать</a>
     </div>
 </div>
 

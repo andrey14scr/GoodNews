@@ -47,6 +47,12 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
                         result += r;
                     }
                 }
+                else if (node.Name == "h2" || node.Name == "h3" ||
+                         node.Name == "h4" || node.Name == "h5" ||
+                         node.Name == "h6")
+                {
+                    result += $"<{node.Name}> {node.InnerText} </{node.Name}>";
+                }
             }
 
             return result;

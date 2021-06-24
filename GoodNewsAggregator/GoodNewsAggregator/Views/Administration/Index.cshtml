@@ -1,5 +1,9 @@
 ﻿@model AdminInfo
 
+@{
+    ViewData["Title"] = "Admin Panel";
+}
+
 <h1>Панель администратора</h1>
 
 <form method="post" asp-controller="Rss" asp-action="Index">
@@ -20,7 +24,8 @@
     <input class="mb-2" type="submit" value="Оценить(@Model.RatedArticles/@Model.ArticleCount)" />
 </form>
 
-<br /><br />
+<br />
+<br />
 
 <div>
     <a class="btn btn-light mb-2" asp-controller="Account" asp-action="MyAccount">Назад в аккаунт</a>

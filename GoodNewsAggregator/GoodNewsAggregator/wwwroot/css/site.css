@@ -97,3 +97,7 @@ img {
 .pd-from-nav {
     padding-top: 8vh;
 }
+
+.carousel-control-width {
+    width: 5vw;
+}

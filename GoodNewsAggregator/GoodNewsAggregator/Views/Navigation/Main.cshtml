@@ -34,11 +34,11 @@ else
                         <div class="float-left ml-1">-</div>
                     }
                     <div class="text-right mr-1">@article.Date.ToShortTimeString()</div>
-                    <div class="text-left ml-1 mr-1 mt-2">
+                    <div class="text-left ml-1 mr-1 mt-1">
                         Источник:
                         <a class="read-next source-link" href="@article.Source">@article.RssName</a>
                     </div>
-                    <div class="text-left ml-1 mr-1 mt-2 mb-1">
+                    <div class="text-left ml-1 mr-1 mt-1 mb-1">
                         <a class="read-next title-link" asp-action="Article" asp-route-id="@article.Id">@article.Title</a>
                     </div>
                 </div>

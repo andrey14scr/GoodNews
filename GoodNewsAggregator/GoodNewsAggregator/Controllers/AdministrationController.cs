@@ -37,7 +37,7 @@ namespace GoodNewsAggregator.Controllers
         {
             await _articleService.AggregateNews();
 
-            return View("Index", await GetAdminInfo());
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -45,7 +45,7 @@ namespace GoodNewsAggregator.Controllers
         {
             await _articleService.RateNews();
 
-            return View("Index", await GetAdminInfo());
+            return RedirectToAction("Index");
         }
 
         public IActionResult Roles()
