@@ -86,3 +86,14 @@ img {
         background: gainsboro;
     }
 }
+
+.fixed-nav-bar {
+    position: fixed;
+    width: 100%;
+    background: white;
+    z-index: 99;
+}
+
+.pd-from-nav {
+    padding-top: 8vh;
+}

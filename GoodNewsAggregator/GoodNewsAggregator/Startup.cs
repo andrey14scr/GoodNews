@@ -38,10 +38,10 @@ namespace GoodNewsAggregator
             services.AddTransient<IRepository<Comment>, CommentsRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IArticleService, ArticleCqrsService>();
-            services.AddScoped<IRssService, RssCqrsService>();
-            services.AddScoped<ICommentService, CommentCqrsService>();
-            services.AddScoped<IUserService, UserCqrsService>();
+            services.AddScoped<IArticleService, ArticleService>();
+            services.AddScoped<IRssService, RssService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddAutoMapper(typeof(AutoMap).Assembly);
 

@@ -77,6 +77,8 @@ function addComment() {
                 comments.innerHTML = '';
                 isOpened = false;
                 getComments(articleId);
+            } else {
+                getComments(articleId);
             }
         }
     }
