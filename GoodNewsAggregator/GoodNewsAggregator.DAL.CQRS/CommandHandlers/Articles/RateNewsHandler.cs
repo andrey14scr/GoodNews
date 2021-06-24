@@ -18,6 +18,7 @@ using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.Commands.Articles;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 
 namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
@@ -26,15 +27,17 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
     {
         private readonly GoodNewsAggregatorContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
         private readonly string AFINNRUJSON = "AFINN-ru.json";
         private readonly string UNKNOWNWORDSDIR = "UnknownWords";
         private readonly string UNKNOWNWORDSFILE = "words.json";
 
-        public RateNewsHandler(GoodNewsAggregatorContext dbContext, IMapper mapper)
+        public RateNewsHandler(GoodNewsAggregatorContext dbContext, IMapper mapper, IConfiguration configuration)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         public async Task<int> Handle(RateNewsCommand request, CancellationToken cancellationToken)
@@ -104,8 +107,13 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
             }
 
             int temp = 0;
-
             string jsonContent = String.Empty;
+            bool saveUnknownWords;
+            if (!Boolean.TryParse(_configuration["Constants:SaveUnknownWords"], out saveUnknownWords))
+            {
+                Log.Error("Constants:SaveUnknownWords field is not valid");
+                saveUnknownWords = false;
+            }
 
             using (var sr = new StreamReader(AFINNRUJSON))
             {
@@ -141,7 +149,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
 
                             temp = 0;
                         }
-                        else if(!notFoundWords.ContainsKey(word))
+                        else if(saveUnknownWords && !notFoundWords.ContainsKey(word))
                         {
                             notFoundWords.Add(word, 0);
                         }
@@ -162,53 +170,56 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
             _dbContext.Articles.UpdateRange(_mapper.Map<List<Article>>(articles));
             int result = await _dbContext.SaveChangesAsync(cancellationToken);
 
-            string fileName = Path.Combine(UNKNOWNWORDSDIR, UNKNOWNWORDSFILE);
-            Dictionary<string, int> existingItems = new Dictionary<string, int>();
-
-            try
+            if (saveUnknownWords)
             {
-                if (!Directory.Exists(UNKNOWNWORDSDIR))
-                    Directory.CreateDirectory(UNKNOWNWORDSDIR);
-                if (!File.Exists(fileName))
-                    File.Create(fileName);
+                string fileName = Path.Combine(UNKNOWNWORDSDIR, UNKNOWNWORDSFILE);
+                Dictionary<string, int> existingItems = new Dictionary<string, int>();
 
-                using (StreamReader r = new StreamReader(fileName))
+                try
                 {
-                    string json = await r.ReadToEndAsync();
-                    try
+                    if (!Directory.Exists(UNKNOWNWORDSDIR))
+                        Directory.CreateDirectory(UNKNOWNWORDSDIR);
+                    if (!File.Exists(fileName))
+                        File.Create(fileName);
+
+                    using (StreamReader r = new StreamReader(fileName))
                     {
-                        existingItems = JsonSerializer.Deserialize<Dictionary<string, int>>(json);
+                        string json = await r.ReadToEndAsync();
+                        try
+                        {
+                            existingItems = JsonSerializer.Deserialize<Dictionary<string, int>>(json);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(e.Message);
+                            existingItems = new Dictionary<string, int>();
+                        }
                     }
-                    catch (Exception e)
+
+                    foreach (var notFoundWord in notFoundWords)
                     {
-                        Log.Error(e.Message);
-                        existingItems = new Dictionary<string, int>();
+                        if (!existingItems.ContainsKey(notFoundWord.Key))
+                            existingItems.Add(notFoundWord.Key, notFoundWord.Value);
+                    }
+
+                    using (var fs = new StreamWriter(fileName, false, Encoding.UTF8))
+                    {
+                        var encoderSettings = new TextEncoderSettings();
+                        encoderSettings.AllowRange(UnicodeRanges.All);
+                        var options = new JsonSerializerOptions
+                        {
+                            Encoder = JavaScriptEncoder.Create(encoderSettings),
+                            WriteIndented = true
+                        };
+
+                        string jsonString = JsonSerializer.Serialize(existingItems, options);
+                        await fs.WriteLineAsync(jsonString);
                     }
                 }
-
-                foreach (var notFoundWord in notFoundWords)
+                catch (Exception e)
                 {
-                    if (!existingItems.ContainsKey(notFoundWord.Key))
-                        existingItems.Add(notFoundWord.Key, notFoundWord.Value);
+                    Log.Error(e.Message);
                 }
-
-                using (var fs = new StreamWriter(fileName, false, Encoding.UTF8))
-                {
-                    var encoderSettings = new TextEncoderSettings();
-                    encoderSettings.AllowRange(UnicodeRanges.All);
-                    var options = new JsonSerializerOptions
-                    {
-                        Encoder = JavaScriptEncoder.Create(encoderSettings),
-                        WriteIndented = true
-                    };
-
-                    string jsonString = JsonSerializer.Serialize(existingItems, options);
-                    await fs.WriteLineAsync(jsonString);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error(e.Message);
             }
 
             return result;

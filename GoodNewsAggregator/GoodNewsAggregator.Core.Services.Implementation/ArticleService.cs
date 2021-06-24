@@ -21,6 +21,7 @@ using AutoMapper;
 using GoodNewsAggregator.Core.Services.Implementation.Parsers;
 using GoodNewsAggregator.DAL.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using Terradue.ServiceModel.Syndication;
 
@@ -34,6 +35,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
         private readonly ConcurrentBag<(IWebPageParser Parser, Guid Id)> _parsers =
             new ConcurrentBag<(IWebPageParser parser, Guid id)>()
@@ -43,10 +45,11 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                 (new DtfParser(), new Guid("5707D1F0-6A5C-46FB-ACEC-0288962CB53F"))
             };
 
-        public ArticleService(IUnitOfWork unitOfWork, IMapper mapper)
+        public ArticleService(IUnitOfWork unitOfWork, IMapper mapper, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         public async Task Add(ArticleDto articleDto)
@@ -289,8 +292,13 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             }
 
             int temp = 0;
-
             string jsonContent = "";
+            bool saveUnknownWords;
+            if (!Boolean.TryParse(_configuration["Constants:SaveUnknownWords"], out saveUnknownWords))
+            {
+                Log.Error("Constants:SaveUnknownWords field is not valid");
+                saveUnknownWords = false;
+            }
 
             using (var sr = new StreamReader(AFINNRUJSON))
             {
@@ -326,7 +334,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                             
                             temp = 0;
                         }
-                        else if (!notFoundWords.ContainsKey(word))
+                        else if (saveUnknownWords && !notFoundWords.ContainsKey(word))
                         {
                             notFoundWords.Add(word, 0);
                         }
@@ -345,54 +353,56 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             }
 
             await UpdateRange(articles);
-
-            string fileName = Path.Combine(UNKNOWNWORDSDIR, UNKNOWNWORDSFILE);
-            Dictionary<string, int> existingItems = new Dictionary<string, int>();
-
-            try
+            if (saveUnknownWords)
             {
-                if (!Directory.Exists(UNKNOWNWORDSDIR))
-                    Directory.CreateDirectory(UNKNOWNWORDSDIR);
-                if (!File.Exists(fileName))
-                    File.Create(fileName);
+                string fileName = Path.Combine(UNKNOWNWORDSDIR, UNKNOWNWORDSFILE);
+                Dictionary<string, int> existingItems = new Dictionary<string, int>();
 
-                using (StreamReader r = new StreamReader(fileName))
+                try
                 {
-                    string json = await r.ReadToEndAsync();
-                    try
+                    if (!Directory.Exists(UNKNOWNWORDSDIR))
+                        Directory.CreateDirectory(UNKNOWNWORDSDIR);
+                    if (!File.Exists(fileName))
+                        File.Create(fileName);
+
+                    using (StreamReader r = new StreamReader(fileName))
                     {
-                        existingItems = JsonSerializer.Deserialize<Dictionary<string, int>>(json);
+                        string json = await r.ReadToEndAsync();
+                        try
+                        {
+                            existingItems = JsonSerializer.Deserialize<Dictionary<string, int>>(json);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(e.Message);
+                            existingItems = new Dictionary<string, int>();
+                        }
                     }
-                    catch (Exception e)
+
+                    foreach (var notFoundWord in notFoundWords)
                     {
-                        Log.Error(e.Message);
-                        existingItems = new Dictionary<string, int>();
+                        if (!existingItems.ContainsKey(notFoundWord.Key))
+                            existingItems.Add(notFoundWord.Key, notFoundWord.Value);
+                    }
+
+                    using (var fs = new StreamWriter(fileName, false, Encoding.UTF8))
+                    {
+                        var encoderSettings = new TextEncoderSettings();
+                        encoderSettings.AllowRange(UnicodeRanges.All);
+                        var options = new JsonSerializerOptions
+                        {
+                            Encoder = JavaScriptEncoder.Create(encoderSettings),
+                            WriteIndented = true
+                        };
+
+                        string jsonString = JsonSerializer.Serialize(existingItems, options);
+                        await fs.WriteLineAsync(jsonString);
                     }
                 }
-
-                foreach (var notFoundWord in notFoundWords)
+                catch (Exception e)
                 {
-                    if (!existingItems.ContainsKey(notFoundWord.Key))
-                        existingItems.Add(notFoundWord.Key, notFoundWord.Value);
+                    Log.Error(e.Message);
                 }
-
-                using (var fs = new StreamWriter(fileName, false, Encoding.UTF8))
-                {
-                    var encoderSettings = new TextEncoderSettings();
-                    encoderSettings.AllowRange(UnicodeRanges.All);
-                    var options = new JsonSerializerOptions
-                    {
-                        Encoder = JavaScriptEncoder.Create(encoderSettings),
-                        WriteIndented = true
-                    };
-
-                    string jsonString = JsonSerializer.Serialize(existingItems, options);
-                    await fs.WriteLineAsync(jsonString);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error(e.Message);
             }
         }
 

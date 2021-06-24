@@ -16,15 +16,50 @@
 
 <br />
 
-<form method="post" asp-controller="Administration" asp-action="Aggregate">
-    <input class="mb-2" type="submit" value="Собрать" />
-</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Количество новостей
+            </th>
+            <th>
+                Описание
+            </th>
+            <th>
+                Действие
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            @Model.ArticleCount
+        </td>
+        <td>
+            Общее количество
+        </td>
+        <td>
+            <form method="post" asp-controller="Administration" asp-action="Aggregate">
+                <input class="mb-2" type="submit" value="Собрать" />
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @(Model.ArticleCount - Model.RatedArticles)
+        </td>
+        <td>
+            Нужно оценить
+        </td>
+        <td>
+            <form method="post" asp-controller="Administration" asp-action="Rate">
+                <input class="mb-2" type="submit" value="Оценить (30)" />
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
 
-<form method="post" asp-controller="Administration" asp-action="Rate">
-    <input class="mb-2" type="submit" value="Оценить(@Model.RatedArticles/@Model.ArticleCount)" />
-</form>
-
-<br />
 <br />
 
 <div>
