@@ -118,7 +118,7 @@ namespace GoodNewsAggregator.WebAPI
             }
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GoodNewsAggregator.WebAPI v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NewsAggregator.WebAPI v1"));
 
             app.UseHangfireDashboard();
             var articleService = serviceProvider.GetService(typeof(IArticleService)) as IArticleService;
