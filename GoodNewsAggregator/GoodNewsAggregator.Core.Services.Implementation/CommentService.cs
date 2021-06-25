@@ -46,6 +46,17 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             return commentDto;
         }
 
+        public async Task<IEnumerable<CommentDto>> GetFirst(Guid articleId, int skip, int take)
+        {
+            var comments = await _unitOfWork.Comments.Get()
+                .Where(c => c.ArticleId == articleId)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<CommentDto>>(comments);
+        }
+
         public async Task Add(CommentDto commentDto)
         {
             await AddRange(new[] { commentDto });

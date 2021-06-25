@@ -40,18 +40,25 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         /// Get a collection of comments
         /// </summary>
         /// <param name="articleId">Id of an article, comments of which you want to get</param>
+        /// <param name="skip">How many comments you don't need to take from the beginning</param>
+        /// <param name="take">How many comments you want to take</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Get(Guid? articleId)
+        public async Task<IActionResult> Get(Guid? articleId, int? skip, int? take)
         {
-            IEnumerable<CommentDto> commentDtos;
+            if (skip.HasValue ^ take.HasValue)
+                return BadRequest("Both parameters \"skip\" and \"take\" must be null or have values");
+
+            IEnumerable<CommentDto> commentDtos = new List<CommentDto>();
             if (articleId.HasValue)
-                commentDtos = await _commentService.GetByArticleId(articleId.Value);
+            {
+                if (skip.HasValue && take.HasValue)
+                    commentDtos = await _commentService.GetFirst(articleId.Value, skip.Value, take.Value);
+                else
+                    commentDtos = await _commentService.GetByArticleId(articleId.Value);
+            }
             else
                 commentDtos = await _commentService.GetAll();
-
-            if (!commentDtos.Any())
-                return NotFound();
 
             return Ok(commentDtos);
         }

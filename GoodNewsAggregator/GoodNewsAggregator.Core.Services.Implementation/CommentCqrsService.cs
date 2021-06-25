@@ -33,6 +33,11 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             return await _mediator.Send(new GetCommentsByArticleIdQuery(articleId));
         }
 
+        public async Task<IEnumerable<CommentDto>> GetFirst(Guid articleId, int skip, int take)
+        {
+            return await _mediator.Send(new GetFirstCommentsQuery(articleId, skip, take));
+        }
+
         public async Task Add(CommentDto commentDto)
         {
             await _mediator.Send(new AddCommentCommand(commentDto));

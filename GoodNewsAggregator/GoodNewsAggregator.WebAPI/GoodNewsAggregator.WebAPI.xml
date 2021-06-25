@@ -69,11 +69,13 @@
             <param name="id">Id of some comment</param>
             <returns></returns>
         </member>
-        <member name="M:GoodNewsAggregator.WebAPI.Controllers.CommentController.Get(System.Nullable{System.Guid})">
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.CommentController.Get(System.Nullable{System.Guid},System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Get a collection of comments
             </summary>
             <param name="articleId">Id of an article, comments of which you want to get</param>
+            <param name="skip">How many comments you don't need to take from the beginning</param>
+            <param name="take">How many comments you want to take</param>
             <returns></returns>
         </member>
         <member name="M:GoodNewsAggregator.WebAPI.Controllers.CommentController.Create(GoodNewsAggregator.Core.DTO.CommentDto)">
