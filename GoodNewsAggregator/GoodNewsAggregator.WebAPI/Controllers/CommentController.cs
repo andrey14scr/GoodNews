@@ -44,7 +44,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(Guid? articleId)
         {
-            IEnumerable<CommentDto> commentDtos = new List<CommentDto>();
+            IEnumerable<CommentDto> commentDtos;
             if (articleId.HasValue)
                 commentDtos = await _commentService.GetByArticleId(articleId.Value);
             else

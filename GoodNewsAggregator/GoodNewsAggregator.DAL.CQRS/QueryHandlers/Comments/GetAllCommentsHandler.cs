@@ -23,7 +23,7 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers.Comments
 
         public async Task<IEnumerable<CommentDto>> Handle(GetAllCommentsQuery request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<IEnumerable<CommentDto>>(await _dbContext.Articles.AsNoTracking().ToListAsync());
+            return _mapper.Map<IEnumerable<CommentDto>>(await _dbContext.Comments.AsNoTracking().ToListAsync());
         }
     }
 }
