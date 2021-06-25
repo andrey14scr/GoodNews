@@ -23,11 +23,6 @@ namespace GoodNewsAggregator.Controllers
             return View(await _rssService.GetAll());
         }
 
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         public async Task<IActionResult> Edit(Guid? id)
         {
             return await FindRss(id);
@@ -44,21 +39,6 @@ namespace GoodNewsAggregator.Controllers
             await _rssService.Remove(rss);
 
             return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(RssDto rss)
-        {
-            if (ModelState.IsValid)
-            {
-                rss.Id = Guid.NewGuid();
-                await _rssService.Add(rss);
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(rss);
         }
 
         [HttpPost]
