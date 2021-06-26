@@ -17,20 +17,25 @@
                     <a class="navbar-brand" href="javascript:news()">Читать</a>
                 </div>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-info" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Аккаунт
-                    </button>
+                    <a type="button" class="navbar-brand account-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        @if (User.Identity is { IsAuthenticated: true })
+                        {
+                            @User.Identity.Name
+                        }
+                        else
+                        {
+                            @Html.Raw("Аккаунт")
+                        }
+                    </a>
                     <div class="dropdown-menu dropdown-menu-right">
                         @if (User.Identity is { IsAuthenticated: true })
                         {
-                            <h6 class="dropdown-header">@User.Identity.Name</h6>
                             <a class="dropdown-item" href="javascript:myAccount()">Кабинет</a>
                             <div class="dropdown-divider"></div>
                             <a id="exitBtn" class="dropdown-item btn-danger" href="javascript:exit()">Выход</a>
                         }
                         else
                         {
-                            <h6 class="dropdown-header">Вход не выполнен</h6>
                             <a class="dropdown-item" href="javascript:login()">Вход</a>
                             <a class="dropdown-item" href="javascript:register()">Регистрация</a>
                         }

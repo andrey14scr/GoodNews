@@ -101,3 +101,11 @@ img {
 .carousel-control-width {
     width: 5vw;
 }
+
+.acoount-header {
+    color: black;
+}
+
+a.account-btn:hover {
+    color: red !important;
+}
