@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.Core.Services.Interfaces.Enums;
 using GoodNewsAggregator.DAL.CQRS.Commands.Articles;
 using GoodNewsAggregator.DAL.CQRS.Queries.Articles;
 using MediatR;
@@ -60,9 +61,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             return await _mediator.Send(new GetArticlesByRssIdQuery(id));
         }
 
-        public async Task<IEnumerable<ArticleDto>> GetFirst(int skip, int take, bool hasNulls)
+        public async Task<IEnumerable<ArticleDto>> GetFirst(int skip, int take, bool hasNulls, SortByOption sortByOption)
         {
-            return await _mediator.Send(new GetFirstArticlesQuery(skip, take, hasNulls));
+            return await _mediator.Send(new GetFirstArticlesQuery(skip, take, hasNulls, sortByOption));
         }
 
         public async Task AggregateNews()

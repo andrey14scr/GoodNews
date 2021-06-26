@@ -6,9 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using GoodNewsAggregator.Constants;
+using GoodNewsAggregator.Core.Services.Interfaces.Enums;
 using GoodNewsAggregator.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 
@@ -30,7 +31,7 @@ namespace GoodNewsAggregator.Controllers
             _configuration = configuration;
         }
 
-        public async Task<IActionResult> Main(int page = 1)
+        public async Task<IActionResult> Main(int page = 1, SortByOption sortBy = SortByOption.DateTime)
         {
             var hasNulls = false;
 
@@ -41,7 +42,7 @@ namespace GoodNewsAggregator.Controllers
                 pageSize = 20;
             }
 
-            var news = (await _articleService.GetFirst((page - 1) * pageSize, pageSize, hasNulls)).ToList();
+            var news = (await _articleService.GetFirst((page - 1) * pageSize, pageSize, hasNulls, sortBy)).ToList();
 
             int articlesCount = hasNulls ? await _articleService.GetArticlesCount() : await _articleService.GetRatedArticlesCount();
 
@@ -49,7 +50,8 @@ namespace GoodNewsAggregator.Controllers
             {
                 PageNumber = page,
                 PageSize = pageSize,
-                TotalItems = articlesCount
+                TotalItems = articlesCount, 
+                SortByOption = sortBy
             };
 
             var articleInfos = _mapper.Map<IEnumerable<ArticleInfoViewModel>>(news).ToArray();
@@ -59,7 +61,7 @@ namespace GoodNewsAggregator.Controllers
                 articleInfos[i].RssName = (await _rssService.GetById(news[i].RssId)).Name;
             }
 
-            return View(new NewsOnPageViewModel() { ArticleInfos = articleInfos, PageInfo = pageInfo});
+            return View(new NewsOnPageViewModel() { ArticleInfos = articleInfos, PageInfo = pageInfo });
         }
 
         public async Task<IActionResult> Article(Guid? id)

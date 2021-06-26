@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GoodNewsAggregator.Core.Services.Interfaces\GoodNewsAggregator.Core.Services.Interfaces.csproj" />
     <ProjectReference Include="..\GoodNewsAggregator.DAL.Core\GoodNewsAggregator.DAL.Core.csproj" />
   </ItemGroup>
 

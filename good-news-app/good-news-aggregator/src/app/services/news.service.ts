@@ -14,7 +14,7 @@ export class NewsService {
   constructor(private http: HttpClient) { }
 
   getNews(): Observable<Article[]>{
-    return this.get('Article'+ '?skip=0&take=10').pipe();
+    return this.get('Article'+ '?skip=0&take=10&sortBy=0').pipe();
   }
 
   getById(id: string){

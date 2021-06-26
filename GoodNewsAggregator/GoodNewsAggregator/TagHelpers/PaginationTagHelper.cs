@@ -50,7 +50,7 @@ namespace GoodNewsAggregator.TagHelpers
                     continue;
                 }
                 
-                tag.Attributes["href"] = urlHelper.Action(PageAction, new { page = i});
+                tag.Attributes["href"] = urlHelper.Action(PageAction, new { page = i, sortBy = Page.SortByOption});
                 if (i == Page.PageNumber)
                     tag.AddCssClass("current-pagination-link btn btn-dark mt-3 ml-1");
                 else

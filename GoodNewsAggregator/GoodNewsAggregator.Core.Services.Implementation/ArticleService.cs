@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using AutoMapper;
 using GoodNewsAggregator.Core.Services.Implementation.Parsers;
+using GoodNewsAggregator.Core.Services.Interfaces.Enums;
 using GoodNewsAggregator.DAL.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -109,29 +110,36 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         public async Task<IEnumerable<ArticleDto>> GetByRssId(Guid id)
         {
-            var articles = await _unitOfWork.Articles.Get().Where(a => a.Rss.Id.Equals(id)).ToListAsync();
+            var articles = await _unitOfWork.Articles.Get()
+                .Where(a => a.Rss.Id.Equals(id))
+                .ToListAsync();
             var articleDtos = _mapper.Map<List<ArticleDto>>(articles);
 
             return articleDtos;
         }
 
-        public async Task<IEnumerable<ArticleDto>> GetFirst(int skip, int take, bool hasNulls)
+        public async Task<IEnumerable<ArticleDto>> GetFirst(int skip, int take, bool hasNulls, SortByOption sortByOption)
         {
-            var result = await _unitOfWork.Articles
-                .Get()
-                .Where(a => a.GoodFactor.HasValue != hasNulls)
-                .OrderByDescending(a => a.Date)
-                .Skip(skip)
-                .Take(take)
-                .AsNoTracking()
-                .ToListAsync();
+            var result = _unitOfWork.Articles.Get()
+                .Where(a => a.GoodFactor.HasValue != hasNulls);
 
-            return _mapper.Map<List<ArticleDto>>(result);
+            switch (sortByOption)
+            {
+                case SortByOption.DateTime:
+                    result = result.OrderByDescending(a => a.Date);
+                    break;
+                case SortByOption.GoodFactor:
+                    result = result.OrderByDescending(a => a.GoodFactor);
+                    break;
+            }
+
+            return _mapper.Map<List<ArticleDto>>(await result.Skip(skip).Take(take).AsNoTracking().ToListAsync());
         }
 
         public async Task AggregateNews()
         {
-            var rssSources = new ConcurrentBag<RssDto>(_mapper.Map<List<RssDto>>(await _unitOfWork.Rss.GetAll()));
+            var rssSources = new ConcurrentBag<RssDto>(_mapper
+                .Map<List<RssDto>>(await _unitOfWork.Rss.GetAll()));
 
             int count = 0;
             var stopwatch = new Stopwatch();
@@ -230,7 +238,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation
         public async Task RateNews()
         {
             var articles =
-                _mapper.Map<List<ArticleDto>>(await _unitOfWork.Articles.Get().Where(a => !a.GoodFactor.HasValue).Take(30)
+                _mapper.Map<List<ArticleDto>>(await _unitOfWork.Articles.Get()
+                    .Where(a => !a.GoodFactor.HasValue)
+                    .Take(30)
                     .ToListAsync());
 
             Dictionary<Guid, List<string>> articleContent = new Dictionary<Guid, List<string>>();

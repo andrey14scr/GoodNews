@@ -6,5 +6,6 @@ namespace GoodNewsAggregator.Models
     {
         public IEnumerable<ArticleInfoViewModel> ArticleInfos { get; set; }
         public PageInfo PageInfo { get; set; }
+
     }
 }

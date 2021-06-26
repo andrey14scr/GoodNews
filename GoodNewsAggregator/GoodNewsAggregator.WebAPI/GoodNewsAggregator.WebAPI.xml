@@ -11,14 +11,17 @@
             <param name="id">Id of some article</param>
             <returns></returns>
         </member>
-        <member name="M:GoodNewsAggregator.WebAPI.Controllers.ArticleController.Get(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Boolean})">
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.ArticleController.Get(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Boolean},System.Nullable{GoodNewsAggregator.Core.Services.Interfaces.Enums.SortByOption})">
             <summary>
             Get a collection of articles
             </summary>
             <param name="skip">How many articles you don't need to take from the beginning</param>
             <param name="take">How many articles you want to take</param>
             <param name="hasNulls">Should articles in result collection have null good factors</param>
-            <returns></returns>
+            <param name="sortBy">Which sort we should use while looking for news
+            <para>0 - sort by DateTime,</para>
+            <para>1 - sort by GoodFactor</para>
+            </param>
         </member>
         <member name="M:GoodNewsAggregator.WebAPI.Controllers.ArticleController.Create(GoodNewsAggregator.Core.DTO.ArticleDto)">
             <summary>
