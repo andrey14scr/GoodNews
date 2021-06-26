@@ -4,6 +4,11 @@
     height: 100%;
 }
 
+.article-card:hover {
+    box-shadow: 0 6px 14px 0 rgba(0,0,0,0.2);
+    transform: scale(1.01);
+}
+
 a.title-link {
     font-family: sans-serif;
 }
@@ -89,4 +94,34 @@ img {
 
 img-car {
     height: 100px;
+}
+
+a.pagination-link {
+    color: black;
+    text-decoration: none;
+}
+
+a.pagination-link:visited {
+    color: black;
+    text-decoration: none;
+}
+
+a.pagination-link:visited:hover {
+    color: white;
+    text-decoration: none;
+}
+
+a.pagination-link:hover {
+    color: white;
+    text-decoration: none;
+}
+
+a.current-pagination-link:hover {
+    color: white;
+    text-decoration: none;
+}
+
+a.current-pagination-link {
+    color: white;
+    text-decoration: none;
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
@@ -42,12 +43,22 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         /// <param name="hasNulls">Should articles in result collection have null good factors</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Get(int skip, int take, bool hasNulls)
+        public async Task<IActionResult> Get(int? skip, int? take, bool? hasNulls)
         {
-            var articleDtos = await _articleService.GetFirst(skip, take, hasNulls);
+            if (skip.HasValue && !take.HasValue)
+                return BadRequest("Parameters \"skip\" must be with \"take\" parameter");
 
-            if (articleDtos == null)
-                return NotFound();
+            if (!hasNulls.HasValue)
+                hasNulls = false;
+
+            if (!skip.HasValue)
+                skip = 0;
+
+            IEnumerable<ArticleDto> articleDtos = new List<ArticleDto>();
+            if (take.HasValue)
+                articleDtos = await _articleService.GetFirst(skip.Value, take.Value, hasNulls.Value);
+            else
+                articleDtos = await _articleService.GetAll();
 
             return Ok(articleDtos);
         }

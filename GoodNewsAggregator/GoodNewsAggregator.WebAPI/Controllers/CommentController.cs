@@ -52,7 +52,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             IEnumerable<CommentDto> commentDtos = new List<CommentDto>();
             if (articleId.HasValue)
             {
-                if (skip.HasValue && take.HasValue)
+                if (skip.HasValue)
                     commentDtos = await _commentService.GetFirst(articleId.Value, skip.Value, take.Value);
                 else
                     commentDtos = await _commentService.GetByArticleId(articleId.Value);

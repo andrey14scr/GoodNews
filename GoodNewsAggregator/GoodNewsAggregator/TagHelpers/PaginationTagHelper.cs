@@ -52,9 +52,9 @@ namespace GoodNewsAggregator.TagHelpers
                 
                 tag.Attributes["href"] = urlHelper.Action(PageAction, new { page = i});
                 if (i == Page.PageNumber)
-                    tag.AddCssClass("btn btn-dark mt-3 ml-1");
+                    tag.AddCssClass("current-pagination-link btn btn-dark mt-3 ml-1");
                 else
-                    tag.AddCssClass("btn btn-outline-dark mt-3 ml-1");
+                    tag.AddCssClass("pagination-link btn btn-outline-dark mt-3 ml-1");
                 result.InnerHtml.AppendHtml(tag);
             }
 

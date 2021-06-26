@@ -98,6 +98,15 @@ namespace GoodNewsAggregator.WebAPI
             services.AddDbContext<GoodNewsAggregatorContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Default",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                    });
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -128,6 +137,7 @@ namespace GoodNewsAggregator.WebAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors("Default");
 
             app.UseAuthentication();
             app.UseAuthorization();

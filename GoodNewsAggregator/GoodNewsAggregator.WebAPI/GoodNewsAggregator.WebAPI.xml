@@ -11,7 +11,7 @@
             <param name="id">Id of some article</param>
             <returns></returns>
         </member>
-        <member name="M:GoodNewsAggregator.WebAPI.Controllers.ArticleController.Get(System.Int32,System.Int32,System.Boolean)">
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.ArticleController.Get(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Boolean})">
             <summary>
             Get a collection of articles
             </summary>
