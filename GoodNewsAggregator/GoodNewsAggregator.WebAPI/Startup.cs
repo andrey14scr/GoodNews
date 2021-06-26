@@ -131,8 +131,17 @@ namespace GoodNewsAggregator.WebAPI
 
             app.UseHangfireDashboard();
             var articleService = serviceProvider.GetService(typeof(IArticleService)) as IArticleService;
-            RecurringJob.AddOrUpdate(() => articleService.AggregateNews(), "*/40 * * * *");
-            RecurringJob.AddOrUpdate(() => articleService.RateNews(), "*/5 * * * *");
+
+            uint rateTime, aggregateTime;
+
+            if (!UInt32.TryParse(Configuration["Hangfire:Rate"], out rateTime))
+                rateTime = 15;
+
+            if (!UInt32.TryParse(Configuration["Hangfire:Aggregate"], out aggregateTime))
+                aggregateTime = 30;
+
+            RecurringJob.AddOrUpdate(() => articleService.AggregateNews(), $"*/{aggregateTime} * * * *");
+            RecurringJob.AddOrUpdate(() => articleService.RateNews(), $"*/{rateTime} * * * *");
 
             app.UseHttpsRedirection();
 
