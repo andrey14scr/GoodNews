@@ -4,6 +4,16 @@
         <name>GoodNewsAggregator.WebAPI</name>
     </assembly>
     <members>
+        <member name="T:GoodNewsAggregator.WebAPI.Controllers.ArticleController">
+            <summary>
+            Controller for work with articles from db
+            </summary>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.ArticleController.#ctor(GoodNewsAggregator.Core.Services.Interfaces.IArticleService)">
+            <summary>
+            ArticleController constructor
+            </summary>
+        </member>
         <member name="M:GoodNewsAggregator.WebAPI.Controllers.ArticleController.Get(System.Guid)">
             <summary>
             Get a single article
@@ -44,6 +54,16 @@
             <param name="articleDto">ArticleDto that represents an information about article</param>
             <returns></returns>
         </member>
+        <member name="T:GoodNewsAggregator.WebAPI.Controllers.AuthenticateController">
+            <summary>
+            Controller for work with users and their authentication
+            </summary>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.AuthenticateController.#ctor(GoodNewsAggregator.Core.Services.Interfaces.IUserService,GoodNewsAggregator.WebAPI.Auth.IJwtAuthManager)">
+            <summary>
+            AuthenticateController constructor
+            </summary>
+        </member>
         <member name="M:GoodNewsAggregator.WebAPI.Controllers.AuthenticateController.Login(GoodNewsAggregator.Models.LoginRequest)">
             <summary>
             Login user
@@ -64,6 +84,16 @@
             </summary>
             <param name="request">Request consists of username and access token</param>
             <returns></returns>
+        </member>
+        <member name="T:GoodNewsAggregator.WebAPI.Controllers.CommentController">
+            <summary>
+            Controller for work with comments from db
+            </summary>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.CommentController.#ctor(GoodNewsAggregator.Core.Services.Interfaces.ICommentService)">
+            <summary>
+            CommentController constructor
+            </summary>
         </member>
         <member name="M:GoodNewsAggregator.WebAPI.Controllers.CommentController.Get(System.Guid)">
             <summary>
@@ -101,6 +131,16 @@
             </summary>
             <param name="commentDto">CommentDto that represents an information about comment</param>
             <returns></returns>
+        </member>
+        <member name="T:GoodNewsAggregator.WebAPI.Controllers.RssController">
+            <summary>
+            Controller for work with rss sources from db
+            </summary>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.RssController.#ctor(GoodNewsAggregator.Core.Services.Interfaces.IArticleService,GoodNewsAggregator.Core.Services.Interfaces.IRssService)">
+            <summary>
+            RssController constructor
+            </summary>
         </member>
         <member name="M:GoodNewsAggregator.WebAPI.Controllers.RssController.Get(System.Guid)">
             <summary>

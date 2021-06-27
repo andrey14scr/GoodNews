@@ -14,7 +14,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
 
             var value = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='content content--full ']");
 
-            if (value == null || value.InnerHtml == "")
+            if (value == null || value.InnerHtml == string.Empty)
                 return null;
 
             var result = string.Empty;
@@ -37,7 +37,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
                 }
                 else if (node.Name == "figure")
                 {
-                    var r = "";
+                    var r = string.Empty;
                     FindImage(node, ref r);
                     result += r;
                     if (string.IsNullOrWhiteSpace(r))
@@ -78,7 +78,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
                 }
                 else if (n.Name == "div" && n.HasClass("block-quote__author-content"))
                 {
-                    string author = "";
+                    string author = string.Empty;
                     var temp = n.ChildNodes.Where(q => q.HasClass("block-quote__author-name")).FirstOrDefault()?.InnerHtml;
                     if (temp != null)
                     {
@@ -105,7 +105,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
             {
                 if (n.Name == "div" && n.HasClass("andropov_image"))
                 {
-                    string a = "";
+                    string a = string.Empty;
                     string imgSource = n.GetAttributeValue("data-image-src", a);
                     if (!string.IsNullOrWhiteSpace(imgSource))
                         res = $"<p><img src=\"{imgSource}\"></p>";

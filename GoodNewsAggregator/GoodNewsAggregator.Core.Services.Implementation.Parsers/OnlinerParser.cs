@@ -17,10 +17,10 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
 
             var value = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='news-text']");
 
-            if (value == null || value.InnerHtml == "")
+            if (value == null || value.InnerHtml == string.Empty)
                 return null;
 
-            string result = "";
+            string result = string.Empty;
 
             foreach (var node in value.ChildNodes)
             {

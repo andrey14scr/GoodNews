@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using Serilog;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
 {
@@ -34,12 +35,20 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var commentDto = await _rssService.GetById(id);
+            try
+            {
+                var commentDto = await _rssService.GetById(id);
 
-            if (commentDto == null)
-                return NotFound();
+                if (commentDto == null)
+                    return NotFound();
 
-            return Ok(commentDto);
+                return Ok(commentDto);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
 
         /// <summary>
@@ -49,12 +58,20 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var rssDtos = await _rssService.GetAll();
+            try
+            {
+                var rssDtos = await _rssService.GetAll();
 
-            if (rssDtos == null)
-                return NotFound();
+                if (rssDtos == null)
+                    return NotFound();
 
-            return Ok(rssDtos);
+                return Ok(rssDtos);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
 
         /// <summary>
@@ -68,8 +85,16 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             if (rssDto == null)
                 return NotFound();
 
-            await _rssService.Add(rssDto);
-            return Ok();
+            try
+            {
+                await _rssService.Add(rssDto);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
 
         /// <summary>
@@ -80,14 +105,22 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var rssDto = await _rssService.GetById(id);
+            try
+            {
+                var rssDto = await _rssService.GetById(id);
 
-            if (rssDto == null)
-                return NotFound();
+                if (rssDto == null)
+                    return NotFound();
 
-            await _rssService.Remove(rssDto);
+                await _rssService.Remove(rssDto);
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
 
         /// <summary>
@@ -101,8 +134,16 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             if (rssDto == null)
                 return NotFound();
 
-            await _rssService.Update(rssDto);
-            return Ok();
+            try
+            {
+                await _rssService.Update(rssDto);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
     }
 }

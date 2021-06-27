@@ -301,7 +301,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             }
 
             var temp = 0;
-            var jsonContent = "";
+            var jsonContent = string.Empty;
             bool saveUnknownWords;
             if (!Boolean.TryParse(_configuration["Constants:SaveUnknownWords"], out saveUnknownWords))
             {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.Core.Services.Interfaces.Enums;
+using Serilog;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
 {
@@ -35,12 +36,20 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var articleDto = await _articleService.GetById(id);
+            try
+            {
+                var articleDto = await _articleService.GetById(id);
 
-            if (articleDto == null)
-                return NotFound();
+                if (articleDto == null)
+                    return NotFound();
 
-            return Ok(articleDto);
+                return Ok(articleDto);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
 
         /// <summary>
@@ -65,7 +74,6 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             if (!skip.HasValue)
                 skip = 0;
             
-            SortByOption sbo;
             if (!sortBy.HasValue)
                 sortBy = SortByOption.DateTime;
             else if (!Enum.IsDefined(sortBy.Value))
@@ -75,12 +83,22 @@ namespace GoodNewsAggregator.WebAPI.Controllers
                                   "1 - sort by GoodFactor");
 
             var articleDtos = new List<ArticleDto>();
-            if (take.HasValue)
-                articleDtos = (await _articleService.GetFirst(skip.Value, take.Value, hasNulls.Value, sortBy.Value)).ToList();
-            else
-                articleDtos = (await _articleService.GetAll()).ToList();
 
-            return Ok(articleDtos);
+            try
+            {
+                if (take.HasValue)
+                    articleDtos = (await _articleService.GetFirst(skip.Value, take.Value, hasNulls.Value, sortBy.Value))
+                        .ToList();
+                else
+                    articleDtos = (await _articleService.GetAll()).ToList();
+
+                return Ok(articleDtos);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
 
         /// <summary>
@@ -94,8 +112,16 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             if (articleDto == null)
                 return NotFound();
 
-            await _articleService.Add(articleDto);
-            return Ok();
+            try
+            {
+                await _articleService.Add(articleDto);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
 
         /// <summary>
@@ -106,14 +132,22 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var articleDto = await _articleService.GetById(id);
+            try
+            {
+                var articleDto = await _articleService.GetById(id);
 
-            if (articleDto == null)
-                return NotFound();
+                if (articleDto == null)
+                    return NotFound();
 
-            await _articleService.Remove(articleDto);
+                await _articleService.Remove(articleDto);
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
 
         /// <summary>
@@ -127,8 +161,16 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             if (articleDto == null)
                 return NotFound();
 
-            await _articleService.Update(articleDto);
-            return Ok();
+            try
+            {
+                await _articleService.Update(articleDto);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
     }
 }

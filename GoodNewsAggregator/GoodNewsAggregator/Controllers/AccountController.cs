@@ -77,7 +77,7 @@ namespace GoodNewsAggregator.Controllers
                     }
 
                     foreach (IdentityError error in resultRegister.Errors)
-                        ModelState.AddModelError("", error.Description);
+                        ModelState.AddModelError(string.Empty, error.Description);
                 }
                 catch (Exception e)
                 {
@@ -103,7 +103,7 @@ namespace GoodNewsAggregator.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
-                ModelState.AddModelError("", "Неправильный логин и (или) пароль");
+                ModelState.AddModelError(string.Empty, "Неправильный логин и (или) пароль");
                 return View();
             }
 

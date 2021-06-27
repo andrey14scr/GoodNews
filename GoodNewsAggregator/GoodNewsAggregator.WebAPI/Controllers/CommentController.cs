@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using Serilog;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
 {
@@ -34,12 +35,20 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var commentDto = await _commentService.GetById(id);
+            try
+            {
+                var commentDto = await _commentService.GetById(id);
 
-            if (commentDto == null)
-                return NotFound();
+                if (commentDto == null)
+                    return NotFound();
 
-            return Ok(commentDto);
+                return Ok(commentDto);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
 
         /// <summary>
@@ -56,17 +65,27 @@ namespace GoodNewsAggregator.WebAPI.Controllers
                 return BadRequest("Both parameters \"skip\" and \"take\" must be null or have values");
 
             var commentDtos = new List<CommentDto>();
-            if (articleId.HasValue)
-            {
-                if (skip.HasValue)
-                    commentDtos = (await _commentService.GetFirst(articleId.Value, skip.Value, take.Value)).ToList();
-                else
-                    commentDtos = (await _commentService.GetByArticleId(articleId.Value)).ToList();
-            }
-            else
-                commentDtos = (await _commentService.GetAll()).ToList();
 
-            return Ok(commentDtos);
+            try
+            {
+                if (articleId.HasValue)
+                {
+                    if (skip.HasValue)
+                        commentDtos = (await _commentService.GetFirst(articleId.Value, skip.Value, take.Value))
+                            .ToList();
+                    else
+                        commentDtos = (await _commentService.GetByArticleId(articleId.Value)).ToList();
+                }
+                else
+                    commentDtos = (await _commentService.GetAll()).ToList();
+
+                return Ok(commentDtos);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
 
         /// <summary>
@@ -80,8 +99,16 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             if (commentDto == null)
                 return NotFound();
 
-            await _commentService.Add(commentDto);
-            return Ok();
+            try
+            {
+                await _commentService.Add(commentDto);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
 
         /// <summary>
@@ -92,14 +119,22 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var commentDto = await _commentService.GetById(id);
+            try
+            {
+                var commentDto = await _commentService.GetById(id);
 
-            if (commentDto == null)
-                return NotFound();
+                if (commentDto == null)
+                    return NotFound();
 
-            await _commentService.Remove(commentDto);
+                await _commentService.Remove(commentDto);
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
 
         /// <summary>
@@ -113,8 +148,16 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             if (commentDto == null)
                 return NotFound();
 
-            await _commentService.Update(commentDto);
-            return Ok();
+            try
+            {
+                await _commentService.Update(commentDto);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return StatusCode(500, e.Message);
+            }
         }
     }
 }
