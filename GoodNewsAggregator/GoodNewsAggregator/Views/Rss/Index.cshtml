@@ -1,0 +1,37 @@
+﻿@model IEnumerable<GoodNewsAggregator.Core.DTO.RssDto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Rss источники</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            Название
+        </th>
+        <th>
+            Действие
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Детали</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div>
+    <a class="btn btn-light mb-2" asp-controller="Administration" asp-action="Index">Назад в панель администрирования</a>
+</div>

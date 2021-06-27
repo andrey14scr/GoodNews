@@ -1,0 +1,38 @@
+﻿@model ArticleViewModel
+@{
+    ViewData["Title"] = "Article";
+}
+
+<div class="">
+    <h1 class="display-4 text-center">@Model.Title</h1>
+    <div class="text-center">
+        <a class="read-next" href="@Model.Source">Читать в источнике</a>
+    </div>
+    <br/>
+    
+    <div class="text-left large-size">
+        @Html.Raw(Model.Content)
+    </div>
+    
+    <hr />
+    <div class="row">
+        <input type="hidden" id="articleId" name="articleId" value="@Model.Id" />
+        <div class="col-sm-12 azure-background text-center">
+            <label for="commentText">Ваш комментарий:</label>
+            <textarea name="commentText" class="form-control" placeholder="Оставьте комментарий тут" id="commentText" rows="3"></textarea>
+            <div id="error-text" class="red"></div>
+            <button class="btn btn-primary write-comment-btn" id="create-comment-btn" onclick="addComment()">Отправить</button>
+        </div>
+        
+        <button id="comments-display-switcher" class="btn btn-primary col-sm-12 mt-4" onclick="getComments('@Model.Id')">Посмотреть комментарии</button>
+
+        <div class="container">
+            <div id="comments-container" class="row mt-4"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/js/comments.js"></script>
+}

@@ -1,0 +1,67 @@
+﻿@model AdminInfo
+
+@{
+    ViewData["Title"] = "Admin Panel";
+}
+
+<h1>Панель администратора</h1>
+
+<form method="post" asp-controller="Rss" asp-action="Index">
+    <input class="mb-2" type="submit" value="Rss источники" />
+</form>
+
+<form method="post" asp-controller="Administration" asp-action="Roles">
+    <input class="mb-2" type="submit" value="Управление ролями" />
+</form>
+
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Количество новостей
+            </th>
+            <th>
+                Описание
+            </th>
+            <th>
+                Действие
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            @Model.ArticleCount
+        </td>
+        <td>
+            Общее количество
+        </td>
+        <td>
+            <form method="post" asp-controller="Administration" asp-action="Aggregate">
+                <input class="mb-2" type="submit" value="Собрать" />
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @(Model.ArticleCount - Model.RatedArticles)
+        </td>
+        <td>
+            Нужно оценить
+        </td>
+        <td>
+            <form method="post" asp-controller="Administration" asp-action="Rate">
+                <input class="mb-2" type="submit" value="Оценить (30)" />
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br />
+
+<div>
+    <a class="btn btn-light mb-2" asp-controller="Account" asp-action="MyAccount">Назад в аккаунт</a>
+</div>

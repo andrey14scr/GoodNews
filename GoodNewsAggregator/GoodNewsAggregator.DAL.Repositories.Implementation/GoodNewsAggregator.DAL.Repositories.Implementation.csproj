@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GoodNewsAggregator.DAL.Core\GoodNewsAggregator.DAL.Core.csproj" />
+    <ProjectReference Include="..\GoodNewsAggregator.DAL.Repositories.Interfaces\GoodNewsAggregator.DAL.Repositories.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>

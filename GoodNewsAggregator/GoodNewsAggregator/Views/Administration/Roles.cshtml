@@ -1,0 +1,43 @@
+﻿@using GoodNewsAggregator.Constants
+@model IEnumerable<GoodNewsAggregator.Core.DTO.RoleDto>
+
+@{
+    ViewData["Title"] = "Role Names";
+}
+
+<h1>Роли</h1>
+
+<p>
+    <a asp-action="CreateRole">Создать новую роль</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            Название
+        </th>
+        <th>
+            Действие
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @if (item.Name != RoleNames.ADMIN && item.Name != RoleNames.USER)
+                {
+                    <a asp-action="DeleteRole" asp-route-id="@item.Id">Удалить</a>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div>
+    <a class="btn btn-light mb-2" asp-action="Index">Назад в панель администрирования</a>
+</div>

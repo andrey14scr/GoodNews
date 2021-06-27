@@ -1,0 +1,63 @@
+﻿@model RegisterModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div>
+    <h1>Регистрация аккаунта</h1>
+    <br />
+
+    <form method="post" asp-action="Register" asp-controller="Account" asp-antiforgery="true">
+        <div class="validation text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label align-self-center" asp-for="Email">Эл. почта</label>
+            <div class="col-sm-6 align-self-center">
+                <input class="form-control" placeholder="Эл. почта" type="text" asp-for="Email">
+            </div>
+            <span class="text-danger align-self-center ml-3" asp-validation-for="Email"></span>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label align-self-center" asp-for="UserName">Имя пользователя</label>
+            <div class="col-sm-6 align-self-center">
+                <input class="form-control" placeholder="Имя пользователя" type="text" asp-for="UserName">
+            </div>
+            <span class="text-danger align-self-center ml-3" asp-validation-for="UserName"></span>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label align-self-center" asp-for="Password">Пароль</label>
+            <div class="col-sm-6 align-self-center">
+                <input class="form-control" placeholder="Пароль" type="password" asp-for="Password">
+            </div>
+            <span class="text-danger align-self-center ml-3" asp-validation-for="Password"></span>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label align-self-center" asp-for="PasswordConfirmation">Подтверждение пароля</label>
+            <div class="col-sm-6 align-self-center">
+                <input class="form-control " placeholder="Подтверждение пароля" type="password" asp-for="PasswordConfirmation">
+            </div>
+            <span class="text-danger align-self-center ml-3" asp-validation-for="PasswordConfirmation"></span>
+        </div>
+        <div>
+            <input class="btn btn-primary mb-2 mt-2" type="submit" value="Регистрация" />
+        </div>
+    </form>
+
+    <br />
+
+    <span>Уже есть аккаунт?</span>
+    <a method="get" asp-controller="Account" asp-action="Login">Войти</a>
+</div>
+
+@section Scripts
+{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/redirections.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha256-sPB0F50YUDK0otDnsfNHawYmA5M0pjjUf4TvRJkGFrI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.js" integrity="sha256-XNNC8ESw29iopRLukVRazlP44TxnjGmEQanHJ5kHmtk=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+}

@@ -1,0 +1,30 @@
+﻿@model GoodNewsAggregator.Core.DTO.RssDto
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Информация</h1>
+
+<div>
+    <h4>Rss источник</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Название
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            Url
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Url)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="btn btn-primary mb-2" asp-action="Edit" asp-route-id="@Model.Id">Изменить</a><br/>
+    <a class="btn btn-light mb-2" asp-action="Index">Назад к таблице</a>
+</div>

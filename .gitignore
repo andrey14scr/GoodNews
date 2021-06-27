@@ -348,3 +348,11 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Ignore static files:
+GoodNewsAggregator/GoodNewsAggregator/AFINN-ru.json
+GoodNewsAggregator/GoodNewsAggregator/appsettings.json
+GoodNewsAggregator/GoodNewsAggregator/appsettings.Development.json
+GoodNewsAggregator/GoodNewsAggregator.WebAPI/AFINN-ru.json
+GoodNewsAggregator/GoodNewsAggregator.WebAPI/appsettings.json
+GoodNewsAggregator/GoodNewsAggregator.WebAPI/appsettings.Development.json
