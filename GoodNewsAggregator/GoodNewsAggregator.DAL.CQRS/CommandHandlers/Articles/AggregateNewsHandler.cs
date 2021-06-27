@@ -50,10 +50,9 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            ConcurrentBag<ArticleDto> addArticles = new ConcurrentBag<ArticleDto>();
-            ConcurrentBag<ArticleDto> updateArticles = new ConcurrentBag<ArticleDto>();
-            ConcurrentBag<(RssDto Rss, SyndicationFeed Feed)> rssWithFeed =
-                new ConcurrentBag<(RssDto Rss, SyndicationFeed feed)>();
+            var addArticles = new ConcurrentBag<ArticleDto>();
+            var updateArticles = new ConcurrentBag<ArticleDto>();
+            var rssWithFeed = new ConcurrentBag<(RssDto Rss, SyndicationFeed Feed)>();
 
             List<ArticleDto> existList = new List<ArticleDto>();
 
@@ -75,7 +74,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                 }
             }
 
-            ConcurrentBag<ArticleDto> existingArticles = new ConcurrentBag<ArticleDto>(existList);
+            var existingArticles = new ConcurrentBag<ArticleDto>(existList);
 
             Parallel.ForEach(rssWithFeed, rf =>
             {

@@ -9,12 +9,18 @@ using GoodNewsAggregator.Core.Services.Interfaces;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
 {
+    /// <summary>
+    /// Controller for work with comments from db
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
 
+        /// <summary>
+        /// CommentController constructor
+        /// </summary>
         public CommentController(ICommentService commentService)
         {
             _commentService = commentService;
@@ -49,16 +55,16 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             if (skip.HasValue ^ take.HasValue)
                 return BadRequest("Both parameters \"skip\" and \"take\" must be null or have values");
 
-            IEnumerable<CommentDto> commentDtos = new List<CommentDto>();
+            var commentDtos = new List<CommentDto>();
             if (articleId.HasValue)
             {
                 if (skip.HasValue)
-                    commentDtos = await _commentService.GetFirst(articleId.Value, skip.Value, take.Value);
+                    commentDtos = (await _commentService.GetFirst(articleId.Value, skip.Value, take.Value)).ToList();
                 else
-                    commentDtos = await _commentService.GetByArticleId(articleId.Value);
+                    commentDtos = (await _commentService.GetByArticleId(articleId.Value)).ToList();
             }
             else
-                commentDtos = await _commentService.GetAll();
+                commentDtos = (await _commentService.GetAll()).ToList();
 
             return Ok(commentDtos);
         }

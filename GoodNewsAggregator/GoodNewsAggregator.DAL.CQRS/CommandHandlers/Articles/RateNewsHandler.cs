@@ -48,7 +48,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                     .AsNoTracking()
                     .ToListAsync());
 
-            Dictionary<Guid, List<string>> articleContent = new Dictionary<Guid, List<string>>();
+           var articleContent = new Dictionary<Guid, List<string>>();
 
             foreach (var item in articles)
             {
@@ -57,13 +57,13 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                 var text = Regex.Replace(item.Content, "<[^>]+>", " ");
                 text = Regex.Replace(text, @"[\u0000-\u001F]", " ");
 
-                string responseString = "";
+                var responseString = string.Empty;
                 using (var httpClient = new HttpClient())
                 {
                     httpClient.DefaultRequestHeaders.Accept.Add(
                         new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Post,
+                    var httpRequest = new HttpRequestMessage(HttpMethod.Post,
                         "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=e4d5ecb62d3755f4845dc098adf3d25993efc96c")
                     {
                         Content = new StringContent("[{\"text\":\"" + text + "\"}]", Encoding.UTF8, "application/json")
@@ -78,14 +78,14 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                     continue;
                 }
 
-                using (JsonDocument doc = JsonDocument.Parse(responseString))
+                using (var doc = JsonDocument.Parse(responseString))
                 {
                     try
                     {
-                        JsonElement root = doc.RootElement;
-                        JsonElement arrayElement = root[0];
-                        JsonElement annotationsElement = arrayElement.GetProperty("annotations");
-                        JsonElement lemmaElement = annotationsElement.GetProperty("lemma");
+                        var root = doc.RootElement;
+                        var arrayElement = root[0];
+                        var annotationsElement = arrayElement.GetProperty("annotations");
+                        var lemmaElement = annotationsElement.GetProperty("lemma");
                         JsonElement valueJson;
 
                         foreach (var element in lemmaElement.EnumerateArray())
@@ -106,8 +106,8 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
 
             }
 
-            int temp = 0;
-            string jsonContent = String.Empty;
+            var temp = 0;
+            var jsonContent = String.Empty;
             bool saveUnknownWords;
             if (!Boolean.TryParse(_configuration["Constants:SaveUnknownWords"], out saveUnknownWords))
             {
@@ -126,14 +126,15 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                 return -1;
             }
 
-            Dictionary<string, int> notFoundWords = new Dictionary<string, int>();
+            var notFoundWords = new Dictionary<string, int>();
 
-            using (JsonDocument doc = JsonDocument.Parse(jsonContent))
+            using (var doc = JsonDocument.Parse(jsonContent))
             {
-                JsonElement root = doc.RootElement;
+                var root = doc.RootElement;
                 JsonElement valueJson;
-                int valueCounter, wordsCounter;
-                float goodFactor = 0;
+                var valueCounter = 0;
+                var wordsCounter = 0;
+                var goodFactor = 0f;
 
                 foreach (var item in articleContent)
                 {
@@ -168,12 +169,12 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
             }
 
             _dbContext.Articles.UpdateRange(_mapper.Map<List<Article>>(articles));
-            int result = await _dbContext.SaveChangesAsync(cancellationToken);
+            var result = await _dbContext.SaveChangesAsync(cancellationToken);
 
             if (saveUnknownWords)
             {
-                string fileName = Path.Combine(UNKNOWNWORDSDIR, UNKNOWNWORDSFILE);
-                Dictionary<string, int> existingItems = new Dictionary<string, int>();
+                var fileName = Path.Combine(UNKNOWNWORDSDIR, UNKNOWNWORDSFILE);
+                var existingItems = new Dictionary<string, int>();
 
                 try
                 {
@@ -182,9 +183,9 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                     if (!File.Exists(fileName))
                         File.Create(fileName);
 
-                    using (StreamReader r = new StreamReader(fileName))
+                    using (var r = new StreamReader(fileName))
                     {
-                        string json = await r.ReadToEndAsync();
+                        var json = await r.ReadToEndAsync();
                         try
                         {
                             existingItems = JsonSerializer.Deserialize<Dictionary<string, int>>(json);
@@ -212,7 +213,7 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.Articles
                             WriteIndented = true
                         };
 
-                        string jsonString = JsonSerializer.Serialize(existingItems, options);
+                        var jsonString = JsonSerializer.Serialize(existingItems, options);
                         await fs.WriteLineAsync(jsonString);
                     }
                 }

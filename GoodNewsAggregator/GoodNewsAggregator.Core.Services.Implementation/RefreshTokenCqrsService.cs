@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.Commands.RefreshTokens;
 using GoodNewsAggregator.DAL.CQRS.Queries.RefreshTokens;
 using MediatR;

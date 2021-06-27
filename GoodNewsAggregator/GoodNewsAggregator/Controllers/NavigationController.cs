@@ -9,7 +9,6 @@ using AutoMapper;
 using GoodNewsAggregator.Core.Services.Interfaces.Enums;
 using GoodNewsAggregator.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 
@@ -35,7 +34,7 @@ namespace GoodNewsAggregator.Controllers
         {
             var hasNulls = false;
 
-            int pageSize = 0;
+            var pageSize = 0;
             if (!Int32.TryParse(_configuration["Constants:PageSize"], out pageSize))
             {
                 Log.Error("Constants:PageSize field is not valid");

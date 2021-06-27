@@ -71,15 +71,13 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
 
                 return node.OuterHtml;
             }
-            else
-            {
-                foreach (var c in node.Attributes.ToArray())
-                {
-                    node.Attributes.Remove(c.Name);
-                }
 
-                return node.InnerHtml;
+            foreach (var c in node.Attributes.ToArray())
+            {
+                node.Attributes.Remove(c.Name);
             }
+
+            return node.InnerHtml;
         }
     }
 }

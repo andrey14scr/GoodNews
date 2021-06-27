@@ -32,7 +32,7 @@ namespace GoodNewsAggregator.Controllers
 
         public async Task<IActionResult> List(Guid articleId, int next, bool add = true)
         {
-            int commentsSize = 0;
+            var commentsSize = 0;
             if (!Int32.TryParse(_configuration["Constants:CommentsSize"], out commentsSize))
             {
                 Log.Error("Constants:CommentsSize field is not valid");
@@ -43,13 +43,13 @@ namespace GoodNewsAggregator.Controllers
                 .OrderByDescending(c => c.Date)
                 .ToList();
 
-            int amount = comments.Count();
+            var amount = comments.Count();
 
             var list = comments.Skip(add ? next * commentsSize : 0)
                 .Take(add ? commentsSize : (next + 1) * commentsSize)
                 .ToList();
 
-            List<CommentViewModel> result = new List<CommentViewModel>();
+            var result = new List<CommentViewModel>();
 
             foreach (var item in list)
             {

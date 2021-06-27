@@ -20,7 +20,8 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers.RefreshTokens
 
         public async Task<int> Handle(AddOrUpdateRefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            var refreshToken = _dbContext.RefreshTokens.AsNoTracking().FirstOrDefault(rt => rt.Id == request.Id);
+            var refreshToken = _dbContext.RefreshTokens.AsNoTracking()
+                .FirstOrDefault(rt => rt.Id == request.Id);
             
             if (refreshToken == null)
             {

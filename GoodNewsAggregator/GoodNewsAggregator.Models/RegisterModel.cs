@@ -7,7 +7,7 @@ namespace GoodNewsAggregator.Models
     {
         [Required(ErrorMessage = "Это поле должно быть заполнено")]
         [DataType(DataType.EmailAddress)]
-        [EmailAddress(ErrorMessage = "Введите email адрес")]
+        [EmailAddress(ErrorMessage = "Введите email")]
         [Remote("CheckEmail", "Account", ErrorMessage = "Такой email уже занят")]
         public string Email { get; set; }
 

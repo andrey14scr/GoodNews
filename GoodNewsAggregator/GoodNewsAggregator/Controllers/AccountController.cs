@@ -94,7 +94,7 @@ namespace GoodNewsAggregator.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userModel = await _userService.Login(loginModel.Username, loginModel.Password);
+                var userModel = await _userService.Login(loginModel.UserName, loginModel.Password);
                 if (userModel != null)
                 {
                     if (!string.IsNullOrEmpty(loginModel.ReturnUrl) && Url.IsLocalUrl(loginModel.ReturnUrl))

@@ -12,6 +12,9 @@ using Serilog;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
 {
+    /// <summary>
+    /// Controller for work with users and their authentication
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ProducesResponseType(200, Type = typeof(string))]
@@ -20,6 +23,9 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         private readonly IUserService _userService;
         private readonly IJwtAuthManager _jwtAuthManager;
 
+        /// <summary>
+        /// AuthenticateController constructor
+        /// </summary>
         public AuthenticateController(IUserService userService, IJwtAuthManager jwtAuthManager)
         {
             _userService = userService;
@@ -38,7 +44,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         {
             try
             {
-                UserDto userDto = await _userService.GetByUserName(request.UserName);
+                var userDto = await _userService.GetByUserName(request.UserName);
                 var isCorrect = await _userService.CheckPassword(request.Password, userDto.Email);
                 
                 if (isCorrect)

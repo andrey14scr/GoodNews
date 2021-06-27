@@ -17,7 +17,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
             if (value == null || value.InnerHtml == "")
                 return null;
 
-            string result = "";
+            var result = string.Empty;
 
             foreach (var node in value.ChildNodes)
             {
@@ -37,7 +37,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation.Parsers
                 }
                 else if (node.Name == "figure")
                 {
-                    string r = "";
+                    var r = "";
                     FindImage(node, ref r);
                     result += r;
                     if (string.IsNullOrWhiteSpace(r))

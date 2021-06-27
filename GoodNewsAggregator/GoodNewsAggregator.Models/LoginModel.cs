@@ -5,7 +5,7 @@ namespace GoodNewsAggregator.Models
     public class LoginModel
     {
         [Required(ErrorMessage = "Это поле должно быть заполнено")]
-        public string Username { get; set; }
+        public string UserName { get; set; }
 
         [Required(ErrorMessage = "Это поле должно быть заполнено")]
         [DataType(DataType.Password)]

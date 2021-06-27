@@ -141,16 +141,15 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             var rssSources = new ConcurrentBag<RssDto>(_mapper
                 .Map<List<RssDto>>(await _unitOfWork.Rss.GetAll()));
 
-            int count = 0;
+            var count = 0;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            ConcurrentBag<ArticleDto> addArticles = new ConcurrentBag<ArticleDto>();
-            ConcurrentBag<ArticleDto> updateArticles = new ConcurrentBag<ArticleDto>();
-            ConcurrentBag<(RssDto Rss, SyndicationFeed Feed)> rssWithFeed =
-                new ConcurrentBag<(RssDto Rss, SyndicationFeed feed)>();
+            var addArticles = new ConcurrentBag<ArticleDto>();
+            var updateArticles = new ConcurrentBag<ArticleDto>();
+            var rssWithFeed = new ConcurrentBag<(RssDto Rss, SyndicationFeed Feed)>();
 
-            List<ArticleDto> existList = new List<ArticleDto>();
+            var existList = new List<ArticleDto>();
 
             foreach (var rss in rssSources)
             {
@@ -169,7 +168,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                 }
             }
 
-            ConcurrentBag<ArticleDto> existingArticles = new ConcurrentBag<ArticleDto>(existList);
+            var existingArticles = new ConcurrentBag<ArticleDto>(existList);
 
             Parallel.ForEach(rssWithFeed, rf =>
             {
@@ -243,7 +242,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                     .Take(30)
                     .ToListAsync());
 
-            Dictionary<Guid, List<string>> articleContent = new Dictionary<Guid, List<string>>();
+            var articleContent = new Dictionary<Guid, List<string>>();
 
             foreach (var item in articles)
             {
@@ -252,13 +251,13 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                 var text = Regex.Replace(item.Content, "<[^>]+>", " ");
                 text = Regex.Replace(text, @"[\u0000-\u001F]", " ");
 
-                string responseString = "";
+                var responseString = string.Empty;
                 using (var httpClient = new HttpClient())
                 {
                     httpClient.DefaultRequestHeaders.Accept.Add(
                         new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post,
+                    var request = new HttpRequestMessage(HttpMethod.Post,
                         "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=e4d5ecb62d3755f4845dc098adf3d25993efc96c")
                     {
                         Content = new StringContent("[{\"text\":\"" + text + "\"}]", Encoding.UTF8, "application/json")
@@ -273,14 +272,14 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                     continue;
                 }
 
-                using (JsonDocument doc = JsonDocument.Parse(responseString))
+                using (var doc = JsonDocument.Parse(responseString))
                 {
                     try
                     {
-                        JsonElement root = doc.RootElement;
-                        JsonElement arrayElement = root[0];
-                        JsonElement annotationsElement = arrayElement.GetProperty("annotations");
-                        JsonElement lemmaElement = annotationsElement.GetProperty("lemma");
+                        var root = doc.RootElement;
+                        var arrayElement = root[0];
+                        var annotationsElement = arrayElement.GetProperty("annotations");
+                        var lemmaElement = annotationsElement.GetProperty("lemma");
                         JsonElement valueJson;
 
                         foreach (var element in lemmaElement.EnumerateArray())
@@ -301,8 +300,8 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
             }
 
-            int temp = 0;
-            string jsonContent = "";
+            var temp = 0;
+            var jsonContent = "";
             bool saveUnknownWords;
             if (!Boolean.TryParse(_configuration["Constants:SaveUnknownWords"], out saveUnknownWords))
             {
@@ -321,14 +320,15 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                 return;
             }
 
-            Dictionary<string, int> notFoundWords = new Dictionary<string, int>();
+            var notFoundWords = new Dictionary<string, int>();
 
-            using (JsonDocument doc = JsonDocument.Parse(jsonContent))
+            using (var doc = JsonDocument.Parse(jsonContent))
             {
-                JsonElement root = doc.RootElement;
+                var root = doc.RootElement;
                 JsonElement valueJson;
-                int valueCounter, wordsCounter;
-                float result = 0;
+                var valueCounter = 0; 
+                var wordsCounter = 0;
+                var result = 0f;
 
                 foreach (var item in articleContent)
                 {
@@ -365,8 +365,8 @@ namespace GoodNewsAggregator.Core.Services.Implementation
             await UpdateRange(articles);
             if (saveUnknownWords)
             {
-                string fileName = Path.Combine(UNKNOWNWORDSDIR, UNKNOWNWORDSFILE);
-                Dictionary<string, int> existingItems = new Dictionary<string, int>();
+                var fileName = Path.Combine(UNKNOWNWORDSDIR, UNKNOWNWORDSFILE);
+                var existingItems = new Dictionary<string, int>();
 
                 try
                 {
@@ -377,7 +377,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
                     using (StreamReader r = new StreamReader(fileName))
                     {
-                        string json = await r.ReadToEndAsync();
+                        var json = await r.ReadToEndAsync();
                         try
                         {
                             existingItems = JsonSerializer.Deserialize<Dictionary<string, int>>(json);
@@ -405,7 +405,7 @@ namespace GoodNewsAggregator.Core.Services.Implementation
                             WriteIndented = true
                         };
 
-                        string jsonString = JsonSerializer.Serialize(existingItems, options);
+                        var jsonString = JsonSerializer.Serialize(existingItems, options);
                         await fs.WriteLineAsync(jsonString);
                     }
                 }

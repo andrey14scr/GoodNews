@@ -8,7 +8,6 @@ using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.Queries.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Serilog;
 
 namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers.Users
 {

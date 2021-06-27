@@ -7,6 +7,9 @@ using GoodNewsAggregator.Core.Services.Interfaces;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
 {
+    /// <summary>
+    /// Controller for work with rss sources from db
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class RssController : ControllerBase
@@ -14,6 +17,9 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         private readonly IArticleService _articleService;
         private readonly IRssService _rssService;
 
+        /// <summary>
+        /// RssController constructor
+        /// </summary>
         public RssController(IArticleService articleService, IRssService rssService)
         {
             _articleService = articleService;

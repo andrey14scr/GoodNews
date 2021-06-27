@@ -51,7 +51,7 @@ function addComment() {
     var commentText = textField.value;
 
     if (!commentText || commentText.length < 3) {
-        error.innerText = '*Комментарий не должен быть пустым и минимум 3 символа';
+        error.innerText = '*Комментарий не должен быть пустым и должен содержать минимум 3 символа';
         return;
     }
     error.innerText = '';

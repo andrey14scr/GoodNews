@@ -64,9 +64,7 @@ namespace GoodNewsAggregator.TagHelpers
         public string GetAnchorInnerHtml(int i, PageInfo page)
         {
             if (page.TotalPages < 10)
-            {
                 return i.ToString();
-            }
 
             if (page.PageNumber <= 5)
             {

@@ -73,8 +73,8 @@ namespace GoodNewsAggregator.Controllers
 
         private async Task<AdminInfo> GetAdminInfo()
         {
-            int count = await _articleService.GetArticlesCount();
-            int rated = await _articleService.GetRatedArticlesCount();
+            var count = await _articleService.GetArticlesCount();
+            var rated = await _articleService.GetRatedArticlesCount();
 
             return new AdminInfo() { ArticleCount = count, RatedArticles = rated };
         }

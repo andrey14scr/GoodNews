@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
@@ -9,12 +10,18 @@ using GoodNewsAggregator.Core.Services.Interfaces.Enums;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
 {
+    /// <summary>
+    /// Controller for work with articles from db
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ArticleController : ControllerBase
     {
         private readonly IArticleService _articleService;
 
+        /// <summary>
+        /// ArticleController constructor
+        /// </summary>
         public ArticleController(IArticleService articleService)
         {
             _articleService = articleService;
@@ -50,7 +57,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         public async Task<IActionResult> Get(int? skip, int? take, bool? hasNulls, SortByOption? sortBy)
         {
             if (skip.HasValue && !take.HasValue)
-                return BadRequest("Parameters \"skip\" must be with \"take\" parameter");
+                return BadRequest("Parameter \"skip\" must be with \"take\" parameter");
 
             if (!hasNulls.HasValue)
                 hasNulls = false;
@@ -62,16 +69,16 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             if (!sortBy.HasValue)
                 sortBy = SortByOption.DateTime;
             else if (!Enum.IsDefined(sortBy.Value))
-                return BadRequest($"Parameters \"sortBy\" can't take value = {sortBy.Value}. " +
+                return BadRequest($"Parameter \"sortBy\" can't take value = {sortBy.Value}. " +
                                   "Available values: \n" +
                                   "0 - sort by DateTime,\n" +
                                   "1 - sort by GoodFactor");
 
-            IEnumerable<ArticleDto> articleDtos = new List<ArticleDto>();
+            var articleDtos = new List<ArticleDto>();
             if (take.HasValue)
-                articleDtos = await _articleService.GetFirst(skip.Value, take.Value, hasNulls.Value, sortBy.Value);
+                articleDtos = (await _articleService.GetFirst(skip.Value, take.Value, hasNulls.Value, sortBy.Value)).ToList();
             else
-                articleDtos = await _articleService.GetAll();
+                articleDtos = (await _articleService.GetAll()).ToList();
 
             return Ok(articleDtos);
         }

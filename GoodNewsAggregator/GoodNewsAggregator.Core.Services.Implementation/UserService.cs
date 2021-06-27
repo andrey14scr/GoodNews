@@ -11,7 +11,6 @@ using GoodNewsAggregator.Core.Services.Interfaces.Enums;
 using GoodNewsAggregator.Core.Services.Interfaces.Exceptions;
 using GoodNewsAggregator.DAL.Core.Entities;
 using Microsoft.AspNetCore.Identity;
-using Serilog;
 
 namespace GoodNewsAggregator.Core.Services.Implementation
 {

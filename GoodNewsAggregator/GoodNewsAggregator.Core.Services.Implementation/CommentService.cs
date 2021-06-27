@@ -40,7 +40,9 @@ namespace GoodNewsAggregator.Core.Services.Implementation
 
         public async Task<IEnumerable<CommentDto>> GetByArticleId(Guid id)
         {
-            var comment = await _unitOfWork.Comments.Get().Where(c => c.ArticleId == id).ToListAsync();
+            var comment = await _unitOfWork.Comments.Get()
+                .Where(c => c.ArticleId == id)
+                .ToListAsync();
             var commentDto = _mapper.Map<List<CommentDto>>(comment);
 
             return commentDto;
