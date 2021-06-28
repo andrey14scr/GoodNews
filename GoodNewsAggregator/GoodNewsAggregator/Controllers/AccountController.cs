@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.Core.Services.Interfaces.Constants;
 using GoodNewsAggregator.Models;
 using Microsoft.AspNetCore.Identity;
 using Serilog;
@@ -55,7 +56,7 @@ namespace GoodNewsAggregator.Controllers
                 {
                     Id = Guid.NewGuid(),
                     Email = registerModel.Email,
-                    Role = Constants.RoleNames.USER,
+                    Role = RoleNames.USER,
                     UserName = registerModel.UserName
                 };
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.Core.Services.Interfaces.Constants;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +14,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace GoodNewsAggregator.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = RoleNames.ADMIN)]
     public class AdministrationController : Controller
     {
         private readonly RoleManager<Role> _roleManager;

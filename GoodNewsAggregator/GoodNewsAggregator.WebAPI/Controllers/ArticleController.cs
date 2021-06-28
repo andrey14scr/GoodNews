@@ -6,7 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.Core.Services.Interfaces.Constants;
 using GoodNewsAggregator.Core.Services.Interfaces.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Serilog;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
@@ -107,6 +109,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         /// <param name="articleDto">ArticleDto that represents an information about article</param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(Roles = RoleNames.ADMIN)]
         public async Task<IActionResult> Create([FromBody] ArticleDto articleDto)
         {
             if (articleDto == null)
@@ -130,6 +133,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         /// <param name="id">Id of article you want to delete</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = RoleNames.ADMIN)]
         public async Task<IActionResult> Delete(Guid id)
         {
             try
@@ -156,6 +160,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         /// <param name="articleDto">ArticleDto that represents an information about article</param>
         /// <returns></returns>
         [HttpPut]
+        [Authorize(Roles = RoleNames.ADMIN)]
         public async Task<IActionResult> Update([FromBody] ArticleDto articleDto)
         {
             if (articleDto == null)
