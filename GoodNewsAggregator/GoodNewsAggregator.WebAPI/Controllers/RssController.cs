@@ -4,6 +4,8 @@ using System;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.Core.Services.Interfaces.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Serilog;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
@@ -11,6 +13,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
     /// <summary>
     /// Controller for work with rss sources from db
     /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RssController : ControllerBase
@@ -80,6 +83,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         /// <param name="rssDto">RssDto that represents an information about rss source</param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(Roles = RoleNames.ADMIN)]
         public async Task<IActionResult> Create([FromBody] RssDto rssDto)
         {
             if (rssDto == null)
@@ -103,6 +107,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         /// <param name="id">Id of rss source you want to delete</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = RoleNames.ADMIN)]
         public async Task<IActionResult> Delete(Guid id)
         {
             try
@@ -129,6 +134,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         /// <param name="rssDto">RssDto that represents an information about rss source</param>
         /// <returns></returns>
         [HttpPut]
+        [Authorize(Roles = RoleNames.ADMIN)]
         public async Task<IActionResult> Update([FromBody] RssDto rssDto)
         {
             if (rssDto == null)

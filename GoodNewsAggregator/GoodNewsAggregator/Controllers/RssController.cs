@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.Core.DTO;
+using GoodNewsAggregator.Core.Services.Interfaces.Constants;
 using Microsoft.AspNetCore.Authorization;
 
 namespace GoodNewsAggregator.Controllers
 {
-    [Authorize(Roles = "Admin,Moderator")]
+    [Authorize(Roles = RoleNames.ADMIN)]
     public class RssController : Controller
     {
         private readonly IRssService _rssService;

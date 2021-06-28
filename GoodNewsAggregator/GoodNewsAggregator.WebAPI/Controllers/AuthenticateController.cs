@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.Core.Services.Interfaces.Constants;
 using GoodNewsAggregator.Core.Services.Interfaces.Enums;
 using GoodNewsAggregator.Core.Services.Interfaces.Exceptions;
 using GoodNewsAggregator.Models;
@@ -90,7 +91,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             {
                 Id = Guid.NewGuid(),
                 Email = registerModel.Email,
-                Role = Constants.RoleNames.USER,
+                Role = RoleNames.USER,
                 UserName = registerModel.UserName
             };
 
