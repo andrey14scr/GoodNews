@@ -4,6 +4,83 @@
         <name>GoodNewsAggregator.WebAPI</name>
     </assembly>
     <members>
+        <member name="T:GoodNewsAggregator.WebAPI.Auth.IJwtAuthManager">
+            <summary>
+            Interface for work with jwt tokens
+            </summary>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Auth.IJwtAuthManager.GenerateToken(GoodNewsAggregator.Core.DTO.UserDto,System.DateTime)">
+            <summary>
+            Access token generation
+            </summary>
+            <param name="userDto">User dto</param>
+            <param name="now">Current DateTime</param>
+            <returns>Access token with its refresh token</returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Auth.IJwtAuthManager.Refresh(System.String,System.DateTime)">
+            <summary>
+            Refreshing existing access token
+            </summary>
+            <param name="accessToken">User's access token</param>
+            <param name="now">Current DateTime</param>
+            <returns>Access token with its refresh token</returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Auth.IJwtAuthManager.RemoveRefreshTokenByUserId(System.Guid)">
+            <summary>
+            Removing refresh token by userId
+            </summary>
+            <param name="userId">User's ID</param>
+        </member>
+        <member name="T:GoodNewsAggregator.WebAPI.Auth.JwtAuthManager">
+            <summary>
+            Service for jwt tokens management
+            </summary>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Auth.JwtAuthManager.#ctor(Microsoft.Extensions.Configuration.IConfiguration,GoodNewsAggregator.Core.Services.Interfaces.IRefreshTokenService,GoodNewsAggregator.Core.Services.Interfaces.IUserService)">
+            <summary>
+            JwtAuthManager constructor
+            </summary>
+            <param name="configuration">App configuration</param>
+            <param name="refreshTokenService">Refresh token service</param>
+            <param name="userService">User service</param>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Auth.JwtAuthManager.GenerateToken(GoodNewsAggregator.Core.DTO.UserDto,System.DateTime)">
+            <summary>
+            Access token generation
+            </summary>
+            <param name="userDto">User dto</param>
+            <param name="now">Current DateTime</param>
+            <returns>Access token with its refresh token</returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Auth.JwtAuthManager.Refresh(System.String,System.DateTime)">
+            <summary>
+            Refreshing existing access token
+            </summary>
+            <param name="accessToken">User's access token</param>
+            <param name="now">Current DateTime</param>
+            <returns>Access token with its refresh token</returns>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Auth.JwtAuthManager.RemoveRefreshTokenByUserId(System.Guid)">
+            <summary>
+            Removing refresh token by userId
+            </summary>
+            <param name="userId">User's ID</param>
+        </member>
+        <member name="T:GoodNewsAggregator.WebAPI.Auth.JwtAuthResult">
+            <summary>
+            Result of token generation
+            </summary>
+        </member>
+        <member name="P:GoodNewsAggregator.WebAPI.Auth.JwtAuthResult.AccessToken">
+            <summary>
+            Access token
+            </summary>
+        </member>
+        <member name="P:GoodNewsAggregator.WebAPI.Auth.JwtAuthResult.RefreshToken">
+            <summary>
+            Refresh token
+            </summary>
+        </member>
         <member name="T:GoodNewsAggregator.WebAPI.Controllers.ArticleController">
             <summary>
             Controller for work with articles from db
