@@ -23,7 +23,7 @@ export class NewsComponent implements OnInit {
     this.newsService.getNews().subscribe(news => this.newsCollection = news); 
   }
 
-  Select(article: Article) : void{
+  Select(article: ArticleModel) : void{
 
     this.newsCollection.forEach(element => {  
       if(element){
