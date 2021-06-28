@@ -6,18 +6,26 @@ using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DTO;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.Core.Services.Interfaces.Exceptions;
-using GoodNewsAggregator.DAL.Core.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace GoodNewsAggregator.WebAPI.Auth
 {
+    /// <summary>
+    /// Service for jwt tokens management
+    /// </summary>
     public class JwtAuthManager : IJwtAuthManager
     {
         private readonly IConfiguration _configuration;
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IUserService _userService;
 
+        /// <summary>
+        /// JwtAuthManager constructor
+        /// </summary>
+        /// <param name="configuration">App configuration</param>
+        /// <param name="refreshTokenService">Refresh token service</param>
+        /// <param name="userService">User service</param>
         public JwtAuthManager(IConfiguration configuration, IRefreshTokenService refreshTokenService, IUserService userService)
         {
             _configuration = configuration;
@@ -25,6 +33,12 @@ namespace GoodNewsAggregator.WebAPI.Auth
             _userService = userService;
         }
 
+        /// <summary>
+        /// Access token generation
+        /// </summary>
+        /// <param name="userDto">User dto</param>
+        /// <param name="now">Current DateTime</param>
+        /// <returns>Access token with its refresh token</returns>
         public async Task<JwtAuthResult> GenerateToken(UserDto userDto, DateTime now)
         {
             if (userDto == null)
@@ -65,6 +79,12 @@ namespace GoodNewsAggregator.WebAPI.Auth
             };
         }
 
+        /// <summary>
+        /// Refreshing existing access token
+        /// </summary>
+        /// <param name="accessToken">User's access token</param>
+        /// <param name="now">Current DateTime</param>
+        /// <returns>Access token with its refresh token</returns>
         public async Task<JwtAuthResult> Refresh(string accessToken, DateTime now)
         {
             var jwtToken = DecodeJwtToken(accessToken).JwtToken;
@@ -89,6 +109,10 @@ namespace GoodNewsAggregator.WebAPI.Auth
             return await GenerateToken(userDto, now);
         }
 
+        /// <summary>
+        /// Removing refresh token by userId
+        /// </summary>
+        /// <param name="userId">User's ID</param>
         public async Task RemoveRefreshTokenByUserId(Guid userId)
         {
             var refreshToken = await _refreshTokenService.GetRefreshTokenByUserId(userId);
