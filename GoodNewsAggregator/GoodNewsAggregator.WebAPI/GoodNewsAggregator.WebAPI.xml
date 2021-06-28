@@ -78,11 +78,11 @@
             <param name="registerModel">Registration model with email, username, password and password confirmation</param>
             <returns></returns>
         </member>
-        <member name="M:GoodNewsAggregator.WebAPI.Controllers.AuthenticateController.Refresh(GoodNewsAggregator.Models.RefreshRequest)">
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.AuthenticateController.Refresh(System.String)">
             <summary>
             Refresh your access token
             </summary>
-            <param name="request">Request consists of username and access token</param>
+            <param name="token">Access token</param>
             <returns></returns>
         </member>
         <member name="T:GoodNewsAggregator.WebAPI.Controllers.CommentController">

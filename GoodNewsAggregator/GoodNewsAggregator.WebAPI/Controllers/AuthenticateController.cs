@@ -121,17 +121,16 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         /// <summary>
         /// Refresh your access token
         /// </summary>
-        /// <param name="request">Request consists of username and access token</param>
+        /// <param name="token">Access token</param>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("Refresh")]
-        public async Task<IActionResult> Refresh([FromBody] RefreshRequest request)
+        public async Task<IActionResult> Refresh([FromBody] string token)
         {
             try
             {
-                UserDto userDto = await _userService.GetByUserName(request.UserName);
-                JwtAuthResult jwtResult = await _jwtAuthManager.GenerateToken(userDto, DateTime.Now);
+                JwtAuthResult jwtResult = await _jwtAuthManager.Refresh(token, DateTime.Now);
                 return Ok(jwtResult.AccessToken);
             }
             catch (UserNotFoundException e)

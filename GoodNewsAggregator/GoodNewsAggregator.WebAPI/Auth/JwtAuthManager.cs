@@ -65,20 +65,25 @@ namespace GoodNewsAggregator.WebAPI.Auth
             };
         }
 
-        public async Task<JwtAuthResult> Refresh(RefreshToken refreshToken, string accessToken, DateTime now)
+        public async Task<JwtAuthResult> Refresh(string accessToken, DateTime now)
         {
-            var (principal, jwtToken) = DecodeJwtToken(accessToken);
+            var jwtToken = DecodeJwtToken(accessToken).JwtToken;
 
-            var userDto = await _userService.GetById(refreshToken.UserId);
+            var userName = jwtToken.Subject;
+            if (string.IsNullOrEmpty(userName))
+                throw new UserNotFoundException("Token's user not found");
+
+            var userDto = await _userService.GetByUserName(userName);
             if (userDto == null)
-                throw new UserNotFoundException($"User with id = {refreshToken.UserId} not found");
+                throw new UserNotFoundException($"User with {userName} not found");
 
-            var userName = principal.Identity?.Name;
+            var refreshToken = await _refreshTokenService.GetRefreshTokenByUserId(userDto.Id);
+            if (refreshToken == null)
+                throw new SecurityTokenException("Refresh token not found");
 
             if (jwtToken == null || userName == null ||
                 !jwtToken.Header.Alg.Equals(_configuration["Jwt:SecurityAlg"]) || 
-                refreshToken.ExpireAt < now ||
-                userDto.UserName != userName)
+                refreshToken.ExpireAt < now)
                 throw new SecurityTokenException("Invalid token");
 
             return await GenerateToken(userDto, now);
@@ -90,7 +95,7 @@ namespace GoodNewsAggregator.WebAPI.Auth
             await _refreshTokenService.Remove(refreshToken);
         }
 
-        private (ClaimsPrincipal, JwtSecurityToken) DecodeJwtToken(string token)
+        private (ClaimsPrincipal ClaimsPrincipal, JwtSecurityToken JwtToken) DecodeJwtToken(string token)
         {
             if (string.IsNullOrWhiteSpace(token))
                 throw new SecurityTokenException("Invalid token");
