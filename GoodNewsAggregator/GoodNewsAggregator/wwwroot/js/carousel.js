@@ -2,7 +2,7 @@
 var timeout = false;
 var delta = 500;
 
-$(document).ready(function () {
+$(window).load(function () {
     $('#carouselwithIndicators').find('.carousel-item img')
         .css('max-height', $('#carouselwithIndicators').css('height'));
 
